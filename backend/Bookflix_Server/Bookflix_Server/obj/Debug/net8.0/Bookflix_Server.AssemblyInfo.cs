@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Bookflix_Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+34be548ff4be7edcefaf1c761155379b814bff57")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8e5ffda76310da43763fa5250fd4f41d201faffd")]
 [assembly: System.Reflection.AssemblyProductAttribute("Bookflix_Server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Bookflix_Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
