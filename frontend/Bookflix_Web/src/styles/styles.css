@@ -16,3 +16,4 @@ section {
     height: calc(100vh - 60px); /* Resta la altura del header si es necesario (ajusta según la altura real del header) */
     overflow: auto; /* Permite el desplazamiento si el contenido es grande */
 }
+

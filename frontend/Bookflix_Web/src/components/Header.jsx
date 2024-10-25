@@ -2,8 +2,6 @@
 import React from 'react';
 import '../styles/default.css';
 import '../styles/header.css';
-import '../styles/footer.css';
-import '../styles/styles.css';
 
 const Header = () => {
   return (
