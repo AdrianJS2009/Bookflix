@@ -60,3 +60,24 @@ public class Pedidos //Creo los atributos de los pedidos según los datos que se
     public User Usuario { get; set; }
 }
 
+public class Bundles //Creo los atributos de los paquetes según los datos que se van a pedir en el formulario de registro y los que formulan en nuestra BBDD
+{
+    [Key]   //Defino la clave primaria
+    public int IdBundle { get; set; }
+
+    [Required]  //Defino los campos de nombre, precio, descripción y libros
+    public string Nombre { get; set; }
+
+    [Required]
+    public double Precio { get; set; }
+
+    [Required]
+    public string Descripcion { get; set; }
+
+    [Required]
+    public List<Book> Libros { get; set; } = new List<Book>(); // Inicializo la lista para evitar errores
+
+    [Required]
+    public string ImagenUrl { get; set; } // Nueva propiedad para la URL de la imagen
+}
+
