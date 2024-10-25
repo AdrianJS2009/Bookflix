@@ -2805,19 +2805,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\reike\\.nuget\\packages\\": {}
+    "C:\\Users\\abust\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\reike\\Desktop\\Bookflix\\Bookflix\\backend\\Bookflix_Server\\Bookflix_Server\\Bookflix_Server.csproj",
+      "projectUniqueName": "C:\\Users\\abust\\Desktop\\Bookflix\\backend\\Bookflix_Server\\Bookflix_Server\\Bookflix_Server.csproj",
       "projectName": "Bookflix_Server",
-      "projectPath": "C:\\Users\\reike\\Desktop\\Bookflix\\Bookflix\\backend\\Bookflix_Server\\Bookflix_Server\\Bookflix_Server.csproj",
-      "packagesPath": "C:\\Users\\reike\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\reike\\Desktop\\Bookflix\\Bookflix\\backend\\Bookflix_Server\\Bookflix_Server\\obj\\",
+      "projectPath": "C:\\Users\\abust\\Desktop\\Bookflix\\backend\\Bookflix_Server\\Bookflix_Server\\Bookflix_Server.csproj",
+      "packagesPath": "C:\\Users\\abust\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\abust\\Desktop\\Bookflix\\backend\\Bookflix_Server\\Bookflix_Server\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\reike\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\abust\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
