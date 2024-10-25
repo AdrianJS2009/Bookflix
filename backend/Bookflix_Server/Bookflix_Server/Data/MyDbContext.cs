@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bookflix_Server.Data
+namespace Bookflix_Server.Data;
+
+internal class MyDbContext
 {
-    internal class MyDbContext
-    {
-    }
+
 }

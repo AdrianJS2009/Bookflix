@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace Bookflix_Server.Models;
 
-public class User //Creo los atributos del usuario según los datos que se van a pedir en el formulario de registro y los que formulaban en nuestra BBDD
+public class User //Creo los atributos del usuario según los datos que se van a pedir en el formulario de registro y los que formulan en nuestra BBDD
 {
     [Key]   //Defino la clave primaria
-    public int Id { get; set; } 
+    public int IdUser { get; set; } 
 
     [Required]  //Defino los campos de nombre, apellidos, email, dirección y rol
     public string Nombre { get; set; }
@@ -44,5 +44,19 @@ public class BookflixContext : DbContext    //Creo la clase BookflixContext que 
 
         base.OnModelCreating(modelBuilder); //Llamo al método base
     }
+}
+public class Pedidos //Creo los atributos de los pedidos según los datos que se van a pedir en el formulario de registro y los que formulan en nuestra BBDD
+{
+    [Key]   //Defino la clave primaria
+    public int IdPedido { get; set; }
+
+    [Required]  //Defino los campos de fecha, precio, estado y usuario
+    public DateTime Fecha { get; set; }
+
+    [Required]
+    public double Precio { get; set; }
+
+    [Required]
+    public User Usuario { get; set; }
 }
 

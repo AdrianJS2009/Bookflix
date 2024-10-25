@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bookflix_Server.Controllers
+namespace Bookflix_Server.Controllers;
+
+internal class UserControllers
 {
-    internal class UserControllers
-    {
-    }
+
 }
