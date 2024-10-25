@@ -1,0 +1,56 @@
+
+
+header.header {
+  display: flex; /* Utiliza flex para el header */
+  flex-wrap: wrap; /* Permite que los elementos se distribuyan en varias líneas */
+  position: sticky; /* Mantiene el header en la parte superior al hacer scroll */
+  top: 0; /* Posición en la parte superior */
+  width: 100%; /* Asegúrate de que ocupe el 100% del ancho */
+  z-index: 1000; /* Asegúrate de que el header esté por encima del contenido */
+}
+
+/* Estilo para el contenedor de usuario y cesta */
+.user-cart {
+    display: flex; /* Utiliza flex para alinear username y cesta */
+    align-items: center; /* Alinea verticalmente en el centro */
+    margin-left: auto; /* Empuja el contenedor hacia la derecha */
+}
+
+div.nav-logo {
+    flex: 1 1 100%; /* Ocupa toda la línea para el logo */
+    text-align: center;
+    flex-direction: column;
+}
+
+img.logo-navbar {
+    max-height: 75px;
+}
+
+nav.nav-principal {
+    flex: 1 1 100%; /* Ocupa toda la línea para los elementos de navegación */
+    display: flex; /* Asegúrate de que los elementos de la navegación estén en línea */
+    justify-content: center; /* Centra los elementos de navegación */
+    height: 25px;
+    align-items: center;
+}
+
+nav.nav-principal ul {
+    display: flex; /* Asegúrate de que la lista esté en línea */
+    padding: 0; /* Elimina el padding por defecto */
+}
+
+nav.nav-principal ul a {
+    text-decoration: none;
+    color: var(--negro);
+    padding: 0px 10px;
+}
+
+nav.nav-principal li {
+    list-style: none; /* Elimina los puntos de la lista */
+    margin: 0 10px; /* Espaciado entre los elementos de la lista */
+}
+
+/* Estilo adicional para el contenido */
+.header-item {
+    text-align: center; /* Centra el texto */
+}

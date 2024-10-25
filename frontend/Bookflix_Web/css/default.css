@@ -1,0 +1,48 @@
+/* Aqui se realizan los imports de letras */
+ 
+/* Inter letra */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+:root {
+    /*Colores verdes*/
+    --verde-normal: #199a51;
+    --verde-oscuro: #13743d;
+    --verde-claro:  #b8e0c9;
+
+    /*Colores azules*/
+    --azul-normal: #406cc4;
+    --azul-oscuro: #305193;
+    --azul-claro:  #c4d1ed;
+
+    /*Colores básicos*/
+    --negro:       #0f0f0f;
+    --blanco:      #f0f0f0;
+
+    /*Tamaños texto*/
+    --pequeño:       14px;
+    --mediano:       18px;
+    --grande:        36px;
+    --extra-grande:  36px;
+}
+
+/* Clases de css default para texto */
+.texto-extragrande {font-family: "Inter", sans-serif; font-size: var(--extra-grande);}
+.texto-grande {font-family: "Inter", sans-serif; font-size: var(--grande);}
+.texto-mediano {font-family: "Inter", sans-serif; font-size: var(--mediano);}
+.texto-pequeño {font-family: "Inter", sans-serif; font-size: var(--pequeño);}
+.texto-pequeño-bold {font-family: "Inter", sans-serif; font-size: var(--pequeño);font-weight: bold;}
+
+/* Clase de color de texto */
+.texto-negro  {color: var(--negro)}
+.texto-blanco {color: var(--blanco)}
+
+/* Clase color de fondos */
+.fondo-negro  {background-color: var(--negro);}
+.fondo-verde  {background-color: var(--verde-normal);}
+.fondo-azul   {background-color: var(--azul-normal);}
+
+/* Limpiar estilos HTML */
+* {
+    margin: 0;
+    padding: 0;
+}

@@ -1,0 +1,18 @@
+/* body {
+  display: grid;
+  grid-template-areas: 
+      "header"
+      "main"
+      "footer";
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+} */
+
+/* Estilo para la sección */
+section {
+    grid-area: section; /* Define el área de la sección en el grid */
+    padding: 20px; /* Añade un poco de espacio alrededor del contenido */
+    background-color: #f0f0f0; /* Color de fondo para la sección */
+    height: calc(100vh - 60px); /* Resta la altura del header si es necesario (ajusta según la altura real del header) */
+    overflow: auto; /* Permite el desplazamiento si el contenido es grande */
+}

@@ -1,0 +1,87 @@
+
+    
+        <!-- <section>
+            <img src="assets/banner/BannerUnete.png" alt="Únete - Suscríbete a Prime para los mejores libros">
+        </section>
+
+        <section>
+            <ul>
+                <li><a href="#">Ciencia Ficción</a></li>
+                <li><a href="#">Fantasía</a></li>
+                <li><a href="#">Terror</a></li>
+                <li><a href="#">Misterio</a></li>
+                <li><a href="#">Thriller</a></li>
+                <li><a href="#">Romance</a></li>
+                <li><a href="#">Autobiografía</a></li>
+                <li><a href="#">Históricos</a></li>
+                <li><a href="#">Científicos</a></li>
+                <li><a href="#">Novelas</a></li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Novedades</h2>
+            <div class="carousel">
+                <div class="item">
+                    <img src="el_elixir.jpg" alt="El Elixir - Carmen Mola">
+                    <p>El Elixir - Carmen Mola</p>
+                    <button>Detalles</button>
+                </div>
+                <div class="item">
+                    <img src="solo_yo.jpg" alt="Solo yo - Elías Pérez">
+                    <p>Solo yo - Elías Pérez</p>
+                    <button>Detalles</button>
+                </div>
+                <div class="item">
+                    <img src="habitos_atomicos.jpg" alt="Hábitos atómicos - James Clear">
+                    <p>Hábitos atómicos - James Clear</p>
+                    <button>Detalles</button>
+                </div>
+                <div class="item">
+                    <img src="superando_el_limite.jpg" alt="Superando el límite - Daniel Robert">
+                    <p>Superando el límite - Daniel Robert</p>
+                    <button>Detalles</button>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <img src="assets/banner/BannerEnvioGratuito.png" alt="Envío gratuito en compras superiores a 20€">
+        </section>
+
+        <section>
+            <h2>Top Ventas</h2>
+            <div>
+                <div class="item">
+                    <img src="cada_nina_que_murio.jpg" alt="Cada niña que murió - Marta Martín Girón">
+                    <p>Cada niña que murió - Marta Martín Girón</p>
+                </div>
+                <div class="item">
+                    <img src="el_nino_que_perdio_la_guerra.jpg" alt="El niño que perdió la guerra - Julia Navarro">
+                    <p>El niño que perdió la guerra - Julia Navarro</p>
+                </div>
+                <div class="item">
+                    <img src="el_monje_que_vendio_su_ferrari.jpg" alt="El monje que vendió su Ferrari - Robin Sharma">
+                    <p>El monje que vendió su Ferrari - Robin Sharma</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <img src="assets/banner/BannerWebAmigas.png" alt="Webs amigas - Vhiper Games">
+        </section>
+
+    
+    <footer>
+        <ul>
+            <li><a href="#">Métodos de pago</a></li>
+            <li><a href="#">Tarjetas de regalo</a></li>
+            <li><a href="#">Ayuda</a></li>
+            <li><a href="#">Contacto</a></li>
+            <li><a href="#">T&C</a></li>
+            <li><a href="#">Política de privacidad</a></li>
+            <li><a href="#">Cookies</a></li>
+            <li><a href="#">Política de devoluciones</a></li>
+        </ul>
+        <p>© 2024 BOOKFLIX</p>
+    </footer> -->
