@@ -1,14 +1,26 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\reike\\Desktop\\Bookflix\\Bookflix\\backend\\Bookflix_Server\\",
+  "WorkspaceRootPath": "C:\\Users\\abust\\Desktop\\Bookflix\\backend\\Bookflix_Server\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1ABE5093-8FC4-4A98-8F4B-69E1549FB83A}|Bookflix_Server\\Bookflix_Server.csproj|c:\\users\\reike\\desktop\\bookflix\\bookflix\\backend\\bookflix_server\\bookflix_server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1ABE5093-8FC4-4A98-8F4B-69E1549FB83A}|Bookflix_Server\\Bookflix_Server.csproj|solutionrelative:bookflix_server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1ABE5093-8FC4-4A98-8F4B-69E1549FB83A}|Bookflix_Server\\Bookflix_Server.csproj|c:\\users\\abust\\desktop\\bookflix\\backend\\bookflix_server\\bookflix_server\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1ABE5093-8FC4-4A98-8F4B-69E1549FB83A}|Bookflix_Server\\Bookflix_Server.csproj|solutionrelative:bookflix_server\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1ABE5093-8FC4-4A98-8F4B-69E1549FB83A}|Bookflix_Server\\Bookflix_Server.csproj|c:\\users\\reike\\desktop\\bookflix\\bookflix\\backend\\bookflix_server\\bookflix_server\\bookflix_server.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "AbsoluteMoniker": "D:0:0:{1ABE5093-8FC4-4A98-8F4B-69E1549FB83A}|Bookflix_Server\\Bookflix_Server.csproj|c:\\users\\abust\\desktop\\bookflix\\backend\\bookflix_server\\bookflix_server\\bookflix_server.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{1ABE5093-8FC4-4A98-8F4B-69E1549FB83A}|Bookflix_Server\\Bookflix_Server.csproj|solutionrelative:bookflix_server\\bookflix_server.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ABE5093-8FC4-4A98-8F4B-69E1549FB83A}|Bookflix_Server\\Bookflix_Server.csproj|c:\\users\\abust\\desktop\\bookflix\\backend\\bookflix_server\\bookflix_server\\data\\mydbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1ABE5093-8FC4-4A98-8F4B-69E1549FB83A}|Bookflix_Server\\Bookflix_Server.csproj|solutionrelative:bookflix_server\\data\\mydbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ABE5093-8FC4-4A98-8F4B-69E1549FB83A}|Bookflix_Server\\Bookflix_Server.csproj|c:\\users\\abust\\desktop\\bookflix\\backend\\bookflix_server\\bookflix_server\\controllers\\usercontrollers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1ABE5093-8FC4-4A98-8F4B-69E1549FB83A}|Bookflix_Server\\Bookflix_Server.csproj|solutionrelative:bookflix_server\\controllers\\usercontrollers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ABE5093-8FC4-4A98-8F4B-69E1549FB83A}|Bookflix_Server\\Bookflix_Server.csproj|c:\\users\\abust\\desktop\\bookflix\\backend\\bookflix_server\\bookflix_server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1ABE5093-8FC4-4A98-8F4B-69E1549FB83A}|Bookflix_Server\\Bookflix_Server.csproj|solutionrelative:bookflix_server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,19 +30,54 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\abust\\Desktop\\Bookflix\\backend\\Bookflix_Server\\Bookflix_Server\\Models\\User.cs",
+              "RelativeDocumentMoniker": "Bookflix_Server\\Models\\User.cs",
+              "ToolTip": "C:\\Users\\abust\\Desktop\\Bookflix\\backend\\Bookflix_Server\\Bookflix_Server\\Models\\User.cs",
+              "RelativeToolTip": "Bookflix_Server\\Models\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-25T14:25:36.153Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MyDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\abust\\Desktop\\Bookflix\\backend\\Bookflix_Server\\Bookflix_Server\\Data\\MyDbContext.cs",
+              "RelativeDocumentMoniker": "Bookflix_Server\\Data\\MyDbContext.cs",
+              "ToolTip": "C:\\Users\\abust\\Desktop\\Bookflix\\backend\\Bookflix_Server\\Bookflix_Server\\Data\\MyDbContext.cs",
+              "RelativeToolTip": "Bookflix_Server\\Data\\MyDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-25T14:25:18.29Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "UserControllers.cs",
+              "DocumentMoniker": "C:\\Users\\abust\\Desktop\\Bookflix\\backend\\Bookflix_Server\\Bookflix_Server\\Controllers\\UserControllers.cs",
+              "RelativeDocumentMoniker": "Bookflix_Server\\Controllers\\UserControllers.cs",
+              "ToolTip": "C:\\Users\\abust\\Desktop\\Bookflix\\backend\\Bookflix_Server\\Bookflix_Server\\Controllers\\UserControllers.cs",
+              "RelativeToolTip": "Bookflix_Server\\Controllers\\UserControllers.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-25T14:24:30.696Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Bookflix_Server",
-              "DocumentMoniker": "C:\\Users\\reike\\Desktop\\Bookflix\\Bookflix\\backend\\Bookflix_Server\\Bookflix_Server\\Bookflix_Server.csproj",
+              "Title": "Bookflix_Server.csproj",
+              "DocumentMoniker": "C:\\Users\\abust\\Desktop\\Bookflix\\backend\\Bookflix_Server\\Bookflix_Server\\Bookflix_Server.csproj",
               "RelativeDocumentMoniker": "Bookflix_Server\\Bookflix_Server.csproj",
-              "ToolTip": "C:\\Users\\reike\\Desktop\\Bookflix\\Bookflix\\backend\\Bookflix_Server\\Bookflix_Server\\Bookflix_Server.csproj",
+              "ToolTip": "C:\\Users\\abust\\Desktop\\Bookflix\\backend\\Bookflix_Server\\Bookflix_Server\\Bookflix_Server.csproj",
               "RelativeToolTip": "Bookflix_Server\\Bookflix_Server.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
@@ -39,11 +86,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 4,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\reike\\Desktop\\Bookflix\\Bookflix\\backend\\Bookflix_Server\\Bookflix_Server\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\abust\\Desktop\\Bookflix\\backend\\Bookflix_Server\\Bookflix_Server\\Program.cs",
               "RelativeDocumentMoniker": "Bookflix_Server\\Program.cs",
-              "ToolTip": "C:\\Users\\reike\\Desktop\\Bookflix\\Bookflix\\backend\\Bookflix_Server\\Bookflix_Server\\Program.cs",
+              "ToolTip": "C:\\Users\\abust\\Desktop\\Bookflix\\backend\\Bookflix_Server\\Bookflix_Server\\Program.cs",
               "RelativeToolTip": "Bookflix_Server\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",

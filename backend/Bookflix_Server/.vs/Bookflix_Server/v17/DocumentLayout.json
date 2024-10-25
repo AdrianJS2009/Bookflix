@@ -40,7 +40,7 @@
               "RelativeDocumentMoniker": "Bookflix_Server\\Models\\User.cs",
               "ToolTip": "C:\\Users\\abust\\Desktop\\Bookflix\\backend\\Bookflix_Server\\Bookflix_Server\\Models\\User.cs",
               "RelativeToolTip": "Bookflix_Server\\Models\\User.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABIAAAAAAAAAAAA5wBkAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-25T14:25:36.153Z",
               "EditorCaption": ""
@@ -55,8 +55,7 @@
               "RelativeToolTip": "Bookflix_Server\\Data\\MyDbContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-25T14:25:18.29Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-25T14:25:18.29Z"
             },
             {
               "$type": "Document",
@@ -68,8 +67,7 @@
               "RelativeToolTip": "Bookflix_Server\\Controllers\\UserControllers.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-25T14:24:30.696Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-25T14:24:30.696Z"
             },
             {
               "$type": "Document",
@@ -81,8 +79,7 @@
               "RelativeToolTip": "Bookflix_Server\\Bookflix_Server.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-10-24T15:41:11.355Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-24T15:41:11.355Z"
             },
             {
               "$type": "Document",
@@ -94,8 +91,7 @@
               "RelativeToolTip": "Bookflix_Server\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-24T15:40:58.445Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-24T15:40:58.445Z"
             }
           ]
         }
