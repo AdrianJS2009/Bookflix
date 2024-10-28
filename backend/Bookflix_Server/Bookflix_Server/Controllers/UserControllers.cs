@@ -11,19 +11,19 @@ namespace Bookflix_Server.Controllers
     [ApiController]
     // Define la ruta base para las solicitudes HTTP
     [Route("api/[controller]")]
-    public class UserControllers : ControllerBase
+    public class UserController : ControllerBase
     {
         // Campo privado para el contexto de la base de datos
         private readonly BookflixContext _context;
 
         // Constructor que recibe el contexto de la base de datos a través de inyección de dependencias
-        public UserControllers(BookflixContext context)
+        public UserController(BookflixContext context)
         {
             _context = context;
         }
 
         // Método GET para obtener todos los usuarios
-        // GET: api/UserControllers
+        // GET: api/User
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
@@ -32,7 +32,7 @@ namespace Bookflix_Server.Controllers
         }
 
         // Método GET para obtener un usuario por su ID
-        // GET: api/UserControllers/5
+        // GET: api/User/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
@@ -50,7 +50,7 @@ namespace Bookflix_Server.Controllers
         }
 
         // Método POST para crear un nuevo usuario
-        // POST: api/UserControllers
+        // POST: api/User
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
@@ -64,7 +64,7 @@ namespace Bookflix_Server.Controllers
         }
 
         // Método PUT para actualizar un usuario existente
-        // PUT: api/UserControllers/5
+        // PUT: api/User/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
@@ -101,7 +101,7 @@ namespace Bookflix_Server.Controllers
         }
 
         // Método DELETE para eliminar un usuario por su ID
-        // DELETE: api/UserControllers/5
+        // DELETE: api/User/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
