@@ -48,22 +48,19 @@ namespace Bookflix_Server.Controllers
             return user;
         }
 
-        // Método POST para crear un nuevo usuario
-        // POST: api/User
+        // POST para crear un nuevo usuario
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
             // Añade el nuevo usuario al contexto
             _context.Users.Add(user);
-            // Guarda los cambios en la base de datos
             await _context.SaveChangesAsync();
 
-            // Devuelve el usuario creado con un código 201 (Created)
+            // Devuelve el usuario creado
             return CreatedAtAction(nameof(GetUser), new { id = user.IdUser }, user);
         }
 
-        // Método PUT para actualizar un usuario existente
-        // PUT: api/User/5
+        // PUT para actualizar un usuario existente
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
@@ -73,7 +70,7 @@ namespace Bookflix_Server.Controllers
                 return BadRequest();
             }
 
-            // Marca el usuario como modificado en el contexto
+            // Marca el usuario como modificado
             _context.Entry(user).State = EntityState.Modified;
 
             try
@@ -95,36 +92,35 @@ namespace Bookflix_Server.Controllers
                 }
             }
 
-            // Devuelve un código 204 (No Content) para indicar que la operación fue exitosa
+            // Devuelve un código 204 si el proceso se ha hecho bien
             return NoContent();
         }
 
-        // Método DELETE para eliminar un usuario por su ID
-        // DELETE: api/User/5
+        // DELETE para eliminar un usuario por su ID
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             // Busca el usuario en la base de datos por su ID
             var user = await _context.Users.FindAsync(id);
-            // Si el usuario no existe, devuelve un código 404 (Not Found)
+            // Si el usuario no existe, devuelve 404 (Not Found)
             if (user == null)
             {
                 return NotFound();
             }
 
-            // Elimina el usuario del contexto
+            // Eliminar el usuarior
             _context.Users.Remove(user);
-            // Guarda los cambios en la base de datos
+            // Guardar los cambios en la base de datos
             await _context.SaveChangesAsync();
 
-            // Devuelve un código 204 (No Content) para indicar que la operación fue exitosa
+            // Devuelve 204 (No Content) si el proceso ha ido bien
             return NoContent();
         }
 
-        // Método auxiliar para verificar si un usuario existe en la base de datos
+        // Verificamos si el id del usuario está en la bbdd
         private bool UserExists(int id)
         {
-            // Devuelve true si el usuario existe, false en caso contrario
+            // Devuelve true si el usuario existe
             return _context.Users.Any(e => e.IdUser == id);
         }
     }
