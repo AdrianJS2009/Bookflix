@@ -4,20 +4,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Bookflix_Server.Data;
 
 namespace Bookflix_Server.Controllers
 {
-    // Indica que esta clase es un controlador de API
     [ApiController]
-    // Define la ruta base para las solicitudes HTTP
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
         // Campo privado para el contexto de la base de datos
-        private readonly BookflixContext _context;
+        private readonly MyDbContext _context;
 
         // Constructor que recibe el contexto de la base de datos a través de inyección de dependencias
-        public UserController(BookflixContext context)
+        public UserController(MyDbContext context)
         {
             _context = context;
         }
