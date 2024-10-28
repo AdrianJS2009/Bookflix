@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bookflix_Server.Models
 {
@@ -12,13 +9,13 @@ namespace Bookflix_Server.Models
         [Key]   //Defino la clave primaria
         public int IdCesta { get; set; }
 
-        [Required]  //Defino los campos de usuario y libros
+        [Required]  //Defino los campos de usuario y productos
         public User Usuario { get; set; }
 
         [Required]
-        public List<Productos> Productos { get; set; } // Defino la lista de libros
+        public List<Productos> Productos { get; set; } // Defino la lista de productos
 
-        // Constructor para inicializar la lista de libros
+        // Constructor para inicializar la lista de productos
         public Cesta()
         {
             Productos = new List<Productos>();

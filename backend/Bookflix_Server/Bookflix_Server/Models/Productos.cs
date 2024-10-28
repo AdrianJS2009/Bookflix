@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Bookflix_Server.Models
 {
-    public class Productos
+    public class Productos  //Creo los atributos de los pedidos según los datos que se van a pedir en el formulario de registro y los que formulan en nuestra BBDD
     {
-        [Key]
+        [Key]   //Defino la clave primaria
         public int IdBook { get; set; }
 
-        [Required]
+        [Required]  //Defino los campos de Títutlo, Autor y Precio
         public string Titulo { get; set; }
 
         [Required]
@@ -22,3 +22,5 @@ namespace Bookflix_Server.Models
         public double Precio { get; set; }
     }
 }
+
+
