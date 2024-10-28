@@ -12,30 +12,28 @@ namespace Bookflix_Server.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        // Campo privado para el contexto de la base de datos
+   
         private readonly MyDbContext _context;
 
-        // Constructor que recibe el contexto de la base de datos a través de inyección de dependencias
+
         public UserController(MyDbContext context)
         {
             _context = context;
         }
 
-        // Método GET para obtener todos los usuarios
-        // GET: api/User
+        // GET para obtener todos los usuarios
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            // Devuelve la lista de usuarios de la base de datos
+            // Recibimos la lista de usuarios de la base de datos
             return await _context.Users.ToListAsync();
         }
 
-        // Método GET para obtener un usuario por su ID
-        // GET: api/User/5
+        // GET para obtener un usuario por su ID
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            // Busca el usuario en la base de datos por su ID
+            // Buscamos el usuario en la base de datos por su ID
             var user = await _context.Users.FindAsync(id);
 
             // Si el usuario no existe, devuelve un código 404 (Not Found)
