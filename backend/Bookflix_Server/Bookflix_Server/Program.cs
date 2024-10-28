@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-
+using Microsoft.OpenApi.Models;
 
 namespace Bookflix_Server;
 
@@ -15,14 +15,14 @@ public class Program
 {
     public static void Main(string[] args)
     {
-       
         var builder = WebApplication.CreateBuilder(args);
 
-      
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
-        //builder.Services.AddSwaggerGen();
-
+        builder.Services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Bookflix API", Version = "v1" });
+        });
 
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -56,22 +56,36 @@ public class Program
                 };
             });
 
-        var app = builder.Build();
+        // Registrar MyDbContext
+        builder.Services.AddDbContext<MyDbContext>(options =>
+            options.UseSqlite($"DataSource={AppDomain.CurrentDomain.BaseDirectory}bookflix.db"));
 
+        var app = builder.Build();
 
         using (IServiceScope scope = app.Services.CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetService<MyDbContext>();
+            if (dbContext == null)
+            {
+                throw new Exception("MyDbContext no está registrado correctamente en el contenedor de servicios.");
+            }
             dbContext.Database.EnsureCreated();
         }
-
 
         // Redirigir automáticamente las solicitudes HTTP a HTTPS
         app.UseHttpsRedirection();
         app.UseAuthentication(); // Habilitar autenticación JWT
         app.UseAuthorization();
-        app.MapControllers();
 
+        // Habilitar middleware de Swagger
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bookflix API V1");
+            c.RoutePrefix = string.Empty; // Para que Swagger UI esté en la raíz
+        });
+
+        app.MapControllers();
 
         app.Run();
     }
