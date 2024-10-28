@@ -41,6 +41,7 @@
 .fondo-negro  {background-color: var(--negro);}
 .fondo-verde  {background-color: var(--verde-normal);}
 .fondo-azul   {background-color: var(--azul-normal);}
+.fondo-azul-claro   {background-color: var(--azul-claro);}
 .fondo-blanco {background-color: var(--blanco);}
 
 /* Limpiar estilos HTML */

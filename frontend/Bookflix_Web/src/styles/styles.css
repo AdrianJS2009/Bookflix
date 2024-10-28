@@ -12,11 +12,19 @@ body {
   gap: 100px; /* Espacio entre secciones */
 }
 
+/* ********** */
+/*   BANNER   */
+/* ********** */
+
 .box-banner {
   display: flex;
   justify-content: center; /* Centra el banner */
   margin: 75px 0 50px 0;
 }
+
+/* ********** */
+/*   GÉNEROS  */
+/* ********** */
 
 .generos-container {
   display: grid;
@@ -76,7 +84,9 @@ body {
   background-image: url('/assets/generos/Novelas.png');
 }
 
-
+/* ********** */
+/* TOP VENTAS */
+/* ********** */
 
 .top-ventas-section {
   display: grid;
@@ -108,4 +118,69 @@ body {
   right: 10px;
   width: 40px;
   height: 40px;
+}
+
+/* ********** */
+/* CARROUSEL  */
+/* ********** */
+
+.carrusel-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  max-width: 70%;
+  margin: 0 auto;
+  overflow: hidden; /* Oculta los elementos que salen del área visible */
+}
+
+/* Estilos del carrusel */
+.carrusel {
+  display: flex;
+  transition: transform 0.5s ease;
+  gap: 15px; /* Ajusta el espacio entre los elementos del carrusel */
+}
+
+/* Estilos de cada item en el carrusel */
+.carrusel-item {
+  min-width: calc(100% / 3); /* Cambia a un valor mayor para ver más libros a la vez */
+  box-sizing: border-box;
+  padding: 5px;
+  text-align: center;
+}
+
+
+.btn-comprar {
+  padding: 5px;
+}
+
+.btn-anadir {
+  padding: 5px;
+}
+
+.btn-container {
+  display: flex;      /* Alinea los botones horizontalmente */
+  gap: 8px;           /* Ajusta el espacio entre los botones */
+  justify-content: center; /* Centra los botones dentro del contenedor */
+  margin-top: 15px;   /* Añade un margen superior para separarlo del texto */
+  margin-bottom: 15px;
+}
+
+/* Flechas de navegación */
+.flecha {
+  font-size: 24px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.izquierda {
+  left: 10px;
+}
+
+.derecha {
+  right: 10px;
 }

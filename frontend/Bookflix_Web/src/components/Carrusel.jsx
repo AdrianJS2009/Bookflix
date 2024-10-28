@@ -36,12 +36,18 @@ const Carrusel = () => {
                 </button>
                 <div className="carrusel" style={{ transform: `translateX(-${(indiceActual * 100) / 3}%)` }}>
                     {libros.map(libro => (
-                        <div key={libro.id} className="carrusel-item">
+                        <div key={libro.id} className="carrusel-item fondo-azul-claro">
                             <img src={libro.imagen} alt={libro.titulo} />
                             <h3>{libro.titulo}</h3>
                             <p>{libro.precio}</p>
-                            <button className="btn-comprar">Comprar</button>
-                            <button className="btn-anadir">Añadir a la cesta</button>
+                            <div className='btn-container'>
+                                <button className="btn-comprar fondo-azul">
+                                    <span className='texto-blanco texto-mediano'>Comprar</span>
+                                </button>
+                                <button className="btn-anadir fondo-verde">
+                                    <span className='texto-blanco texto-mediano'>Añadir a la cesta</span>
+                                </button>
+                            </div>
                         </div>
                     ))}
                 </div>
