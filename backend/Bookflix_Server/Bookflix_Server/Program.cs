@@ -3,10 +3,12 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Bookflix_Server.Data;
 using Bookflix_Server.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Hosting;
+
 
 
 namespace Bookflix_Server;
@@ -15,63 +17,77 @@ public class Program
 {
     public static void Main(string[] args)
     {
-       
         var builder = WebApplication.CreateBuilder(args);
 
-      
+        // Configurar controladores y Swagger para la documentación
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
-        //builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen();
 
+        // Configurar MyDbContext para usar SQLite
+        builder.Services.AddDbContext<MyDbContext>(options =>
+            options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+        // Inyectar UnitOfWork y UserRepository
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-        // Configurar CORS para permitir el acceso desde el frontend
-        builder.Services.AddCors(options =>
+        // Configuración de CORS para permitir solicitudes desde el frontend en desarrollo
+        if (builder.Environment.IsDevelopment())
         {
-            options.AddPolicy("AllowFrontend", policy =>
+            builder.Services.AddCors(options =>
             {
-                policy.WithOrigins("http://localhost:3000") // Reemplazable
-                      .AllowAnyHeader()
-                      .AllowAnyMethod();
+                options.AddPolicy("AllowFrontend", policy =>
+                {
+                    policy.WithOrigins("http://localhost:3000") // Ajusta según el puerto de tu frontend
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
             });
-        });
+        }
 
-        // Configurar autenticación JWT
+        // Configuración de autenticación JWT
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-                string key = builder.Configuration["Jwt:Key"];
+                string key = builder.Configuration["Jwt:Key"] ?? Environment.GetEnvironmentVariable("JWT_KEY");
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
                 };
             });
 
         var app = builder.Build();
 
-
-        using (IServiceScope scope = app.Services.CreateScope())
+        // Asegurarse de que la base de datos esté creada
+        using (var scope = app.Services.CreateScope())
         {
-            var dbContext = scope.ServiceProvider.GetService<MyDbContext>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<MyDbContext>();
             dbContext.Database.EnsureCreated();
         }
 
+        // Configuración de middleware en entorno de desarrollo
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger(); // Habilitar Swagger para generar la documentación
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bookflix API V1");
+                c.RoutePrefix = string.Empty; // Hacer que Swagger esté en la raíz
+            });
 
-        // Redirigir automáticamente las solicitudes HTTP a HTTPS
+            app.UseCors("AllowFrontend"); // Permitir CORS en desarrollo
+        }
+
         app.UseHttpsRedirection();
-        app.UseAuthentication(); // Habilitar autenticación JWT
+        app.UseAuthentication();
         app.UseAuthorization();
-        app.MapControllers();
 
+        // Mapear las rutas de los controladores a los endpoints HTTP
+        app.MapControllers();
 
         app.Run();
     }
