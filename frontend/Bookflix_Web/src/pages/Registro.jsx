@@ -12,8 +12,8 @@ export default function Registro() {
         <>
             <Header />
             <div className='registro-container'>
-                <h1>Registro</h1>
-                <form className='registro-form'>
+                <h1 className='texto-grande'>Registro</h1>
+                <form className='registro-form texto-mediano'>
                     <div>
                         <label htmlFor="nombre">Nombre</label>
                         <input type="text" id="nombre" required />
@@ -32,7 +32,7 @@ export default function Registro() {
                     </div>
                     <button type="submit">Registrarse</button>
                 </form>
-                <Link to="/login">¿Aún no tienes cuenta? Regístrate</Link>
+                <Link to="/login" className='texto-pequeño'>¿Tienes cuenta? Inicia sesión</Link>
             </div>
             <Footer />
         </>

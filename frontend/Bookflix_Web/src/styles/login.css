@@ -2,64 +2,64 @@
 .login-container {
   display: flex;
   flex-direction: column;
-  align-items: center;      /* Centra el contenido horizontalmente */
-  justify-content: center;   /* Centra el contenido verticalmente */
-  height: calc(100vh - 80px); /* Ocupa toda la altura de la pantalla menos el espacio del header/footer */
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 80px);
   padding: 20px;
-}
-
-/* Ajustar el margen del título para acercarlo al formulario */
-.login-container h1 {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 10px; /* Ajusta este margen para controlar la distancia */
+  box-sizing: border-box;
 }
 
 /* Estilos del formulario de inicio de sesión */
 .login-form {
-  width: 300px;             /* Ancho del formulario */
-  padding: 20px;            /* Espacio interior */
-  border-radius: 8px;       /* Bordes redondeados */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Sombra */
-  background-color: #fff;   /* Fondo blanco */
-  text-align: center;       /* Centrar contenido */
+  width: 300px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #fff;
+  margin: 0 20px;
+  box-sizing: border-box;
 }
 
 /* Ajustes para los campos y el botón */
 .login-form form div {
-  margin-bottom: 15px;      /* Espacio entre campos */
+  margin-bottom: 15px;
+  width: 100%; /* Asegura que los divs ocupen el ancho completo */
 }
 
 .login-form label {
   display: block;
-  margin-bottom: 5px;       /* Espacio entre etiqueta y campo */
+  /* margin-bottom: 5px; */
   font-weight: bold;
+  text-align: left; /* Alinea el texto a la izquierda */
+  width: 100%;
 }
 
 .login-form input {
-  width: 100%;              /* Campo de texto ocupa todo el ancho */
+  width: 100%;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
 }
 
 .login-form button {
-  width: 100%;              /* Botón ocupa todo el ancho */
+  width: 100%;
   padding: 10px;
   background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  margin-top: 15px;
 }
 
 .login-form button:hover {
-  background-color: #0056b3; /* Color al pasar el mouse */
+  background-color: #0056b3;
 }
 
 /* Estilo del enlace para acercarlo al formulario */
 .login-container a {
-  margin-top: 10px; /* Ajusta este margen para controlar la distancia */
+  margin-top: 10px;
   color: #007bff;
   text-decoration: none;
 }
