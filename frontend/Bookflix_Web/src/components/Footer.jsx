@@ -1,4 +1,5 @@
 // src/components/Header.jsx
+import { Link } from 'react-router-dom';
 import React from 'react';
 import '../styles/default.css';
 import '../styles/footer.css';

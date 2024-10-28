@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -9,10 +10,6 @@ export default function Login() {
         <>
             <Header />
             <div className='home-bookflix'>
-                <div className='box-banner'>
-                    <img src='/assets/banner/BannerUnete.png' alt="Banner Unete" />
-                </div>
-                {/* Aquí puedes agregar más contenido para la página de Login */}
                 <div className='login-form'>
                     <h1>Iniciar Sesión</h1>
                     <form>
@@ -26,6 +23,7 @@ export default function Login() {
                         </div>
                         <button type="submit">Entrar</button>
                     </form>
+                    <Link to="/registro">¿Aún no tienes cuenta? Regístrate</Link>
                 </div>
             </div>
             <Footer />

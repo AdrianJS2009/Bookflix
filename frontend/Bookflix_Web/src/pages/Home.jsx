@@ -1,92 +1,101 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import Carrusel from '../components/Carrusel';
+
 import '../styles/default.css';
 import '../styles/styles.css';
 
+
 export default function Home() {
-    const [indiceActual, setIndiceActual] = useState(0);
-    
-    const moverCarrusel = (direccion) => {
-        const totalItems = 5; // Total de elementos en el carrusel
-        let nuevoIndice = indiceActual + direccion;
-
-        // Asegurar que el índice esté dentro de los límites
-        if (nuevoIndice < 0) {
-            nuevoIndice = totalItems - 1; // Regresar al último elemento
-        } else if (nuevoIndice >= totalItems) {
-            nuevoIndice = 0; // Regresar al primer elemento
-        }
-
-        setIndiceActual(nuevoIndice);
-    };
-
     return (
         <>
             <Header />
-            <div className='home-bookflix'>
+            <div className='home-bookflix fondo-blanco'>
                 <div className='box-banner'>
                     <img src='/assets/banner/BannerUnete.png' alt="Banner Unete" />
                 </div>
 
-                <div className='generos-container'>
-                    <div className='genero ciencia-ficcion'>
-                        <a href=''><p className='texto-pequeño-bold'>Ciencia Ficción</p></a>
+                <section id="generos" href="generos">
+                    <div className='generos-container'>
+                        <a href='' className='texto-mediano-bold texto-blanco'>
+                            <div className='genero ciencia-ficcion'>
+                                <p>Ciencia Ficción</p>
+                            </div>
+                        </a>
+                        <a href='' className='texto-mediano-bold texto-blanco'>
+                            <div className='genero fantasia'>
+                                <p>Fantasía</p>
+                            </div>
+                        </a>
+                        <a href='' className='texto-mediano-bold texto-blanco'>
+                        <div className='genero terror'>
+                            <p>Terror</p>
+                        </div>
+                        </a>
+                        <a href='' className='texto-mediano-bold texto-blanco'>
+                            <div className='genero misterio'>
+                                <p>Misterio</p>
+                            </div>
+                        </a>
+                        <a href='' className='texto-mediano-bold texto-blanco'>
+                            <div className='genero thriller'>
+                                <p>Thriller</p>
+                            </div>
+                        </a>
+                        <a href='' className='texto-mediano-bold texto-blanco'>
+                            <div className='genero romance'>
+                                <p>Romance</p>
+                            </div>
+                        </a>
+                        <a href='' className='texto-mediano-bold texto-blanco'>
+                            <div className='genero biografia'>
+                                <p>Biografía</p>
+                            </div>
+                        </a>
+                        <a href='' className='texto-mediano-bold texto-blanco'>
+                            <div className='genero historicos'>
+                                <p>Históricos</p>
+                            </div>
+                        </a>
+                        <a href='' className='texto-mediano-bold texto-blanco'>
+                            <div className='genero cinefilos'>
+                                <p>Cinéfilos</p>
+                            </div>
+                        </a>
+                        <a href='' className='texto-mediano-bold texto-blanco'>
+                            <div className='genero novelas'>
+                                <p>Novelas</p>
+                            </div>
+                        </a>
                     </div>
-                    <div className='genero fantasia'>
-                        <a href=''><p className='texto-pequeño-bold'>Fantasía</p></a>
-                    </div>
-                    <div className='genero terror'>
-                        <a href=''><p className='texto-pequeño-bold'>Terror</p></a>
-                    </div>
-                    <div className='genero misterio'>
-                        <a href=''><p className='texto-pequeño-bold'>Misterio</p></a>
-                    </div>
-                    <div className='genero thriller'>
-                        <a href=''><p className='texto-pequeño-bold'>Thriller</p></a>
-                    </div>
-                    <div className='genero romance'>
-                        <a href=''><p className='texto-pequeño-bold'>Romance</p></a>
-                    </div>
-                    <div className='genero biografia'>
-                        <a href=''><p className='texto-pequeño-bold'>Biografía</p></a>
-                    </div>
-                    <div className='genero historicos'>
-                        <a href=''><p className='texto-pequeño-bold'>Históricos</p></a>
-                    </div>
-                    <div className='genero cinefilos'>
-                        <a href=''><p className='texto-pequeño-bold'>Cinéfilos</p></a>
-                    </div>
-                    <div className='genero novelas'>
-                        <a href=''><p className='texto-pequeño-bold'>Novelas</p></a>
-                    </div>
-                </div>
+                </section>
 
                 <div className='box-banner'>
                     <img src='/assets/banner/BannerEnvioGratuito.png' alt="Banner Envío Gratuito" />
                 </div>
 
-                <div className="carrusel-container">
-                    <button className="flecha izquierda" onClick={() => moverCarrusel(-1)}>&#10094;</button>
-                    <div id="carrusel" className="carrusel" style={{ transform: `translateX(-${indiceActual * 100}%)` }}>
-                        <div className="carrusel-item">
-                            <img src="/assets/libros/1.jpg" alt="Libro 1" />
-                        </div>
-                        <div className="carrusel-item">
-                            <img src="/assets/libros/2.jpg" alt="Libro 2" />
-                        </div>
-                        <div className="carrusel-item">
-                            <img src="/assets/libros/3.jpg" alt="Libro 3" />
-                        </div>
-                        <div className="carrusel-item">
-                            <img src="/assets/libros/4.jpg" alt="Libro 4" />
-                        </div>
-                        <div className="carrusel-item">
-                            <img src="/assets/libros/5.jpg" alt="Libro 5" />
-                        </div>
+                <section  id="novedades" href="novedades">
+                    <Carrusel />
+                </section>
+                
+                <section id="top-ventas" className="top-ventas-section">
+                    <div className="libro">
+                        <img src="/assets/libros/1.png" className="libro-imagen" />
+                        <img src="/assets/numeros/1.png" className="puesto-imagen" />
                     </div>
-                    <button className="flecha derecha" onClick={() => moverCarrusel(1)}>&#10095;</button>
-                </div>
+                    <div className="libro">
+                        <img src="/assets/libros/2.png" className="libro-imagen" />
+                        <img src="/assets/numeros/2.png" className="puesto-imagen" />
+                    </div>
+                    <div className="libro">
+                        <img src="/assets/libros/3.png" className="libro-imagen" />
+                        <img src="/assets/numeros/3.png" className="puesto-imagen" />
+                    </div>
+                </section>
+
 
                 <div className='box-banner'>
                     <img src='/assets/banner/BannerWebAmigas.png' alt="Banner Web Amigas" />

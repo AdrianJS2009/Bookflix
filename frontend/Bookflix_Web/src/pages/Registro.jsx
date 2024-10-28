@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import '../styles/default.css';
@@ -29,6 +31,7 @@ export default function Registro() {
                     </div>
                     <button type="submit">Registrarse</button>
                 </form>
+                <Link to="/login">¿Aún no tienes cuenta? Regístrate</Link>
             </div>
             <Footer />
         </>

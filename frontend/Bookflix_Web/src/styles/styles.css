@@ -1,45 +1,111 @@
-/* body {
-  display: grid;
-  grid-template-areas: 
-      "header"
-      "main"
-      "footer";
-  grid-template-rows: auto 1fr auto;
-  min-height: 100vh;
-} */
-
-/* Estilo para la sección */
-section {
-    grid-area: section; /* Define el área de la sección en el grid */
-    padding: 20px; /* Añade un poco de espacio alrededor del contenido */
-    background-color: #f0f0f0; /* Color de fondo para la sección */
-    height: calc(100vh - 60px); /* Resta la altura del header si es necesario (ajusta según la altura real del header) */
-    overflow: auto; /* Permite el desplazamiento si el contenido es grande */
+body {
+  background-color: var(--blanco);
+  margin: 0;
+  padding: 0;
 }
 
-.carrusel-container {
+.home-bookflix {
+  max-width: 80%;
+  margin: 0 auto;
+  display: grid; /* Cambiado a grid */
+  grid-template-columns: 1fr; /* Una columna principal */
+  gap: 100px; /* Espacio entre secciones */
+}
+
+.box-banner {
+  display: flex;
+  justify-content: center; /* Centra el banner */
+  margin: 75px 0 50px 0;
+}
+
+.generos-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 columnas para los géneros */
+  gap: 20px; /* Espacio entre recuadros de géneros */
+}
+
+.genero {
+  width: 100%;
+  height: 150px; /* Altura fija para todos los recuadros */
+  background-size: cover; /* Cubrir el área del recuadro */
+  border-radius: 8px; /* Bordes redondeados */
   display: flex;
   align-items: center;
+  justify-content: center;
+  color: white; /* Color del texto */
+  font-weight: bold;
+}
+
+.ciencia-ficcion {
+  background-image: url('/assets/generos/CienciaFiccion.png');
+}
+
+.fantasia {
+  background-image: url('/assets/generos/Fantasia.png');
+}
+
+.terror {
+  background-image: url('/assets/generos/Terror.png');
+}
+
+.misterio {
+  background-image: url('/assets/generos/Misterio.png');
+}
+
+.thriller {
+  background-image: url('/assets/generos/Thriller.png');
+}
+
+.romance {
+  background-image: url('/assets/generos/Romance.png');
+}
+
+.biografia {
+  background-image: url('/assets/generos/Biografia.png');
+}
+
+.historicos {
+  background-image: url('/assets/generos/Historicos.png');
+}
+
+.cinefilos {
+  background-image: url('/assets/generos/Cinefilos.png');
+}
+
+.novelas {
+  background-image: url('/assets/generos/Novelas.png');
+}
+
+
+
+.top-ventas-section {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 10px 0;
+  max-width: 70%;
+  margin: 0 auto;
+}
+
+.libro {
+  position: relative;
+  width: 100%;
   overflow: hidden;
-  width: 300px; /* Ancho del contenedor */
+  border: 1px solid #ccc;
+  border-radius: 8px;
 }
 
-.carrusel {
-  display: flex;
-  transition: transform 0.5s ease;
+.libro-imagen {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
-.elemento {
-  min-width: 100px; /* Ajusta el ancho según tu diseño */
-  margin: 0 5px; /* Espacio entre elementos */
-  background-color: #f0f0f0; /* Color de fondo */
-  padding: 10px;
-  text-align: center;
-}
-
-.flecha {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
+.puesto-imagen {
+  background-color: transparent;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
 }
