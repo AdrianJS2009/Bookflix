@@ -12,7 +12,7 @@ namespace Bookflix_Server.Models
         [Key]   //Defino la clave primaria
         public int IdReseña { get; set; }
 
-        [Required]  //Defino los campos de fecha, puntuación, comentario y usuario
+        [Required]  //Defino los campos de fecha, puntuación, comentario, usuario y Producto
         public string Comentario { get; set; }
 
         [Required]

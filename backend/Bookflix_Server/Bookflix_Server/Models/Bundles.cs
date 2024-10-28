@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bookflix_Server.Models
 {
@@ -12,7 +9,7 @@ namespace Bookflix_Server.Models
         [Key]   //Defino la clave primaria
         public int IdBundle { get; set; }
 
-        [Required]  //Defino los campos de nombre, precio, descripción y libros
+        [Required]  //Defino los campos de nombre, precio, descripción, libros e ImagenURL
         public string Nombre { get; set; }
 
         [Required]
@@ -22,15 +19,15 @@ namespace Bookflix_Server.Models
         public string Descripcion { get; set; }
 
         [Required]
-        public List<Productos> Productos { get; set; } // Defino la lista de libros
+        public string ImagenUrl { get; set; }
 
-        // Constructor para inicializar la lista de libros
+        [Required]
+        public List<Productos> Productos { get; set; } // Defino la lista de productos
+
+        // Constructor para inicializar la lista de productos
         public Bundles()
         {
             Productos = new List<Productos>();
         }
-
-        [Required]
-        public string ImagenUrl { get; set; } // Nueva propiedad para la URL de la imagen
     }
 }
