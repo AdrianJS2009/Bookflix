@@ -26,17 +26,34 @@ namespace Bookflix_Server.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login([FromBody] LoginDto model)
         {
-            // Comprobar el user en la BBDD
-            var userExists = await _unitOfWork.Users.UserExistsAsync(model.UserName);
-            if (!userExists || model.Password != "contraseña")
+            // Usuario temporal para pruebas
+            var tempUserName = "string";
+            var tempPassword = "string";
+
+            // Comprobar el usuario y la contraseña
+            if (model.UserName != tempUserName || model.Password != tempPassword)
             {
-                return Unauthorized(); // 
+                return Unauthorized(); // Si no coincide, devuelve 401
             }
 
-            // Crear el token para el user
-            var token = GenerateToken(model.UserName);
+            // Crear el token para el usuario temporal
+            var token = GenerateToken(tempUserName);
             return Ok(token);
         }
+        //[HttpPost("login")]
+        //public async Task<ActionResult<string>> Login([FromBody] LoginDto model)
+        //{
+        //    // Comprobar el user en la BBDD
+        //    var userExists = await _unitOfWork.Users.UserExistsAsync(model.UserName);
+        //    if (!userExists || model.Password != "contraseña")
+        //    {
+        //        return Unauthorized(); // 
+        //    }
+
+        //    // Crear el token para el user
+        //    var token = GenerateToken(model.UserName);
+        //    return Ok(token);
+        //}
 
         // Genera el token JWT basado en las claims del usuario
         private string GenerateToken(string userName)

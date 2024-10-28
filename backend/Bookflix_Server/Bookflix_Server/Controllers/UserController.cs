@@ -12,7 +12,7 @@ namespace Bookflix_Server.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-   
+
         private readonly MyDbContext _context;
 
 
@@ -22,7 +22,7 @@ namespace Bookflix_Server.Controllers
         }
 
         // GET para obtener todos los usuarios
-        [HttpGet]
+        [HttpGet("ListarUsuarios")]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             // Recibimos la lista de usuarios de la base de datos
@@ -30,7 +30,7 @@ namespace Bookflix_Server.Controllers
         }
 
         // GET para obtener un usuario por su ID
-        [HttpGet("{id}")]
+        [HttpGet("Detalle/{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
             // Buscamos el usuario en la base de datos por su ID
@@ -47,7 +47,7 @@ namespace Bookflix_Server.Controllers
         }
 
         // POST para crear un nuevo usuario
-        [HttpPost]
+        [HttpPost("Crear")]
         public async Task<ActionResult<User>> PostUser(User user)
         {
             // Añade el nuevo usuario al contexto
@@ -59,7 +59,7 @@ namespace Bookflix_Server.Controllers
         }
 
         // PUT para actualizar un usuario existente
-        [HttpPut("{id}")]
+        [HttpPut("Actualizar/{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
             // Verifica que el ID del usuario coincida con el ID de la solicitud
@@ -95,7 +95,7 @@ namespace Bookflix_Server.Controllers
         }
 
         // DELETE para eliminar un usuario por su ID
-        [HttpDelete("{id}")]
+        [HttpDelete("Eliminar/{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             // Busca el usuario en la base de datos por su ID
