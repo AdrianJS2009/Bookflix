@@ -4,12 +4,13 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import '../styles/default.css';
 import '../styles/styles.css';
+import '../styles/login.css';
 
 export default function Login() {
     return (
         <>
             <Header />
-            <div className='home-bookflix'>
+            <div className='login-container'>
                 <div className='login-form'>
                     <h1>Iniciar Sesión</h1>
                     <form>

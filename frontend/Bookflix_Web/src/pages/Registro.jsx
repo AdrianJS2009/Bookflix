@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import '../styles/default.css';
 import '../styles/styles.css';
+import '../styles/registro.css';
 
 export default function Registro() {
     return (

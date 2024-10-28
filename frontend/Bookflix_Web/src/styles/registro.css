@@ -1,0 +1,69 @@
+/* Centrar el contenedor principal en la pantalla */
+.registro-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;      /* Centra el contenido horizontalmente */
+  justify-content: center;   /* Centra el contenido verticalmente */
+  height: calc(100vh - 80px); /* Ocupa toda la altura de la pantalla menos el espacio del header/footer */
+  padding: 20px;
+}
+
+/* Ajustar el margen del título para acercarlo al formulario */
+.registro-container h1 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px; /* Ajusta este margen para controlar la distancia */
+}
+
+/* Estilos del formulario de registro */
+.registro-form {
+  width: 300px;             /* Ancho del formulario */
+  padding: 20px;            /* Espacio interior */
+  border-radius: 8px;       /* Bordes redondeados */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Sombra */
+  background-color: #fff;   /* Fondo blanco */
+  text-align: center;       /* Centrar contenido */
+}
+
+/* Ajustes para los campos y el botón */
+.registro-form div {
+  margin-bottom: 15px;      /* Espacio entre campos */
+}
+
+.registro-form label {
+  display: block;
+  margin-bottom: 5px;       /* Espacio entre etiqueta y campo */
+  font-weight: bold;
+}
+
+.registro-form input {
+  width: 100%;              /* Campo de texto ocupa todo el ancho */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.registro-form button {
+  width: 100%;              /* Botón ocupa todo el ancho */
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.registro-form button:hover {
+  background-color: #0056b3; /* Color al pasar el mouse */
+}
+
+/* Estilo del enlace para acercarlo al formulario */
+.registro-container a {
+  margin-top: 10px; /* Ajusta este margen para controlar la distancia */
+  color: #007bff;
+  text-decoration: none;
+}
+
+.registro-container a:hover {
+  text-decoration: underline;
+}
