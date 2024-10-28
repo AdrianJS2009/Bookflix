@@ -7,14 +7,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-<<<<<<< HEAD
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
-=======
 using Microsoft.Extensions.Hosting;
-
-
->>>>>>> 75fbac7d84215b0fac4855428337c1fbb13c3013
 
 namespace Bookflix_Server;
 
@@ -23,24 +17,42 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-<<<<<<< HEAD
+
+        // Configuración de servicios de Swagger y autenticación JWT
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Bookflix API", Version = "v1" });
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Ingrese 'Bearer' seguido de su token JWT",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer"
+            });
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] {}
+                }
+            });
         });
-=======
-        // Configurar controladores y Swagger para la documentación
-        builder.Services.AddControllers();
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
 
         // Configurar MyDbContext para usar SQLite
         builder.Services.AddDbContext<MyDbContext>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
->>>>>>> 75fbac7d84215b0fac4855428337c1fbb13c3013
 
         // Inyectar UnitOfWork y UserRepository
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -59,13 +71,16 @@ public class Program
                 });
             });
         }
-
         // Configuración de autenticación JWT
+        string key = builder.Configuration["Jwt:Key"] ?? Environment.GetEnvironmentVariable("JWT_KEY");
+        if (string.IsNullOrEmpty(key))
+        {
+            throw new ArgumentNullException("Jwt:Key", "La clave JWT no está configurada en appsettings.json ni como variable de entorno.");
+        }
+
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-                string key = builder.Configuration["Jwt:Key"] ?? Environment.GetEnvironmentVariable("JWT_KEY");
-
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = false,
@@ -74,11 +89,6 @@ public class Program
                 };
             });
 
-        // Registrar MyDbContext
-        builder.Services.AddDbContext<MyDbContext>(options =>
-            options.UseSqlite($"DataSource={AppDomain.CurrentDomain.BaseDirectory}bookflix.db"));
-
-<<<<<<< HEAD
         var app = builder.Build();
 
         using (IServiceScope scope = app.Services.CreateScope())
@@ -91,45 +101,24 @@ public class Program
             dbContext.Database.EnsureCreated();
         }
 
-        // Redirigir automáticamente las solicitudes HTTP a HTTPS
-=======
-        // Asegurarse de que la base de datos esté creada
-        using (var scope = app.Services.CreateScope())
-        {
-            var dbContext = scope.ServiceProvider.GetRequiredService<MyDbContext>();
-            dbContext.Database.EnsureCreated();
-        }
-
         // Configuración de middleware en entorno de desarrollo
         if (app.Environment.IsDevelopment())
         {
-            app.UseSwagger(); // Habilitar Swagger para generar la documentación
+            app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bookflix API V1");
-                c.RoutePrefix = string.Empty; // Hacer que Swagger esté en la raíz
+                c.RoutePrefix = string.Empty; // Para que Swagger UI esté en la raíz
             });
 
-            app.UseCors("AllowFrontend"); // Permitir CORS en desarrollo
+            app.UseCors("AllowFrontend");
         }
 
->>>>>>> 75fbac7d84215b0fac4855428337c1fbb13c3013
         app.UseHttpsRedirection();
         app.UseAuthentication();
         app.UseAuthorization();
 
-<<<<<<< HEAD
-        // Habilitar middleware de Swagger
-        app.UseSwagger();
-        app.UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bookflix API V1");
-            c.RoutePrefix = string.Empty; // Para que Swagger UI esté en la raíz
-        });
-
-=======
         // Mapear las rutas de los controladores a los endpoints HTTP
->>>>>>> 75fbac7d84215b0fac4855428337c1fbb13c3013
         app.MapControllers();
 
         app.Run();
