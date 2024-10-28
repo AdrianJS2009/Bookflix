@@ -1,84 +1,85 @@
-﻿using System;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using Bookflix_Server.Data;
 using Bookflix_Server.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
-class Program
+namespace Bookflix_Server;
+
+public class Program
 {
-    static async Task Main(string[] args)
+    public static void Main(string[] args)
     {
-        var builder = new HostBuilder()
-            .ConfigureAppConfiguration((context, config) =>
+       
+        var builder = WebApplication.CreateBuilder(args);
+
+      
+        builder.Services.AddControllers();
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+
+        builder.Services.AddDbContext<MyDbContext>(options =>
+            options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+        // Configurar CORS para permitir el acceso desde el frontend
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowFrontend", policy =>
             {
-                config.AddJsonFile("appsettings.json", optional: true)
-                      .AddEnvironmentVariables();
-            })
-            .ConfigureServices((context, services) =>
+                policy.WithOrigins("http://localhost:3000") // Reemplaza con la URL de tu frontend en producción
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+            });
+        });
+
+        // Configurar autenticación JWT
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
             {
-                // Configuración de la base de datos SQLite
-                services.AddDbContext<MyDbContext>(options =>
-                    options.UseSqlite(context.Configuration.GetConnectionString("DefaultConnection")));
+                string key = builder.Configuration["Jwt:Key"];
 
-                // Configuración de autenticación JWT
-                services.AddAuthentication(options =>
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = context.Configuration["Jwt:Issuer"],
-                        ValidAudience = context.Configuration["Jwt:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(context.Configuration["Jwt:Key"]))
-                    };
-                });
-
-                // Configuración de CORS
-                services.AddCors(options =>
-                {
-                    options.AddPolicy("AllowAll",
-                        new CorsPolicyBuilder()
-                            .AllowAnyOrigin()
-                            .AllowAnyMethod()
-                            .AllowAnyHeader()
-                            .Build());
-                });
-
-                // Servicios de aplicación
-                services.AddScoped<IUnitOfWork, UnitOfWork>();
-                services.AddScoped<IUserRepository, UserRepository>();
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+                };
             });
 
-        // Crear el host y los servicios
-        var host = builder.Build();
+        var app = builder.Build();
 
-        using (var scope = host.Services.CreateScope())
+
+        using (IServiceScope scope = app.Services.CreateScope())
         {
-            var services = scope.ServiceProvider;
-            try
-            {
-                // Aquí puedes iniciar cualquier lógica de inicio
-                Console.WriteLine("Conexión a la base de datos y servicios configurados correctamente.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Ocurrió un error: {ex.Message}");
-            }
+            var dbContext = scope.ServiceProvider.GetService<MyDbContext>();
+            dbContext.Database.EnsureCreated();
         }
 
-        await host.RunAsync();
+        // Configurar el middleware
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+            app.UseCors("AllowFrontend"); // Permitir CORS en desarrollo
+        }
+
+        // Redirigir automáticamente las solicitudes HTTP a HTTPS
+        app.UseHttpsRedirection();
+        app.UseAuthentication(); // Habilitar autenticación JWT
+        app.UseAuthorization();
+        app.MapControllers();
+
+
+        app.Run();
     }
 }

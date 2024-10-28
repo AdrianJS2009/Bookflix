@@ -16,7 +16,7 @@ namespace Bookflix_Server.Data
             if (!optionsBuilder.IsConfigured)
             {
                 string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-                optionsBuilder.UseSqlite($"DataSource={baseDir}database.db"); // Utilizamos la ruta por defecto para la bbdd
+                optionsBuilder.UseSqlite($"DataSource={baseDir}bookflix.db"); // Utilizamos la ruta por defecto para la bbdd
             }
         }
     }
