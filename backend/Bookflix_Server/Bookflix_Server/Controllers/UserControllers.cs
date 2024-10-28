@@ -63,6 +63,43 @@ namespace Bookflix_Server.Controllers
             return CreatedAtAction(nameof(GetUser), new { id = user.IdUser }, user);
         }
 
+        // Método PUT para actualizar un usuario existente
+        // PUT: api/UserControllers/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutUser(int id, User user)
+        {
+            // Verifica que el ID del usuario coincida con el ID de la solicitud
+            if (id != user.IdUser)
+            {
+                return BadRequest();
+            }
+
+            // Marca el usuario como modificado en el contexto
+            _context.Entry(user).State = EntityState.Modified;
+
+            try
+            {
+                // Guarda los cambios en la base de datos
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                // Si el usuario no existe, devuelve un código 404 (Not Found)
+                if (!UserExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    // Si ocurre otro error, lanza la excepción
+                    throw;
+                }
+            }
+
+            // Devuelve un código 204 (No Content) para indicar que la operación fue exitosa
+            return NoContent();
+        }
+
         
     }
 }
