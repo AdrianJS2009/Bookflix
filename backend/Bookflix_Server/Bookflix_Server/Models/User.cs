@@ -23,4 +23,7 @@ public class User
     [Required]
     [DefaultValue("usuario")]   // Defino el campo Rol con un valor por defecto de "usuario"
     public string Rol { get; set; } = "usuario";
+
+    [Required]
+    public string Contraseña { get; set; }
 }
