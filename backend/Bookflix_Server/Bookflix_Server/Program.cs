@@ -3,9 +3,11 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Bookflix_Server.Data;
 using Bookflix_Server.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
 
 namespace Bookflix_Server;
 
@@ -19,10 +21,8 @@ public class Program
       
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        //builder.Services.AddSwaggerGen();
 
-        builder.Services.AddDbContext<MyDbContext>(options =>
-            options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -32,7 +32,7 @@ public class Program
         {
             options.AddPolicy("AllowFrontend", policy =>
             {
-                policy.WithOrigins("http://localhost:3000") // Reemplaza con la URL de tu frontend en producción
+                policy.WithOrigins("http://localhost:3000") // Reemplazable
                       .AllowAnyHeader()
                       .AllowAnyMethod();
             });
@@ -65,13 +65,6 @@ public class Program
             dbContext.Database.EnsureCreated();
         }
 
-        // Configurar el middleware
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-            app.UseCors("AllowFrontend"); // Permitir CORS en desarrollo
-        }
 
         // Redirigir automáticamente las solicitudes HTTP a HTTPS
         app.UseHttpsRedirection();
