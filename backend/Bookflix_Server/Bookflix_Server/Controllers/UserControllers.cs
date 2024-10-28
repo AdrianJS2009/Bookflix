@@ -100,6 +100,33 @@ namespace Bookflix_Server.Controllers
             return NoContent();
         }
 
-        
+        // Método DELETE para eliminar un usuario por su ID
+        // DELETE: api/UserControllers/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            // Busca el usuario en la base de datos por su ID
+            var user = await _context.Users.FindAsync(id);
+            // Si el usuario no existe, devuelve un código 404 (Not Found)
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Elimina el usuario del contexto
+            _context.Users.Remove(user);
+            // Guarda los cambios en la base de datos
+            await _context.SaveChangesAsync();
+
+            // Devuelve un código 204 (No Content) para indicar que la operación fue exitosa
+            return NoContent();
+        }
+
+        // Método auxiliar para verificar si un usuario existe en la base de datos
+        private bool UserExists(int id)
+        {
+            // Devuelve true si el usuario existe, false en caso contrario
+            return _context.Users.Any(e => e.IdUser == id);
+        }
     }
 }
