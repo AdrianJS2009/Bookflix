@@ -30,5 +30,39 @@ namespace Bookflix_Server.Controllers
             // Devuelve la lista de usuarios de la base de datos
             return await _context.Users.ToListAsync();
         }
+
+        // Método GET para obtener un usuario por su ID
+        // GET: api/UserControllers/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<User>> GetUser(int id)
+        {
+            // Busca el usuario en la base de datos por su ID
+            var user = await _context.Users.FindAsync(id);
+
+            // Si el usuario no existe, devuelve un código 404 (Not Found)
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Devuelve el usuario encontrado
+            return user;
+        }
+
+        // Método POST para crear un nuevo usuario
+        // POST: api/UserControllers
+        [HttpPost]
+        public async Task<ActionResult<User>> PostUser(User user)
+        {
+            // Añade el nuevo usuario al contexto
+            _context.Users.Add(user);
+            // Guarda los cambios en la base de datos
+            await _context.SaveChangesAsync();
+
+            // Devuelve el usuario creado con un código 201 (Created)
+            return CreatedAtAction(nameof(GetUser), new { id = user.IdUser }, user);
+        }
+
+        
     }
 }
