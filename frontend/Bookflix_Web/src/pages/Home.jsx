@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Carrusel from '../components/Carrusel';
+import Generos from '../components/Generos';
 
 import '../styles/default.css';
 import '../styles/styles.css';
@@ -19,60 +20,9 @@ export default function Home() {
                 </div>
 
                 <section id="generos" href="generos">
-                    <div className='generos-container'>
-                        <a href='' className='texto-mediano-bold texto-blanco'>
-                            <div className='genero ciencia-ficcion'>
-                                <p>Ciencia Ficción</p>
-                            </div>
-                        </a>
-                        <a href='' className='texto-mediano-bold texto-blanco'>
-                            <div className='genero fantasia'>
-                                <p>Fantasía</p>
-                            </div>
-                        </a>
-                        <a href='' className='texto-mediano-bold texto-blanco'>
-                        <div className='genero terror'>
-                            <p>Terror</p>
-                        </div>
-                        </a>
-                        <a href='' className='texto-mediano-bold texto-blanco'>
-                            <div className='genero misterio'>
-                                <p>Misterio</p>
-                            </div>
-                        </a>
-                        <a href='' className='texto-mediano-bold texto-blanco'>
-                            <div className='genero thriller'>
-                                <p>Thriller</p>
-                            </div>
-                        </a>
-                        <a href='' className='texto-mediano-bold texto-blanco'>
-                            <div className='genero romance'>
-                                <p>Romance</p>
-                            </div>
-                        </a>
-                        <a href='' className='texto-mediano-bold texto-blanco'>
-                            <div className='genero biografia'>
-                                <p>Biografía</p>
-                            </div>
-                        </a>
-                        <a href='' className='texto-mediano-bold texto-blanco'>
-                            <div className='genero historicos'>
-                                <p>Históricos</p>
-                            </div>
-                        </a>
-                        <a href='' className='texto-mediano-bold texto-blanco'>
-                            <div className='genero cinefilos'>
-                                <p>Cinéfilos</p>
-                            </div>
-                        </a>
-                        <a href='' className='texto-mediano-bold texto-blanco'>
-                            <div className='genero novelas'>
-                                <p>Novelas</p>
-                            </div>
-                        </a>
-                    </div>
+                    <Generos />
                 </section>
-
+                 
                 <div className='box-banner'>
                     <img src='/assets/banner/BannerEnvioGratuito.png' alt="Banner Envío Gratuito" />
                 </div>
