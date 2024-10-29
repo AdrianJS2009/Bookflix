@@ -3,8 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 
-import '../styles/default.css'
-import '../styles/login.css'
+import "../styles/default.css";
+import "../styles/form.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -36,11 +36,13 @@ export default function Login() {
   return (
     <>
       <Header />
-      <div className="login-container">
+      <div className="form-container">
         <h1 className="texto-grande">Iniciar Sesión</h1>
-        <form onSubmit={handleLogin} className="login-form texto-mediano">
+        <form onSubmit={handleLogin} className="form texto-mediano">
           <div className="campo-formulario">
-            <label className="text-form" htmlFor="email">Correo Electrónico</label>
+            <label className="text-form" htmlFor="email">
+              Correo Electrónico
+            </label>
             <input
               placeholder="Email"
               type="email"
@@ -51,7 +53,9 @@ export default function Login() {
             />
           </div>
           <div className="campo-formulario">
-            <label className="text-form" htmlFor="password">Contraseña</label>
+            <label className="text-form" htmlFor="password">
+              Contraseña
+            </label>
             <input
               placeholder="Contraseña"
               type="password"

@@ -3,8 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 
-import '../styles/default.css'
-import '../styles/registro.css'
+import "../styles/default.css";
+import "../styles/form.css";
 
 export default function Registro() {
   const [nombre, setNombre] = useState("");
@@ -51,11 +51,13 @@ export default function Registro() {
   return (
     <>
       <Header />
-      <div className="registro-container">
+      <div className="form-container">
         <h1 className="texto-grande">Registro</h1>
-        <form onSubmit={handleRegister} className="registro-form texto-mediano">
+        <form onSubmit={handleRegister} className="form texto-mediano">
           <div className="campo-formulario">
-            <label className="text-form" htmlFor="nombre">Nombre</label>
+            <label className="text-form" htmlFor="nombre">
+              Nombre
+            </label>
             <input
               placeholder="Nombre"
               type="text"
@@ -66,7 +68,9 @@ export default function Registro() {
             />
           </div>
           <div className="campo-formulario">
-            <label className="text-form" htmlFor="apellidos">Apellidos</label>
+            <label className="text-form" htmlFor="apellidos">
+              Apellidos
+            </label>
             <input
               placeholder="Apellidos"
               type="text"
@@ -75,9 +79,11 @@ export default function Registro() {
               onChange={(e) => setApellidos(e.target.value)}
               required
             />
-          </div>          
+          </div>
           <div className="campo-formulario">
-            <label className="text-form" htmlFor="email">Correo Electrónico</label>
+            <label className="text-form" htmlFor="email">
+              Correo Electrónico
+            </label>
             <input
               placeholder="Email"
               type="email"
@@ -88,7 +94,9 @@ export default function Registro() {
             />
           </div>
           <div className="campo-formulario">
-            <label className="text-form" htmlFor="direccion">Dirección</label>
+            <label className="text-form" htmlFor="direccion">
+              Dirección
+            </label>
             <input
               placeholder="Dirección"
               type="text"
@@ -98,7 +106,9 @@ export default function Registro() {
             />
           </div>
           <div className="campo-formulario">
-            <label className="text-form" htmlFor="password">Contraseña</label>
+            <label className="text-form" htmlFor="password">
+              Contraseña
+            </label>
             <input
               placeholder="Contraseña"
               type="password"
@@ -109,7 +119,9 @@ export default function Registro() {
             />
           </div>
           <div className="campo-formulario">
-            <label className="text-form" htmlFor="confirmPassword">Confirmar Contraseña</label>
+            <label className="text-form" htmlFor="confirmPassword">
+              Confirmar Contraseña
+            </label>
             <input
               placeholder="Confirmar contraseña"
               type="password"
