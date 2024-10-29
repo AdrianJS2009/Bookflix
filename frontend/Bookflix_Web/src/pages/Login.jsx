@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 
+import '../styles/default.css'
+import '../styles/login.css'
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
