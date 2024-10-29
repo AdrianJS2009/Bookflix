@@ -1,31 +1,68 @@
-import { Link } from 'react-router-dom';
-import React from 'react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import '../styles/default.css';
-import '../styles/styles.css';
-import '../styles/login.css';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 
 export default function Login() {
-    return (
-        <>
-            <Header />
-            <div className='login-container'>
-                <h1 className='texto-grande'>Iniciar Sesión</h1>
-                <form className='login-form texto-mediano'>
-                    <div>
-                        <label htmlFor="email">Correo Electrónico</label>
-                        <input type="email" id="email" required />
-                    </div>
-                    <div>
-                        <label htmlFor="password">Contraseña</label>
-                        <input type="password" id="password" required />
-                    </div>
-                    <button type="submit">Entrar</button>
-                </form>
-                <Link to="/registro" className='texto-pequeño'>¿Aún no tienes cuenta? Regístrate</Link>
-            </div>
-            <Footer />
-        </>
-    );
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    const response = await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        Email: email,
+        Password: password,
+      }),
+    });
+
+    if (response.ok) {
+      const token = await response.text();
+      localStorage.setItem("token", token); // Guarda el token en el almacenamiento local
+      navigate("/"); // Redirige a la página principal después de iniciar sesión
+    } else {
+      alert("Credenciales incorrectas");
+    }
+  };
+  return (
+    <>
+      <Header />
+      <div className="login-container">
+        <h1 className="texto-grande">Iniciar Sesión</h1>
+        <form onSubmit={handleLogin} className="login-form texto-mediano">
+          <div>
+            <label htmlFor="email">Correo Electrónico</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="password">Contraseña</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit">Entrar</button>
+        </form>
+        <Link to="/registro" className="texto-pequeño">
+          ¿Aún no tienes cuenta? Regístrate
+        </Link>
+      </div>
+      <Footer />
+    </>
+  );
 }

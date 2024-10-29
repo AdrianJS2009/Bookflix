@@ -50,13 +50,17 @@ namespace Bookflix_Server.Controllers
         [HttpPost("Crear")]
         public async Task<ActionResult<User>> PostUser(User user)
         {
-            // Añade el nuevo usuario al contexto
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // Esta línea valida los campos obligatorios
+            }
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            // Devuelve el usuario creado
             return CreatedAtAction(nameof(GetUser), new { id = user.IdUser }, user);
         }
+
 
         // PUT para actualizar un usuario existente
         [HttpPut("Actualizar/{id}")]

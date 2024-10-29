@@ -65,7 +65,7 @@ public class Program
             {
                 options.AddPolicy("AllowFrontend", policy =>
                 {
-                    policy.WithOrigins("http://localhost:3000") // Ajusta según el puerto de tu frontend
+                    policy.WithOrigins("http://localhost:5173") // Ajusta según el puerto de tu frontend
                           .AllowAnyHeader()
                           .AllowAnyMethod();
                 });

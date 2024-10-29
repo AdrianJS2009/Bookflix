@@ -23,37 +23,39 @@ namespace Bookflix_Server.Controllers
         }
 
         // Endpoint
-        [HttpPost("login")]
-        public async Task<ActionResult<string>> Login([FromBody] LoginDto model)
-        {
-            // Usuario temporal para pruebas
-            var tempUserName = "string";
-            var tempPassword = "string";
-
-            // Comprobar el usuario y la contraseña
-            if (model.UserName != tempUserName || model.Password != tempPassword)
-            {
-                return Unauthorized(); // Si no coincide, devuelve 401
-            }
-
-            // Crear el token para el usuario temporal
-            var token = GenerateToken(tempUserName);
-            return Ok(token);
-        }
         //[HttpPost("login")]
         //public async Task<ActionResult<string>> Login([FromBody] LoginDto model)
         //{
-        //    // Comprobar el user en la BBDD
-        //    var userExists = await _unitOfWork.Users.UserExistsAsync(model.UserName);
-        //    if (!userExists || model.Password != "contraseña")
+        //    // Usuario temporal para pruebas
+        //    var tempUserName = "string";
+        //    var tempPassword = "string";
+
+        //    // Comprobar el usuario y la contraseña
+        //    if (model.UserName != tempUserName || model.Password != tempPassword)
         //    {
-        //        return Unauthorized(); // 
+        //        return Unauthorized(); // Si no coincide, devuelve 401
         //    }
 
-        //    // Crear el token para el user
-        //    var token = GenerateToken(model.UserName);
+        //    // Crear el token para el usuario temporal
+        //    var token = GenerateToken(tempUserName);
         //    return Ok(token);
         //}
+        [HttpPost("login")]
+        public async Task<ActionResult<string>> Login([FromBody] LoginDto model)
+        {
+            // Buscar el usuario en la base de datos por el email
+            var user = await _unitOfWork.Users.GetByEmailAsync(model.Email); // Supón que existe un método GetByEmailAsync en el repositorio
+
+            // Verificar si el usuario existe y la contraseña coincide
+            if (user == null || user.Password != model.Password) // Asegúrate de que la contraseña esté encriptada si es necesario
+            {
+                return Unauthorized(); // Devuelve 401 si las credenciales no son válidas
+            }
+
+            // Crear el token para el usuario
+            var token = GenerateToken(user.Email);
+            return Ok(token);
+        }
 
         // Genera el token JWT basado en las claims del usuario
         private string GenerateToken(string userName)
