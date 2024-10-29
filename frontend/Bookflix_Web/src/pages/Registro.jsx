@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 
+import '../styles/default.css'
+import '../styles/registro.css'
+
 export default function Registro() {
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
@@ -51,9 +54,10 @@ export default function Registro() {
       <div className="registro-container">
         <h1 className="texto-grande">Registro</h1>
         <form onSubmit={handleRegister} className="registro-form texto-mediano">
-          <div>
-            <label htmlFor="nombre">Nombre</label>
+          <div className="campo-formulario">
+            <label className="text-form" htmlFor="nombre">Nombre</label>
             <input
+              placeholder="Nombre"
               type="text"
               id="nombre"
               value={nombre}
@@ -61,9 +65,21 @@ export default function Registro() {
               required
             />
           </div>
-          <div>
-            <label htmlFor="email">Correo Electrónico</label>
+          <div className="campo-formulario">
+            <label className="text-form" htmlFor="apellidos">Apellidos</label>
             <input
+              placeholder="Apellidos"
+              type="text"
+              id="apellidos"
+              value={apellidos}
+              onChange={(e) => setApellidos(e.target.value)}
+              required
+            />
+          </div>          
+          <div className="campo-formulario">
+            <label className="text-form" htmlFor="email">Correo Electrónico</label>
+            <input
+              placeholder="Email"
               type="email"
               id="email"
               value={email}
@@ -71,18 +87,20 @@ export default function Registro() {
               required
             />
           </div>
-          <div>
-            <label htmlFor="direccion">Dirección</label>
+          <div className="campo-formulario">
+            <label className="text-form" htmlFor="direccion">Dirección</label>
             <input
+              placeholder="Dirección"
               type="text"
               id="direccion"
               value={direccion}
               onChange={(e) => setDireccion(e.target.value)}
             />
           </div>
-          <div>
-            <label htmlFor="password">Contraseña</label>
+          <div className="campo-formulario">
+            <label className="text-form" htmlFor="password">Contraseña</label>
             <input
+              placeholder="Contraseña"
               type="password"
               id="password"
               value={password}
@@ -90,9 +108,10 @@ export default function Registro() {
               required
             />
           </div>
-          <div>
-            <label htmlFor="confirmPassword">Confirmar Contraseña</label>
+          <div className="campo-formulario">
+            <label className="text-form" htmlFor="confirmPassword">Confirmar Contraseña</label>
             <input
+              placeholder="Confirmar contraseña"
               type="password"
               id="confirmPassword"
               value={confirmPassword}
@@ -100,16 +119,7 @@ export default function Registro() {
               required
             />
           </div>
-          <div>
-            <label htmlFor="apellidos">Apellidos</label>
-            <input
-              type="text"
-              id="apellidos"
-              value={apellidos}
-              onChange={(e) => setApellidos(e.target.value)}
-              required
-            />
-          </div>
+
           <button type="submit">Registrarse</button>
         </form>
         <Link to="/login" className="texto-pequeño">

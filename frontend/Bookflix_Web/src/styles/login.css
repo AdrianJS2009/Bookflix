@@ -67,3 +67,15 @@
 .login-container a:hover {
   text-decoration: underline;
 }
+
+div.campo-formulario{
+  margin: 15px auto 15px auto;
+}
+
+label.text-form{
+  margin: auto auto 5px auto;
+}
+
+h1{
+  margin-bottom: 15px;
+}
