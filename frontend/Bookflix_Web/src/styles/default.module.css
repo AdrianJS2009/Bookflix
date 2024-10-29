@@ -1,0 +1,76 @@
+/* default.module.css */
+
+/* Importación de la fuente */
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+:root {
+  --verde-normal: #199a51;
+  --verde-oscuro: #13743d;
+  --verde-claro: #b8e0c9;
+  --azul-normal: #406cc4;
+  --azul-oscuro: #305193;
+  --azul-claro: #c4d1ed;
+  --negro: #0f0f0f;
+  --blanco: #f0f0f0;
+  --pequeño: 14px;
+  --mediano: 18px;
+  --grande: 36px;
+  --extra-grande: 36px;
+}
+
+.textoExtragrande {
+  font-family: "Inter", sans-serif;
+  font-size: var(--extra-grande);
+}
+.textoGrande {
+  font-family: "Inter", sans-serif;
+  font-size: var(--grande);
+}
+.textoMediano {
+  font-family: "Inter", sans-serif;
+  font-size: var(--mediano);
+}
+.textoMedianoBold {
+  font-family: "Inter", sans-serif;
+  font-size: var(--mediano);
+  font-weight: bold;
+  text-decoration: none;
+}
+.textoPequeño {
+  font-family: "Inter", sans-serif;
+  font-size: var(--pequeño);
+}
+.textoPequeñoBold {
+  font-family: "Inter", sans-serif;
+  font-size: var(--pequeño);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.textoNegro {
+  color: var(--negro);
+}
+.textoBlanco {
+  color: var(--blanco);
+}
+
+.fondoNegro {
+  background-color: var(--negro);
+}
+.fondoVerde {
+  background-color: var(--verde-normal);
+}
+.fondoAzul {
+  background-color: var(--azul-normal);
+}
+.fondoAzulClaro {
+  background-color: var(--azul-claro);
+}
+.fondoBlanco {
+  background-color: var(--blanco);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}

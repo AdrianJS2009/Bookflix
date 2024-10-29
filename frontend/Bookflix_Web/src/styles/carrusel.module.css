@@ -1,0 +1,58 @@
+/* Carrusel.module.css */
+
+.carruselContainer {
+  display: flex;
+  align-items: center;
+  position: relative;
+  max-width: 70%;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.carrusel {
+  display: flex;
+  transition: transform 0.5s ease;
+  gap: 15px;
+}
+
+.carruselItem {
+  min-width: calc(100% / 3);
+  box-sizing: border-box;
+  padding: 5px;
+  text-align: center;
+}
+
+.btnContainer {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.btnComprar {
+  padding: 5px;
+}
+
+.btnAnadir {
+  padding: 5px;
+}
+
+.flecha {
+  font-size: 24px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.izquierda {
+  left: 10px;
+}
+
+.derecha {
+  right: 10px;
+}
