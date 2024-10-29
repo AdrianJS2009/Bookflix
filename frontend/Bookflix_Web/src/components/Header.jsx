@@ -1,5 +1,6 @@
 // src/components/Header.jsx
 import React from 'react';
+import { Link } from 'react-router-dom';
 import '../styles/default.css';
 import '../styles/header.css';
 
@@ -7,25 +8,25 @@ const Header = () => {
   return (
     <header className="header fondo-negro">
       <div className="nav-logo">
-        <a href="#">
+        <Link to="/">
           <img src="/assets/logos/Logo-degradado-con bisel.png" className="logo-navbar" alt="Bookflix logo" />
-        </a>
+        </Link>
         <div className="user-cart texto-pequeño-bold">
-          <a href="#">
+          <Link to="/login">
             <img src="/assets/iconos/Logo Usuario.png" className="iconos" alt="" /> Usuario
-          </a>
-          <a href="#">
+          </Link>
+          <Link to="/carrito">
             <img src="/assets/iconos/Logo Cesta.png" className="iconos" alt="" /> Cesta
-          </a>
+          </Link>
         </div>
       </div>
       <nav className="nav-principal fondo-verde">
         <ul className="texto-pequeño-bold texto-negro">
-          <li><a href="#">Novedades</a></li>
-          <li><a href="#">Géneros</a></li>
-          <li><a href="#">Top ventas</a></li>
-          <li><a href="#">Bundles</a></li>
-          <li><a href="#">Catálogo</a></li>
+          <li><a href="/#novedades">Novedades</a></li>
+          <li><a href="/#generos">Géneros</a></li>
+          <li><a href="/#top-ventas">Top ventas</a></li>
+          <li><Link to="/bundles">Bundles</Link></li>
+          <li><Link to="/catalogo">Catálogo</Link></li>
         </ul>
       </nav>
     </header>

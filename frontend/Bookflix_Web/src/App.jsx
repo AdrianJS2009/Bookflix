@@ -1,17 +1,19 @@
-import { useState } from 'react'
-/* import './App.css' */
-import Header from './components/Header'
-import Footer from './components/Footer'
-import Home from './components/Home'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Registro from './pages/Registro';
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-      <Header />
-      <Home />
-      <Footer />
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/registro" element={<Registro />} />
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }
