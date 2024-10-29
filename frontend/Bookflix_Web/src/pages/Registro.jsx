@@ -40,7 +40,7 @@ export default function Registro() {
 
     if (response.ok) {
       alert("Registro exitoso");
-      navigate("/login"); // Redirige a la página de login después del registro
+      navigate("/login");
     } else {
       const errorData = await response.json();
       console.log("Error:", errorData);

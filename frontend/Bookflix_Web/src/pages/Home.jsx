@@ -1,6 +1,5 @@
 import React from "react";
 
-// Componentes
 import Banner from "../components/Banner";
 import Carrusel from "../components/Carrusel";
 import Footer from "../components/Footer";
@@ -8,7 +7,6 @@ import Generos from "../components/Generos";
 import Header from "../components/Header";
 import TopVentas from "../components/TopVentas";
 
-// Estilos necesarios
 import "../styles/default.css";
 import "../styles/styles.css";
 
