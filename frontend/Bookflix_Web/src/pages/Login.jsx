@@ -39,9 +39,10 @@ export default function Login() {
       <div className="login-container">
         <h1 className="texto-grande">Iniciar Sesión</h1>
         <form onSubmit={handleLogin} className="login-form texto-mediano">
-          <div>
-            <label htmlFor="email">Correo Electrónico</label>
+          <div className="campo-formulario">
+            <label className="text-form" htmlFor="email">Correo Electrónico</label>
             <input
+              placeholder="Email"
               type="email"
               id="email"
               value={email}
@@ -49,9 +50,10 @@ export default function Login() {
               required
             />
           </div>
-          <div>
-            <label htmlFor="password">Contraseña</label>
+          <div className="campo-formulario">
+            <label className="text-form" htmlFor="password">Contraseña</label>
             <input
+              placeholder="Contraseña"
               type="password"
               id="password"
               value={password}
