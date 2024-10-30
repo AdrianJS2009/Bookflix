@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import React from "react";
 
 export default function Banner({ imageSrc, altText }) {
   return (

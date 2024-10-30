@@ -1,10 +1,8 @@
-import React from "react";
-import "../styles/default.css";
-import "../styles/footer.css";
+import classes from "./Footer.module.css";
 
 const Footer = () => {
   return (
-    <footer className="fondo-negro footer">
+    <footer className={`fondo-negro ${classes.footer}`}>
       <div className="container-img">
         <img
           src="/assets/logos/Logo - Blanco.png"
@@ -12,7 +10,7 @@ const Footer = () => {
           alt="Bookflix logo"
         />
       </div>
-      <ul className="texto-blanco texto-pequeño lista-footer">
+      <ul className={`texto-blanco texto-pequeño ${classes["lista-footer"]}`}>
         <li>
           <a href="#">Métodos de pago</a>
         </li>
