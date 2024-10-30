@@ -73,7 +73,7 @@ public class Program
         string key = builder.Configuration["Jwt:Key"] ?? Environment.GetEnvironmentVariable("JWT_KEY");
         if (string.IsNullOrEmpty(key))
         {
-            throw new ArgumentNullException("Jwt:Key", "La clave JWT no está configurada en appsettings.json ni como variable de entorno.");
+            throw new ArgumentNullException("Jwt:Key", "La clave JWT no está configurada en appsettings.");
         }
 
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -94,7 +94,7 @@ public class Program
             var dbContext = scope.ServiceProvider.GetService<MyDbContext>();
             if (dbContext == null)
             {
-                throw new Exception("MyDbContext no está registrado correctamente en el contenedor de servicios.");
+                throw new Exception("MyDbContext no está registrado correctamente.");
             }
             dbContext.Database.EnsureCreated();
         }

@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 
+import "../styles/default.css";
+import "../styles/form.css";
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,8 +27,8 @@ export default function Login() {
 
     if (response.ok) {
       const token = await response.text();
-      localStorage.setItem("token", token); // Guarda el token en el almacenamiento local
-      navigate("/"); // Redirige a la página principal después de iniciar sesión
+      localStorage.setItem("token", token);
+      navigate("/");
     } else {
       alert("Credenciales incorrectas");
     }
@@ -33,12 +36,15 @@ export default function Login() {
   return (
     <>
       <Header />
-      <div className="login-container">
+      <div className="form-container">
         <h1 className="texto-grande">Iniciar Sesión</h1>
-        <form onSubmit={handleLogin} className="login-form texto-mediano">
-          <div>
-            <label htmlFor="email">Correo Electrónico</label>
+        <form onSubmit={handleLogin} className="form texto-mediano">
+          <div className="campo-formulario">
+            <label className="text-form" htmlFor="email">
+              Correo Electrónico
+            </label>
             <input
+              placeholder="Email"
               type="email"
               id="email"
               value={email}
@@ -46,9 +52,12 @@ export default function Login() {
               required
             />
           </div>
-          <div>
-            <label htmlFor="password">Contraseña</label>
+          <div className="campo-formulario">
+            <label className="text-form" htmlFor="password">
+              Contraseña
+            </label>
             <input
+              placeholder="Contraseña"
               type="password"
               id="password"
               value={password}

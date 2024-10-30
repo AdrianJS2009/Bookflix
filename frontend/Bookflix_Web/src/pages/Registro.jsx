@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 
+import "../styles/default.css";
+import "../styles/form.css";
+
 export default function Registro() {
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
@@ -37,7 +40,7 @@ export default function Registro() {
 
     if (response.ok) {
       alert("Registro exitoso");
-      navigate("/login"); // Redirige a la página de login después del registro
+      navigate("/login");
     } else {
       const errorData = await response.json();
       console.log("Error:", errorData);
@@ -48,12 +51,15 @@ export default function Registro() {
   return (
     <>
       <Header />
-      <div className="registro-container">
+      <div className="form-container">
         <h1 className="texto-grande">Registro</h1>
-        <form onSubmit={handleRegister} className="registro-form texto-mediano">
-          <div>
-            <label htmlFor="nombre">Nombre</label>
+        <form onSubmit={handleRegister} className="form texto-mediano">
+          <div className="campo-formulario">
+            <label className="text-form" htmlFor="nombre">
+              Nombre
+            </label>
             <input
+              placeholder="Nombre"
               type="text"
               id="nombre"
               value={nombre}
@@ -61,48 +67,12 @@ export default function Registro() {
               required
             />
           </div>
-          <div>
-            <label htmlFor="email">Correo Electrónico</label>
+          <div className="campo-formulario">
+            <label className="text-form" htmlFor="apellidos">
+              Apellidos
+            </label>
             <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="direccion">Dirección</label>
-            <input
-              type="text"
-              id="direccion"
-              value={direccion}
-              onChange={(e) => setDireccion(e.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="password">Contraseña</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="confirmPassword">Confirmar Contraseña</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="apellidos">Apellidos</label>
-            <input
+              placeholder="Apellidos"
               type="text"
               id="apellidos"
               value={apellidos}
@@ -110,6 +80,58 @@ export default function Registro() {
               required
             />
           </div>
+          <div className="campo-formulario">
+            <label className="text-form" htmlFor="email">
+              Correo Electrónico
+            </label>
+            <input
+              placeholder="Email"
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="campo-formulario">
+            <label className="text-form" htmlFor="direccion">
+              Dirección
+            </label>
+            <input
+              placeholder="Dirección"
+              type="text"
+              id="direccion"
+              value={direccion}
+              onChange={(e) => setDireccion(e.target.value)}
+            />
+          </div>
+          <div className="campo-formulario">
+            <label className="text-form" htmlFor="password">
+              Contraseña
+            </label>
+            <input
+              placeholder="Contraseña"
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div className="campo-formulario">
+            <label className="text-form" htmlFor="confirmPassword">
+              Confirmar Contraseña
+            </label>
+            <input
+              placeholder="Confirmar contraseña"
+              type="password"
+              id="confirmPassword"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
+
           <button type="submit">Registrarse</button>
         </form>
         <Link to="/login" className="texto-pequeño">

@@ -1,5 +1,4 @@
-/* Centrar el contenedor principal en la pantalla */
-.login-container {
+.form-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -9,8 +8,22 @@
   box-sizing: border-box;
 }
 
-/* Estilos del formulario de inicio de sesión */
-.login-form {
+.form-container a {
+  margin-top: 20px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.form-container a:hover {
+  text-decoration: underline;
+}
+
+.form-container h1 {
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.form {
   width: 300px;
   padding: 20px;
   border-radius: 8px;
@@ -20,29 +33,27 @@
   box-sizing: border-box;
 }
 
-/* Ajustes para los campos y el botón */
-.login-form form div {
+.form div {
   margin-bottom: 15px;
-  width: 100%; /* Asegura que los divs ocupen el ancho completo */
-}
-
-.login-form label {
-  display: block;
-  /* margin-bottom: 5px; */
-  font-weight: bold;
-  text-align: left; /* Alinea el texto a la izquierda */
   width: 100%;
 }
 
-.login-form input {
+.form label {
+  display: block;
+  font-weight: bold;
+  text-align: left;
+  width: 100%;
+}
+
+.form input {
   width: 100%;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
+  box-sizing: border-box;
 }
 
-.login-form button {
+.form button {
   width: 100%;
   padding: 10px;
   background-color: #007bff;
@@ -53,17 +64,16 @@
   margin-top: 15px;
 }
 
-.login-form button:hover {
+.form button:hover {
   background-color: #0056b3;
 }
 
-/* Estilo del enlace para acercarlo al formulario */
-.login-container a {
+.form a {
   margin-top: 10px;
   color: #007bff;
   text-decoration: none;
 }
 
-.login-container a:hover {
+.form a:hover {
   text-decoration: underline;
 }
