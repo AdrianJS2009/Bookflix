@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace Bookflix_Server.Models
 {
-    // Clase DTO que representa los datos de login enviados desde el cliente
     public class LoginDto
     {
-        public string Email { get; set; } // Email
+        public string Email { get; set; }
 
-        public string Password { get; set; } // Contraseña del usuario
+        public string Password { get; set; }
     }
 }

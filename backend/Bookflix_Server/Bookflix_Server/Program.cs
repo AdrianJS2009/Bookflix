@@ -50,27 +50,25 @@ public class Program
             });
         });
 
-        // Configurar MyDbContext para usar SQLite
         builder.Services.AddDbContext<MyDbContext>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-        // Inyectar UnitOfWork y UserRepository
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-        // Configuración de CORS para permitir solicitudes desde el frontend en desarrollo
         if (builder.Environment.IsDevelopment())
         {
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowFrontend", policy =>
                 {
-                    policy.WithOrigins("http://localhost:5173") // Ajusta según el puerto de tu frontend
+                    policy.WithOrigins("http://localhost:5173")
                           .AllowAnyHeader()
                           .AllowAnyMethod();
                 });
             });
         }
+
         // Configuración de autenticación JWT
         string key = builder.Configuration["Jwt:Key"] ?? Environment.GetEnvironmentVariable("JWT_KEY");
         if (string.IsNullOrEmpty(key))
@@ -101,14 +99,14 @@ public class Program
             dbContext.Database.EnsureCreated();
         }
 
-        // Configuración de middleware en entorno de desarrollo
+        // Configuración de middleware
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bookflix API V1");
-                c.RoutePrefix = string.Empty; // Para que Swagger UI esté en la raíz
+                c.RoutePrefix = string.Empty;
             });
 
             app.UseCors("AllowFrontend");
@@ -118,7 +116,6 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        // Mapear las rutas de los controladores a los endpoints HTTP
         app.MapControllers();
 
         app.Run();
