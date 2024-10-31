@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import classes from "./styles/Carrusel.module.css";
 
 const Carrusel = () => {
   const [indiceActual, setIndiceActual] = useState(0);
@@ -24,16 +25,16 @@ const Carrusel = () => {
 
   return (
     <section id="novedades" href="novedades">
-      <div className="carrusel-container">
+      <div className={classes.carruselContainer}>
         <button
-          className="flecha izquierda"
+          className={`${classes.flecha} ${classes.izquierda}`}
           onClick={() => moverCarrusel(-1)}
           disabled={indiceActual === 0} // Desactivar si es el primer índice
         >
           &#10094;
         </button>
         <div
-          className="carrusel"
+          className={classes.carrusel}
           style={{ transform: `translateX(-${(indiceActual * 100) / 3}%)` }}
         >
           {libros.map((libro) => (
@@ -41,11 +42,12 @@ const Carrusel = () => {
               <img src={libro.imagen} alt={libro.titulo} />
               <h3>{libro.titulo}</h3>
               <p>{libro.precio}</p>
-              <div className="btn-container">
-                <button className="btn-comprar fondo-azul">
+              <div className={classes.btnContainer}>
+                <button className={`fondo-azul ${classes.btnComprar}`}>
+                
                   <span className="texto-blanco texto-mediano">Comprar</span>
                 </button>
-                <button className="btn-anadir fondo-verde">
+                <button className={`fondo-verde ${classes.btnAnadir}`}>
                   <span className="texto-blanco texto-mediano">
                     Añadir a la cesta
                   </span>
@@ -55,7 +57,7 @@ const Carrusel = () => {
           ))}
         </div>
         <button
-          className="flecha derecha"
+          className={`${classes.flecha} ${classes.derecha}`}
           onClick={() => moverCarrusel(1)}
           disabled={indiceActual >= totalItems - 3} // Desactivar si no hay más elementos
         >
