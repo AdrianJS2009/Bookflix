@@ -33,12 +33,12 @@ const Generos = () => {
           </div>
         </a>
         <a href="" className="texto-mediano-bold texto-blanco">
-          <div className="genero romance">
+          <div className={`${classes.genero} ${classes.romance}`}>
             <p>Romance</p>
           </div>
         </a>
         <a href="" className="texto-mediano-bold texto-blanco">
-          <div className={`${classes.genero} ${classes.romance}`}>
+          <div className={`${classes.genero} ${classes.biografia}`}>
             <p>Biografía</p>
           </div>
         </a>
