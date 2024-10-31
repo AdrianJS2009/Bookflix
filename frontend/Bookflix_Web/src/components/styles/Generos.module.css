@@ -1,0 +1,69 @@
+.generosContainer {
+  max-width: 80%; /* Ajusta según tus necesidades */
+  margin: 0 auto; /* Centra el contenedor */
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 columnas */
+  gap: 20px; /* Espacio entre recuadros de géneros */
+}
+
+.genero {
+  width: 100%; /* Ocupa el 100% del espacio de la celda */
+  height: 150px; /* Altura fija para todos los recuadros */
+  background-size: cover; /* Cubrir el área del recuadro */
+  border-radius: 8px; /* Bordes redondeados */
+  display: flex; /* Para centrar el contenido */
+  align-items: center; /* Centra verticalmente */
+  justify-content: center; /* Centra horizontalmente */
+  color: white; /* Color del texto */
+  font-weight: bold; /* Negrita */
+  text-decoration: none; /* Elimina subrayado en enlaces */
+}
+
+.genero p {
+  margin: 0; /* Asegura que no haya margen adicional en el texto */
+}
+
+/* Estilos para el enlace dentro de generos */
+.generosContainer a {
+  display: block; /* Hace que el enlace ocupe toda el área del recuadro */
+}
+
+.cienciaFiccion {
+  background-image: url('/assets/generos/CienciaFiccion.png');
+}
+
+.fantasia {
+  background-image: url('/assets/generos/Fantasia.png');
+}
+
+.terror {
+  background-image: url('/assets/generos/Terror.png');
+}
+
+.misterio {
+  background-image: url('/assets/generos/Misterio.png');
+}
+
+.thriller {
+  background-image: url('/assets/generos/Thriller.png');
+}
+
+.romance {
+  background-image: url('/assets/generos/Romance.png');
+}
+
+.biografia {
+  background-image: url('/assets/generos/Biografia.png');
+}
+
+.historicos {
+  background-image: url('/assets/generos/Historicos.png');
+}
+
+.cinefilos {
+  background-image: url('/assets/generos/Cinefilos.png');
+}
+
+.novelas {
+  background-image: url('/assets/generos/Novelas.png');
+}

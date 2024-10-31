@@ -1,34 +1,34 @@
 import React from "react";
 
 import "../styles/default.css";
-import "../styles/styles.css";
+import classes from "./styles/Generos.module.css";
 
 const Generos = () => {
   return (
     <section id="generos" href="generos">
-      <div className="generos-container">
+      <div className={classes.generosContainer}>
         <a href="" className="texto-mediano-bold texto-blanco">
-          <div className="genero ciencia-ficcion">
+          <div className={`${classes.genero} ${classes.cienciaFiccion}`}>
             <p>Ciencia Ficción</p>
           </div>
         </a>
         <a href="" className="texto-mediano-bold texto-blanco">
-          <div className="genero fantasia">
+          <div className={`${classes.genero} ${classes.fantasia}`}>
             <p>Fantasía</p>
           </div>
         </a>
         <a href="" className="texto-mediano-bold texto-blanco">
-          <div className="genero terror">
+          <div className={`${classes.genero} ${classes.terror}`}>
             <p>Terror</p>
           </div>
         </a>
         <a href="" className="texto-mediano-bold texto-blanco">
-          <div className="genero misterio">
+          <div className={`${classes.genero} ${classes.misterio}`}>
             <p>Misterio</p>
           </div>
         </a>
         <a href="" className="texto-mediano-bold texto-blanco">
-          <div className="genero thriller">
+          <div className={`${classes.genero} ${classes.thriller}`}>
             <p>Thriller</p>
           </div>
         </a>
@@ -38,22 +38,22 @@ const Generos = () => {
           </div>
         </a>
         <a href="" className="texto-mediano-bold texto-blanco">
-          <div className="genero biografia">
+          <div className={`${classes.genero} ${classes.romance}`}>
             <p>Biografía</p>
           </div>
         </a>
         <a href="" className="texto-mediano-bold texto-blanco">
-          <div className="genero historicos">
+          <div className={`${classes.genero} ${classes.historicos}`}>
             <p>Históricos</p>
           </div>
         </a>
         <a href="" className="texto-mediano-bold texto-blanco">
-          <div className="genero cinefilos">
+          <div className={`${classes.genero} ${classes.cinefilos}`}>
             <p>Cinéfilos</p>
           </div>
         </a>
         <a href="" className="texto-mediano-bold texto-blanco">
-          <div className="genero novelas">
+          <div className={`${classes.genero} ${classes.novelas}`}>
             <p>Novelas</p>
           </div>
         </a>
