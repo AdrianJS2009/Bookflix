@@ -109,27 +109,31 @@ export default function Registro() {
             <label className="text-form" htmlFor="password">
               Contraseña
             </label>
-            <input
-              placeholder="Contraseña"
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="campo-password">
+              <input
+                placeholder="Contraseña"
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
           </div>
           <div className="campo-formulario">
             <label className="text-form" htmlFor="confirmPassword">
               Confirmar Contraseña
             </label>
-            <input
-              placeholder="Confirmar contraseña"
-              type="password"
-              id="confirmPassword"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
+            <div className="campo-password">
+              <input
+                placeholder="Confirmar contraseña"
+                type="password"
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+            </div>
           </div>
 
           <button type="submit">Registrarse</button>

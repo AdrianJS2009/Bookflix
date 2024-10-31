@@ -1,7 +1,4 @@
-import React from "react";
-
 import Banner from "../components/Banner";
-import Carrusel from "../components/Carrusel";
 import Carrusel2 from "../components/Carrusel2";
 import Footer from "../components/Footer";
 import Generos from "../components/Generos";
@@ -10,7 +7,6 @@ import TopVentas from "../components/TopVentas";
 
 import "../styles/default.css";
 import "../styles/styles.css";
-import Button from "../components/Button";
 
 export default function Home() {
   return (
@@ -26,7 +22,7 @@ export default function Home() {
           imageSrc="/assets/banner/BannerEnvioGratuito.png"
           altText="Banner Envío Gratuito"
         />
-        <Carrusel />
+        {/* <Carrusel /> */}
         <Carrusel2 />
         <TopVentas />
         <Banner
@@ -34,7 +30,7 @@ export default function Home() {
           altText="Banner Web Amigas"
         />
       </div>
-      <Button />
+      {/* <Button /> */}
       <Footer />
     </>
   );
