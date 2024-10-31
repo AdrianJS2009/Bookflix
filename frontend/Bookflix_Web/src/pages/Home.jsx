@@ -2,6 +2,7 @@ import React from "react";
 
 import Banner from "../components/Banner";
 import Carrusel from "../components/Carrusel";
+import Carrusel2 from "../components/Carrusel2";
 import Footer from "../components/Footer";
 import Generos from "../components/Generos";
 import Header from "../components/Header";
@@ -26,6 +27,7 @@ export default function Home() {
           altText="Banner Envío Gratuito"
         />
         <Carrusel />
+        <Carrusel2 />
         <TopVentas />
         <Banner
           imageSrc="/assets/banner/BannerWebAmigas.png"

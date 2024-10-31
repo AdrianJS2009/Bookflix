@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import classes from "./styles/Carrusel.module.css";
+import Button from "./Button";
 
 const Carrusel = () => {
   const [indiceActual, setIndiceActual] = useState(0);
   const libros = [
-    { id: 1, titulo: "Libro 1", precio: "$10", imagen: "/assets/libros/1.png" },
-    { id: 2, titulo: "Libro 2", precio: "$15", imagen: "/assets/libros/2.png" },
-    { id: 3, titulo: "Libro 3", precio: "$20", imagen: "/assets/libros/3.png" },
-    { id: 4, titulo: "Libro 4", precio: "$12", imagen: "/assets/libros/4.png" },
-    { id: 5, titulo: "Libro 5", precio: "$18", imagen: "/assets/libros/5.png" },
+    { id: 1, titulo: "Invisible", precio: "9,00 €", imagen: "/assets/libros/1.png" },
+    { id: 2, titulo: "Hábitos atómicos", precio: "9,00 €", imagen: "/assets/libros/2.png" },
+    { id: 3, titulo: "Redes", precio: "9,00 €", imagen: "/assets/libros/3.png" },
+    { id: 4, titulo: "Pokemon Enciclopedia", precio: "9,00 €", imagen: "/assets/libros/4.png" },
+    { id: 5, titulo: "Libro 5", precio: "9,00 €", imagen: "/assets/libros/5.png" },
   ];
 
   const totalItems = libros.length;
@@ -38,20 +39,13 @@ const Carrusel = () => {
           style={{ transform: `translateX(-${(indiceActual * 100) / 3}%)` }}
         >
           {libros.map((libro) => (
-            <div key={libro.id} className="carrusel-item fondo-azul-claro">
+            <div key={libro.id} className="carrusel-item fondo-azul-claro texto-mediano">
               <img src={libro.imagen} alt={libro.titulo} />
               <h3>{libro.titulo}</h3>
               <p>{libro.precio}</p>
               <div className={classes.btnContainer}>
-                <button className={`fondo-azul ${classes.btnComprar}`}>
-                
-                  <span className="texto-blanco texto-mediano">Comprar</span>
-                </button>
-                <button className={`fondo-verde ${classes.btnAnadir}`}>
-                  <span className="texto-blanco texto-mediano">
-                    Añadir a la cesta
-                  </span>
-                </button>
+                <Button label="Comprar" styleType="btnComprar" onClick={() => alert('Compra realizada')} />
+                <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={() => alert('Añadido a la cesta')} />
               </div>
             </div>
           ))}
