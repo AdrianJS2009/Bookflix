@@ -1,0 +1,23 @@
+.button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: var(--mediano);
+  font-family: 'Inter', sans-serif;
+}
+
+.btnComprar {
+  background-color: var(--azul-normal);
+  color: var(--blanco);
+}
+
+.btnAñadir {
+  background-color: var(--verde-normal);
+  color: var(--blanco);
+}
+
+.btnDefault {
+  background-color: var(--negro);
+  color: var(--blanco);
+}

@@ -9,6 +9,7 @@ import TopVentas from "../components/TopVentas";
 
 import "../styles/default.css";
 import "../styles/styles.css";
+import Button from "../components/Button";
 
 export default function Home() {
   return (
@@ -31,6 +32,7 @@ export default function Home() {
           altText="Banner Web Amigas"
         />
       </div>
+      <Button />
       <Footer />
     </>
   );
