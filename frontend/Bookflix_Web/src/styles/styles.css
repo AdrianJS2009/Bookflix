@@ -56,43 +56,43 @@ body {
 }
 
 .ciencia-ficcion {
-  background-image: url("/assets/generos/CienciaFiccion.png");
+  background-image: url('/assets/generos/CienciaFiccion.png');
 }
 
 .fantasia {
-  background-image: url("/assets/generos/Fantasia.png");
+  background-image: url('/assets/generos/Fantasia.png');
 }
 
 .terror {
-  background-image: url("/assets/generos/Terror.png");
+  background-image: url('/assets/generos/Terror.png');
 }
 
 .misterio {
-  background-image: url("/assets/generos/Misterio.png");
+  background-image: url('/assets/generos/Misterio.png');
 }
 
 .thriller {
-  background-image: url("/assets/generos/Thriller.png");
+  background-image: url('/assets/generos/Thriller.png');
 }
 
 .romance {
-  background-image: url("/assets/generos/Romance.png");
+  background-image: url('/assets/generos/Romance.png');
 }
 
 .biografia {
-  background-image: url("/assets/generos/Biografia.png");
+  background-image: url('/assets/generos/Biografia.png');
 }
 
 .historicos {
-  background-image: url("/assets/generos/Historicos.png");
+  background-image: url('/assets/generos/Historicos.png');
 }
 
 .cinefilos {
-  background-image: url("/assets/generos/Cinefilos.png");
+  background-image: url('/assets/generos/Cinefilos.png');
 }
 
 .novelas {
-  background-image: url("/assets/generos/Novelas.png");
+  background-image: url('/assets/generos/Novelas.png');
 }
 
 /* ********** */
@@ -153,13 +153,12 @@ body {
 
 /* Estilos de cada item en el carrusel */
 .carrusel-item {
-  min-width: calc(
-    100% / 3
-  ); /* Cambia a un valor mayor para ver más libros a la vez */
+  min-width: calc(100% / 3); /* Cambia a un valor mayor para ver más libros a la vez */
   box-sizing: border-box;
   padding: 5px;
   text-align: center;
 }
+
 
 .btn-comprar {
   padding: 5px;
@@ -170,10 +169,10 @@ body {
 }
 
 .btn-container {
-  display: flex; /* Alinea los botones horizontalmente */
-  gap: 8px; /* Ajusta el espacio entre los botones */
+  display: flex;      /* Alinea los botones horizontalmente */
+  gap: 8px;           /* Ajusta el espacio entre los botones */
   justify-content: center; /* Centra los botones dentro del contenedor */
-  margin-top: 15px; /* Añade un margen superior para separarlo del texto */
+  margin-top: 15px;   /* Añade un margen superior para separarlo del texto */
   margin-bottom: 15px;
 }
 

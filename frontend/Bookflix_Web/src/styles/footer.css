@@ -1,0 +1,35 @@
+footer.footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra horizontalmente */
+    width: 100%;
+    z-index: 1000;
+    padding: 20px 0; /* Espaciado interno */
+}
+
+footer.footer > div {
+    margin-bottom: 10px; /* Espacio entre el logo y los enlaces */
+}
+
+div.container-img img.logo-footer {
+    max-height: 45px;
+}
+
+.lista-footer li a {
+    text-decoration: none;
+    color: var(--blanco);
+}
+
+footer.footer ul {
+    display: flex; /* Coloca los enlaces en fila */
+    list-style: none; /* Elimina los puntos de la lista */
+    padding: 0; /* Elimina el padding por defecto */
+}
+
+footer.footer ul li {
+    margin: 0 15px; /* Espacio entre los enlaces */
+}
+
+footer.footer p {
+    margin-top: 15px; /* Espacio entre los enlaces y el copyright */
+}

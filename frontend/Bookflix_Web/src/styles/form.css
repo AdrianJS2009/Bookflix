@@ -1,6 +1,4 @@
-/* form.module.css */
-
-.formContainer {
+.form-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -10,17 +8,17 @@
   box-sizing: border-box;
 }
 
-.formContainer a {
+.form-container a {
   margin-top: 20px;
   color: #007bff;
   text-decoration: none;
 }
 
-.formContainer a:hover {
+.form-container a:hover {
   text-decoration: underline;
 }
 
-.formContainer h1 {
+.form-container h1 {
   margin-bottom: 15px;
   font-weight: bold;
 }
@@ -35,19 +33,19 @@
   box-sizing: border-box;
 }
 
-.campoFormulario {
+.form div {
   margin-bottom: 15px;
   width: 100%;
 }
 
-.textForm {
+.form label {
   display: block;
   font-weight: bold;
   text-align: left;
   width: 100%;
 }
 
-.inputField {
+.form input {
   width: 100%;
   padding: 8px;
   border: 1px solid #ccc;
@@ -55,7 +53,7 @@
   box-sizing: border-box;
 }
 
-.submitButton {
+.form button {
   width: 100%;
   padding: 10px;
   background-color: #007bff;
@@ -66,6 +64,16 @@
   margin-top: 15px;
 }
 
-.submitButton:hover {
+.form button:hover {
   background-color: #0056b3;
+}
+
+.form a {
+  margin-top: 10px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.form a:hover {
+  text-decoration: underline;
 }
