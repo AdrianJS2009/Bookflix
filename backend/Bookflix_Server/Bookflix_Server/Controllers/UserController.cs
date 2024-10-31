@@ -42,7 +42,6 @@ namespace Bookflix_Server.Controllers
                 return NotFound();
             }
 
-            // Devuelve el usuario encontrado
             return user;
         }
 
@@ -52,7 +51,7 @@ namespace Bookflix_Server.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState); // Esta línea valida los campos obligatorios
+                return BadRequest(ModelState);
             }
 
             _context.Users.Add(user);
@@ -72,7 +71,6 @@ namespace Bookflix_Server.Controllers
                 return BadRequest();
             }
 
-            // Marca el usuario como modificado
             _context.Entry(user).State = EntityState.Modified;
 
             try
@@ -89,7 +87,6 @@ namespace Bookflix_Server.Controllers
                 }
                 else
                 {
-                    // Si ocurre otro error, lanza la excepción
                     throw;
                 }
             }
@@ -110,8 +107,8 @@ namespace Bookflix_Server.Controllers
                 return NotFound();
             }
 
-            // Eliminar el usuarior
             _context.Users.Remove(user);
+
             // Guardar los cambios en la base de datos
             await _context.SaveChangesAsync();
 
@@ -122,7 +119,6 @@ namespace Bookflix_Server.Controllers
         // Verificamos si el id del usuario está en la bbdd
         private bool UserExists(int id)
         {
-            // Devuelve true si el usuario existe
             return _context.Users.Any(e => e.IdUser == id);
         }
     }

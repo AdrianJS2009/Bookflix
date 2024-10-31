@@ -1,5 +1,7 @@
-import "../styles/default.module.css";
-import "../styles/styles.module.css";
+import React from "react";
+
+import "../styles/default.css";
+import "../styles/styles.css";
 
 const Generos = () => {
   return (

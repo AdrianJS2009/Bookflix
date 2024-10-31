@@ -2,17 +2,15 @@ import classes from "./Footer.module.css";
 
 const Footer = () => {
   return (
-    <footer className={`${styles.footer} ${styles.fondoNegro}`}>
-      <div className={styles.footerContent}>
+    <footer className={`fondo-negro ${classes.footer}`}>
+      <div className="container-img">
         <img
           src="/assets/logos/Logo - Blanco.png"
-          className={styles.logoFooter}
+          className="logo-footer"
           alt="Bookflix logo"
         />
       </div>
-      <ul
-        className={`${styles.listaFooter} ${styles.textoBlanco} ${styles.textoPequeño}`}
-      >
+      <ul className={`texto-blanco texto-pequeño ${classes["lista-footer"]}`}>
         <li>
           <a href="#">Métodos de pago</a>
         </li>
@@ -38,11 +36,7 @@ const Footer = () => {
           <a href="#">Política de devoluciones</a>
         </li>
       </ul>
-      <p
-        className={`${styles.footerText} ${styles.textoBlanco} ${styles.textoPequeño}`}
-      >
-        © 2024 BOOKFLIX
-      </p>
+      <p className="texto-blanco texto-pequeño">© 2024 BOOKFLIX</p>
     </footer>
   );
 };

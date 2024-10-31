@@ -1,5 +1,4 @@
-import { useState } from "react";
-import styles from "../styles/Carrusel.module.css";
+import React, { useState } from "react";
 
 const Carrusel = () => {
   const [indiceActual, setIndiceActual] = useState(0);
@@ -15,45 +14,39 @@ const Carrusel = () => {
 
   const moverCarrusel = (direccion) => {
     let nuevoIndice = indiceActual + direccion;
+
     if (nuevoIndice < 0) return;
+
     if (nuevoIndice > totalItems - 3) nuevoIndice = totalItems - 3;
+
     setIndiceActual(nuevoIndice);
   };
 
   return (
-    <section id="novedades">
-      <div className={styles.carruselContainer}>
+    <section id="novedades" href="novedades">
+      <div className="carrusel-container">
         <button
-          className={`${styles.flecha} ${styles.izquierda}`}
+          className="flecha izquierda"
           onClick={() => moverCarrusel(-1)}
-          disabled={indiceActual === 0}
+          disabled={indiceActual === 0} // Desactivar si es el primer índice
         >
           &#10094;
         </button>
         <div
-          className={styles.carrusel}
+          className="carrusel"
           style={{ transform: `translateX(-${(indiceActual * 100) / 3}%)` }}
         >
           {libros.map((libro) => (
-            <div
-              key={libro.id}
-              className={`${styles.carruselItem} ${styles.fondoAzulClaro}`}
-            >
+            <div key={libro.id} className="carrusel-item fondo-azul-claro">
               <img src={libro.imagen} alt={libro.titulo} />
               <h3>{libro.titulo}</h3>
               <p>{libro.precio}</p>
-              <div className={styles.btnContainer}>
-                <button className={`${styles.btnComprar} ${styles.fondoAzul}`}>
-                  <span
-                    className={`${styles.textoBlanco} ${styles.textoMediano}`}
-                  >
-                    Comprar
-                  </span>
+              <div className="btn-container">
+                <button className="btn-comprar fondo-azul">
+                  <span className="texto-blanco texto-mediano">Comprar</span>
                 </button>
-                <button className={`${styles.btnAnadir} ${styles.fondoVerde}`}>
-                  <span
-                    className={`${styles.textoBlanco} ${styles.textoMediano}`}
-                  >
+                <button className="btn-anadir fondo-verde">
+                  <span className="texto-blanco texto-mediano">
                     Añadir a la cesta
                   </span>
                 </button>
@@ -62,9 +55,9 @@ const Carrusel = () => {
           ))}
         </div>
         <button
-          className={`${styles.flecha} ${styles.derecha}`}
+          className="flecha derecha"
           onClick={() => moverCarrusel(1)}
-          disabled={indiceActual >= totalItems - 3}
+          disabled={indiceActual >= totalItems - 3} // Desactivar si no hay más elementos
         >
           &#10095;
         </button>

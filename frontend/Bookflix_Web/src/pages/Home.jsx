@@ -1,17 +1,20 @@
+import React from "react";
+
 import Banner from "../components/Banner";
 import Carrusel from "../components/Carrusel";
 import Footer from "../components/Footer";
 import Generos from "../components/Generos";
 import Header from "../components/Header";
 import TopVentas from "../components/TopVentas";
-import styles from "../styles/default.module.css";
-import homeStyles from "../styles/styles.module.css";
+
+import "../styles/default.css";
+import "../styles/styles.css";
 
 export default function Home() {
   return (
     <>
       <Header />
-      <div className={`${homeStyles.homeBookflix} ${styles.fondoBlanco}`}>
+      <div className="home-bookflix fondo-blanco">
         <Banner
           imageSrc="/assets/banner/BannerUnete.png"
           altText="Banner Unete"

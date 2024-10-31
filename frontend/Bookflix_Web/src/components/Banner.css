@@ -1,0 +1,7 @@
+/* Banner.module.css */
+
+.boxBanner {
+  display: flex;
+  justify-content: center;
+  margin: 75px 0 50px 0;
+}

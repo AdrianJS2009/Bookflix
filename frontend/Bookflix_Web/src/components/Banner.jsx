@@ -1,9 +1,8 @@
 import PropTypes from "prop-types";
-import styles from "../styles/Banner.module.css";
 
 export default function Banner({ imageSrc, altText }) {
   return (
-    <div className={styles.boxBanner}>
+    <div className="box-banner">
       <img src={imageSrc} alt={altText} />
     </div>
   );

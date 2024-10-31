@@ -25,8 +25,8 @@ export default function Login() {
 
     if (response.ok) {
       const token = await response.text();
-      localStorage.setItem("token", token); // Guarda el token en el almacenamiento local
-      navigate("/"); // Redirige a la página principal después de iniciar sesión
+      localStorage.setItem("token", token);
+      navigate("/");
     } else {
       alert("Credenciales incorrectas");
     }

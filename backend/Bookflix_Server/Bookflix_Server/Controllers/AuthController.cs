@@ -44,10 +44,10 @@ namespace Bookflix_Server.Controllers
         public async Task<ActionResult<string>> Login([FromBody] LoginDto model)
         {
             // Buscar el usuario en la base de datos por el email
-            var user = await _unitOfWork.Users.GetByEmailAsync(model.Email); // Supón que existe un método GetByEmailAsync en el repositorio
+            var user = await _unitOfWork.Users.GetByEmailAsync(model.Email);
 
             // Verificar si el usuario existe y la contraseña coincide
-            if (user == null || user.Password != model.Password) // Asegúrate de que la contraseña esté encriptada si es necesario
+            if (user == null || user.Password != model.Password)
             {
                 return Unauthorized(); // Devuelve 401 si las credenciales no son válidas
             }
@@ -62,8 +62,8 @@ namespace Bookflix_Server.Controllers
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, userName), // Claim de nombre de usuario
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // ID único del token
+                new Claim(JwtRegisteredClaimNames.Sub, userName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Name, userName)
             };
 
