@@ -3,14 +3,14 @@ import classes from "./styles/Footer.module.css";
 const Footer = () => {
   return (
     <footer className={`fondo-negro ${classes.footer}`}>
-      <div className="container-img">
+      <div className={classes.containerImg}>
         <img
           src="/assets/logos/Logo - Blanco.png"
-          className="logo-footer"
+          className={classes.logoFooter}
           alt="Bookflix logo"
         />
       </div>
-      <ul className={`texto-blanco texto-pequeño ${classes["lista-footer"]}`}>
+      <ul className={`texto-blanco texto-pequeño ${classes.listaFooter}`}>
         <li>
           <a href="#">Métodos de pago</a>
         </li>

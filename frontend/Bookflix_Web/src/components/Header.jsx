@@ -19,7 +19,7 @@ const Header = () => {
             <img
               src="/assets/iconos/Logo Usuario.png"
               className={classes.iconos}
-              alt=""
+              alt="Iconos"
             />{" "}
             Usuario
           </Link>
@@ -27,7 +27,7 @@ const Header = () => {
             <img
               src="/assets/iconos/Logo Cesta.png"
               className={classes.iconos}
-              alt=""
+              alt="Iconos"
             />{" "}
             Cesta
           </Link>

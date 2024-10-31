@@ -11,11 +11,11 @@ footer.footer > div {
   margin-bottom: 10px; /* Espacio entre el logo y los enlaces */
 }
 
-div.container-img img.logo-footer {
+div.containerImg img.logo-footer {
   max-height: 45px;
 }
 
-.lista-footer li a {
+.listaFooter li a {
   text-decoration: none;
   color: var(--blanco);
 }
