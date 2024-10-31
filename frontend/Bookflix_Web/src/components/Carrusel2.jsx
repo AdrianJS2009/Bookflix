@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import classes from "./styles/Carrusel2.module.css";
 import Button from "./Button";
 
@@ -10,24 +10,46 @@ const Carrusel2 = () => {
     { id: 4, titulo: "Pokemon Enciclopedia", precio: "9,00 €", imagen: "/assets/libros/4.png" },
     { id: 5, titulo: "Libro 5", precio: "9,00 €", imagen: "/assets/libros/5.png" },
   ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const nextSlide = () => {
+    if (currentIndex < libros.length - 2) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
+
+  const prevSlide = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
   return (
-    <section id="novedades" href="novedades">
+    <section id="novedades">
       <div className={classes.carruselContainer}>
+        <button onClick={prevSlide} className={classes.prevBtn}>◀</button>
         <div className={classes.carruselWrapper}>
-            <ul className={classes.listaElementos}>
-                {libros.map((libro) => (
-                    <li key={libro.id} className={`${classes.carruselElemento} texto-mediano`}>
-                        <img src={libro.imagen} alt={libro.titulo} className={classes.imgElementoCarrusel}/>
-                        <h3>{libro.titulo}</h3>
-                        <p>{libro.precio}</p>
-                        <div className={classes.btnContainer}>
-                            <Button label="Comprar" styleType="btnComprar" onClick={() => alert('Compra realizada')} />
-                            <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={() => alert('Añadido a la cesta')} />
-                        </div>
-                    </li>
-                ))}
-            </ul>
+          <ul
+            className={classes.listaElementos}
+            style={{
+              transform: `translateX(-${currentIndex * 540}px)`,
+            }}
+          >
+            {libros.map((libro) => (
+              <li key={libro.id} className={classes.carruselElemento}>
+                <img src={libro.imagen} alt={libro.titulo} className={classes.imgElementoCarrusel} />
+                <h3>{libro.titulo}</h3>
+                <p>{libro.precio}</p>
+                <div className={classes.btnContainer}>
+                  <Button label="Comprar" styleType="btnComprar" onClick={() => alert("Compra realizada")} />
+                  <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={() => alert("Añadido a la cesta")} />
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
+        <button onClick={nextSlide} className={classes.nextBtn}>▶</button>
       </div>
     </section>
   );
