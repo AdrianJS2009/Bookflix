@@ -4,17 +4,15 @@
   border-radius: 10px;
   cursor: pointer;
   font-size: var(--mediano);
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
-.btnComprar {
-  background-color: var(--azul-normal);
-  color: var(--blanco);
+.btnComprar:hover {
+  background-color: #0056b3; /* Azul más oscuro */
 }
 
-.btnAñadir {
-  background-color: var(--verde-normal);
-  color: var(--blanco);
+.btnAñadir:hover {
+  background-color: #006400; /* Verde más oscuro */
 }
 
 .btnDefault {
