@@ -15,9 +15,13 @@
 } */
 
 .catalogoItem {
+    background-color: white;
+    border-radius: 15px;
     box-sizing: border-box;
+    width: 350px;
     display: flex;
     flex-direction: column;
+    padding: 10px;
 }
 
 .catalogoItemContent {
@@ -27,13 +31,17 @@
     align-items: center;
 }
 
-/* .catalogoItemButtons {
-
+.catalogoItemButtons {
+    margin: auto;
 }
 
-.imgItemCatalogo {
-
-} */
+.catalogoItemButtons Button {
+    margin: 5px;
+}
+.imgItemCatalogo  {
+    width: 100%;
+    border-radius: 15px;
+} 
 
 .titulo, .precio {
     justify-content: center;
