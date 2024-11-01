@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
@@ -139,9 +139,9 @@ export default function Registro() {
 
           <Button label="Registrarse" type="submit" styleType="btnDefault" />
         </form>
-        <Link to="/login" className="texto-pequeño">
+        <NavLink to="/login" className="texto-pequeño">
           ¿Tienes cuenta? Inicia sesión
-        </Link>
+        </NavLink>
       </div>
       <Footer />
     </>
