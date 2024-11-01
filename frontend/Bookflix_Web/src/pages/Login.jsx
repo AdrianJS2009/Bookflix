@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
@@ -34,6 +34,7 @@ export default function Login() {
       alert("Credenciales incorrectas");
     }
   };
+
   return (
     <>
       <Header />
@@ -68,9 +69,9 @@ export default function Login() {
           </div>
           <Button label="Entrar" type="submit" styleType="btnDefault" />
         </form>
-        <Link to="/registro" className="texto-pequeño">
+        <NavLink to="/registro" className="texto-pequeño">
           ¿Aún no tienes cuenta? Regístrate
-        </Link>
+        </NavLink>
       </div>
       <Footer />
     </>
