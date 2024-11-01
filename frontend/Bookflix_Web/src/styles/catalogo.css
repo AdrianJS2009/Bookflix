@@ -1,4 +1,4 @@
-.catalogoBookflix {
+/* .catalogoBookflix {
 
 }
 
@@ -12,16 +12,29 @@
 
 .catalogoItems {
 
-}
+} */
 
 .catalogoItem {
-
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
 .catalogoItemContent {
+    flex-grow: 1;
+    flex-shrink: 1;
+    text-align: center;
+    align-items: center;
+}
+
+/* .catalogoItemButtons {
 
 }
 
-.catalogoItemButtons {
-    
+.imgItemCatalogo {
+
+} */
+
+.titulo, .precio {
+    justify-content: center;
 }

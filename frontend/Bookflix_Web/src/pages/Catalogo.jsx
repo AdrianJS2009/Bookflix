@@ -1,26 +1,29 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import Button from "../components/Button";
 
-import styles from "../styles/catalogo.css"
+import "../styles/default.css";
+import "../styles/catalogo.css";
 
-
-export default function Catalogo() {
+function Catalogo() {
     return (
         <>
             <Header />
             
-            <div className={styles.catalogoBookflix}>
+            <div className="catalogoBookflix">
                 <h1>Catálogo</h1>
-                <div className={styles.catalogo}>
-                    <div className={styles.catalogoFiltro}>
+                <div className="catalogo">
+                    <div className="catalogoFiltro">
 
                     </div>
-                    <div className={styles.catalogoItems}>
-                        <div className={styles.catalogoItem}>
-                            <div className={styles.catalogoItemContent}>
-
+                    <div className="catalogoItems">
+                        <div className="catalogoItem">
+                            <div className="catalogoItemContent">
+                                <img src="/assets/libros/1.png" className="imgItemCatalogo" />
+                                <p className="titulo">Señorita feliz</p>
+                                <p className="precio">10,50 €</p>
                             </div>
-                            <div className={styles.catalogoItemButtons}>
+                            <div className="catalogoItemButtons">
                                 <Button label="Comprar" styleType="btnComprar" onClick={() => alert("Compra realizada")} />
                                 <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={() => alert("Añadido a la cesta")} />
                             </div>
@@ -33,3 +36,5 @@ export default function Catalogo() {
         </>
     );
 }
+
+export default Catalogo;
