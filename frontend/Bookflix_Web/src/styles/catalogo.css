@@ -1,18 +1,23 @@
 /* .catalogoBookflix {
 
-}
+} */
 
 .catalogo {
-
+    display: flex;
+    flex-direction: row;
+    box-sizing: border-box;
 }
 
 .catalogoFiltro {
-
+    max-width: 30%;
+    display: block;
+    box-sizing: border-box;
 }
 
 .catalogoItems {
-
-} */
+    max-width: 70%;
+    box-sizing: border-box;
+} 
 
 .catalogoItem {
     background-color: white;

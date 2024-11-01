@@ -28,6 +28,72 @@ function Catalogo() {
                                 <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={() => alert("Añadido a la cesta")} />
                             </div>
                         </div>
+                        <div className="catalogoItem">
+                            <div className="catalogoItemContent">
+                                <img src="/assets/libros/1.png" className="imgItemCatalogo" />
+                                <p className="titulo">Señorita feliz</p>
+                                <p className="precio">10,50 €</p>
+                            </div>
+                            <div className="catalogoItemButtons">
+                                <Button label="Comprar" styleType="btnComprar" onClick={() => alert("Compra realizada")} />
+                                <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={() => alert("Añadido a la cesta")} />
+                            </div>
+                        </div>
+                        <div className="catalogoItem">
+                            <div className="catalogoItemContent">
+                                <img src="/assets/libros/1.png" className="imgItemCatalogo" />
+                                <p className="titulo">Señorita feliz</p>
+                                <p className="precio">10,50 €</p>
+                            </div>
+                            <div className="catalogoItemButtons">
+                                <Button label="Comprar" styleType="btnComprar" onClick={() => alert("Compra realizada")} />
+                                <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={() => alert("Añadido a la cesta")} />
+                            </div>
+                        </div>
+                        <div className="catalogoItem">
+                            <div className="catalogoItemContent">
+                                <img src="/assets/libros/1.png" className="imgItemCatalogo" />
+                                <p className="titulo">Señorita feliz</p>
+                                <p className="precio">10,50 €</p>
+                            </div>
+                            <div className="catalogoItemButtons">
+                                <Button label="Comprar" styleType="btnComprar" onClick={() => alert("Compra realizada")} />
+                                <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={() => alert("Añadido a la cesta")} />
+                            </div>
+                        </div>
+                        <div className="catalogoItem">
+                            <div className="catalogoItemContent">
+                                <img src="/assets/libros/1.png" className="imgItemCatalogo" />
+                                <p className="titulo">Señorita feliz</p>
+                                <p className="precio">10,50 €</p>
+                            </div>
+                            <div className="catalogoItemButtons">
+                                <Button label="Comprar" styleType="btnComprar" onClick={() => alert("Compra realizada")} />
+                                <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={() => alert("Añadido a la cesta")} />
+                            </div>
+                        </div>
+                        <div className="catalogoItem">
+                            <div className="catalogoItemContent">
+                                <img src="/assets/libros/1.png" className="imgItemCatalogo" />
+                                <p className="titulo">Señorita feliz</p>
+                                <p className="precio">10,50 €</p>
+                            </div>
+                            <div className="catalogoItemButtons">
+                                <Button label="Comprar" styleType="btnComprar" onClick={() => alert("Compra realizada")} />
+                                <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={() => alert("Añadido a la cesta")} />
+                            </div>
+                        </div>
+                        <div className="catalogoItem">
+                            <div className="catalogoItemContent">
+                                <img src="/assets/libros/1.png" className="imgItemCatalogo" />
+                                <p className="titulo">Señorita feliz</p>
+                                <p className="precio">10,50 €</p>
+                            </div>
+                            <div className="catalogoItemButtons">
+                                <Button label="Comprar" styleType="btnComprar" onClick={() => alert("Compra realizada")} />
+                                <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={() => alert("Añadido a la cesta")} />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
