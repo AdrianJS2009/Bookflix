@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { NavLink } from 'react-router-dom';
 import classes from "./styles/Carrusel.module.css";
 import Button from "./Button";
 
@@ -30,7 +31,7 @@ const Carrusel = () => {
         <button
           className={`${classes.flecha} ${classes.izquierda}`}
           onClick={() => moverCarrusel(-1)}
-          disabled={indiceActual === 0} // Desactivar si es el primer índice
+          disabled={indiceActual <= 0} // Desactivar si no hay más elementos
         >
           &#10094;
         </button>
@@ -39,7 +40,7 @@ const Carrusel = () => {
           style={{ transform: `translateX(-${(indiceActual * 100) / 3}%)` }}
         >
           {libros.map((libro) => (
-            <div key={libro.id} className="carrusel-item fondo-azul-claro texto-mediano">
+            <NavLink key={libro.id} to={`/libro/${libro.id}`} className="carrusel-item fondo-azul-claro texto-mediano" activeClassName="active">
               <img src={libro.imagen} alt={libro.titulo} />
               <h3>{libro.titulo}</h3>
               <p>{libro.precio}</p>
@@ -47,7 +48,7 @@ const Carrusel = () => {
                 <Button label="Comprar" styleType="btnComprar" onClick={() => alert('Compra realizada')} />
                 <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={() => alert('Añadido a la cesta')} />
               </div>
-            </div>
+            </NavLink>
           ))}
         </div>
         <button
