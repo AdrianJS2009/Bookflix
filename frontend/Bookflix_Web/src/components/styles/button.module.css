@@ -5,14 +5,27 @@
   cursor: pointer;
   font-size: var(--mediano);
   font-family: "Inter", sans-serif;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btnComprar {
+  background-color: #007bff; /* Azul estándar */
+  color: #ffffff;
 }
 
 .btnComprar:hover {
   background-color: #0056b3; /* Azul más oscuro */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btnAñadir {
+  background-color: #228b22; /* Verde estándar */
+  color: #ffffff;
 }
 
 .btnAñadir:hover {
   background-color: #006400; /* Verde más oscuro */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .btnDefault {
