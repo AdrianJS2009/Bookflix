@@ -1,5 +1,3 @@
-import React from "react";
-
 import "../styles/default.css";
 import classes from "./styles/Generos.module.css";
 

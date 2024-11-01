@@ -6,6 +6,9 @@
   height: calc(100vh - 80px);
   padding: 20px;
   box-sizing: border-box;
+  background-color: #f9f9f9; /* Fondo suave */
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Sombra para profundidad */
+  border-radius: 8px; /* Bordes redondeados */
 }
 
 .form-container a {
@@ -20,7 +23,8 @@
 
 .form-container h1 {
   margin-bottom: 15px;
-  font-weight: bold;
+  font-weight: 900; /* Peso de fuente aumentado */
+  text-transform: uppercase; /* Texto en mayúsculas */
 }
 
 .form {
@@ -56,9 +60,9 @@
 .form button {
   width: 100%;
   padding: 10px;
-  background-color: #007bff;
+  background-color: #007bff; /* Azul principal */
   color: white;
-  border: none;
+  border: 2px solid var(--verde-normal); /* Borde verde */
   border-radius: 4px;
   cursor: pointer;
   margin-top: 15px;
@@ -66,6 +70,7 @@
 
 .form button:hover {
   background-color: #0056b3;
+  border-color: var(--verde-oscuro); /* Borde más oscuro al hacer hover */
 }
 
 .form a {
