@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
 import classes from "./styles/Carrusel2.module.css";
 import Button from "./Button";
 
@@ -38,9 +39,11 @@ const Carrusel2 = () => {
           >
             {libros.map((libro) => (
               <li key={libro.id} className={classes.carruselElemento}>
-                <img src={libro.imagen} alt={libro.titulo} className={classes.imgElementoCarrusel} />
-                <h3>{libro.titulo}</h3>
-                <p>{libro.precio}</p>
+                <NavLink to={`/libro/${libro.id}`}>
+                  <img src={libro.imagen} alt={libro.titulo} className={classes.imgElementoCarrusel} />
+                  <h3>{libro.titulo}</h3>
+                  <p>{libro.precio}</p>
+                </NavLink>
                 <div className={classes.btnContainer}>
                   <Button label="Comprar" styleType="btnComprar" onClick={() => alert("Compra realizada")} />
                   <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={() => alert("Añadido a la cesta")} />

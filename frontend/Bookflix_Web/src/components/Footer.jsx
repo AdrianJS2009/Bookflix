@@ -1,3 +1,4 @@
+import { NavLink } from 'react-router-dom';
 import classes from "./styles/Footer.module.css";
 
 const Footer = () => {
@@ -12,28 +13,28 @@ const Footer = () => {
       </div>
       <ul className={`texto-blanco texto-pequeño ${classes.listaFooter}`}>
         <li>
-          <a href="#">Métodos de pago</a>
+          <NavLink to="/metodos-de-pago" activeClassName="active">Métodos de pago</NavLink>
         </li>
         <li>
-          <a href="#">Tarjetas de regalo</a>
+          <NavLink to="/tarjetas-de-regalo" activeClassName="active">Tarjetas de regalo</NavLink>
         </li>
         <li>
-          <a href="#">Ayuda</a>
+          <NavLink to="/ayuda" activeClassName="active">Ayuda</NavLink>
         </li>
         <li>
-          <a href="#">Contacto</a>
+          <NavLink to="/contacto" activeClassName="active">Contacto</NavLink>
         </li>
         <li>
-          <a href="#">T&C</a>
+          <NavLink to="/terminos-y-condiciones" activeClassName="active">T&C</NavLink>
         </li>
         <li>
-          <a href="#">Política de privacidad</a>
+          <NavLink to="/politica-de-privacidad" activeClassName="active">Política de privacidad</NavLink>
         </li>
         <li>
-          <a href="#">Cookies</a>
+          <NavLink to="/cookies" activeClassName="active">Cookies</NavLink>
         </li>
         <li>
-          <a href="#">Política de devoluciones</a>
+          <NavLink to="/politica-de-devoluciones" activeClassName="active">Política de devoluciones</NavLink>
         </li>
       </ul>
       <p className="texto-blanco texto-pequeño">© 2024 BOOKFLIX</p>
