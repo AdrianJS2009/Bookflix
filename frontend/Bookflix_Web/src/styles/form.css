@@ -82,3 +82,20 @@
 .form a:hover {
   text-decoration: underline;
 }
+
+.input-con-icono {
+  position: relative;
+}
+
+.input-con-icono input {
+  width: 100%;
+  padding-right: 30px;
+}
+
+.icono-mostrar {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Button from "../components/Button";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 
@@ -14,6 +13,8 @@ export default function Registro() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [apellidos, setApellidos] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -110,34 +111,46 @@ export default function Registro() {
             <label className="text-form" htmlFor="password">
               Contraseña
             </label>
-            <div className="campo-password">
+            <div className="input-con-icono">
               <input
                 placeholder="Contraseña"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
+              <span
+                className="icono-mostrar"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "🙈" : "👁️"}
+              </span>
             </div>
           </div>
           <div className="campo-formulario">
             <label className="text-form" htmlFor="confirmPassword">
               Confirmar Contraseña
             </label>
-            <div className="campo-password">
+            <div className="input-con-icono">
               <input
                 placeholder="Confirmar contraseña"
-                type="password"
+                type={showConfirmPassword ? "text" : "password"}
                 id="confirmPassword"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
               />
+              <span
+                className="icono-mostrar"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? "🙈" : "👁️"}
+              </span>
             </div>
           </div>
 
-          <Button label="Registrarse" type="submit" styleType="btnDefault" />
+          <button type="submit">Registrarse</button>
         </form>
         <Link to="/login" className="texto-pequeño">
           ¿Tienes cuenta? Inicia sesión
