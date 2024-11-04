@@ -11,50 +11,48 @@ namespace Bookflix_Server.Repositories
         // Lista privada que almacena las reseñas
         private readonly List<Reseña> listaReseñas = new List<Reseña>();
 
-        // Método para obtener una reseña por su ID
-        public Task<Reseña> GetByIdAsync(int id)
+        // Método para obtener una reseña por su ID de usuario y producto
+        public Task<Reseña> GetByUsuarioIdAndProductoIdAsync(int usuarioId, int productoId)
         {
-            // Busca la reseña en la lista por su ID
-            var reseña = listaReseñas.FirstOrDefault(r => r.Id == id);
-            // Retorna la reseña encontrada (o null si no se encuentra)
+            var reseña = listaReseñas.FirstOrDefault(r => r.UsuarioId == usuarioId && r.ProductoId == productoId);
             return Task.FromResult(reseña);
         }
 
         // Método para agregar una nueva reseña
         public Task AddAsync(Reseña reseña)
         {
-            // Agrega la reseña a la lista
             listaReseñas.Add(reseña);
-            // Retorna una tarea completada
             return Task.CompletedTask;
         }
 
-        // Método para verificar si una reseña existe por su ID
-        public Task<bool> ReseñaExistsAsync(int id)
+        // Método para verificar si una reseña existe por su ID de usuario y producto
+        public Task<bool> ReseñaExistsAsync(int usuarioId, int productoId)
         {
-            // Verifica si alguna reseña en la lista tiene el ID especificado
-            var exists = listaReseñas.Any(r => r.Id == id);
-            // Retorna el resultado de la verificación
+            var exists = listaReseñas.Any(r => r.UsuarioId == usuarioId && r.ProductoId == productoId);
             return Task.FromResult(exists);
         }
 
-        // Método para obtener todas las reseñas
-        public Task<IEnumerable<Reseña>> GetAllAsync()
+        // Método para obtener todas las reseñas de un usuario
+        public Task<IEnumerable<Reseña>> GetByUsuarioIdAsync(int usuarioId)
         {
-            // Retorna todas las reseñas en la lista
-            return Task.FromResult<IEnumerable<Reseña>>(listaReseñas);
+            var reseñas = listaReseñas.Where(r => r.UsuarioId == usuarioId);
+            return Task.FromResult<IEnumerable<Reseña>>(reseñas);
+        }
+
+        // Método para obtener todas las reseñas de un producto
+        public Task<IEnumerable<Reseña>> GetByProductoIdAsync(int productoId)
+        {
+            var reseñas = listaReseñas.Where(r => r.ProductoId == productoId);
+            return Task.FromResult<IEnumerable<Reseña>>(reseñas);
         }
 
         // Método para calcular el promedio de estrellas de todas las reseñas
         public Task<double> CalcularPromedioEstrellasAsync()
         {
-            // Si no hay reseñas, el promedio es 0
             if (listaReseñas.Count == 0)
                 return Task.FromResult(0.0);
 
-            // Calcula el promedio de estrellas
             var promedio = listaReseñas.Average(r => r.Estrellas);
-            // Retorna el promedio calculado
             return Task.FromResult(promedio);
         }
     }
