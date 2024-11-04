@@ -14,4 +14,15 @@ internal class Reseña
     public DateTime FechaPublicacion { get; set; } // Fecha de publicación de la reseña
 }
 
+// Clase que maneja una colección de reseñas
+internal class Reseñas
+{
+    // Lista privada que almacena las reseñas
+    private List<Reseña> listaReseñas = new List<Reseña>();
 
+    // Método para agregar una nueva reseña a la lista
+    public void AgregarReseña(Reseña reseña)
+    {
+        listaReseñas.Add(reseña);
+    }
+}
