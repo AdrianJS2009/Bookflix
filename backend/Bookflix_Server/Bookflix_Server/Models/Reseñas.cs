@@ -25,4 +25,21 @@ internal class Reseñas
     {
         listaReseñas.Add(reseña);
     }
+
+    // Método para calcular el promedio de estrellas de todas las reseñas
+    public double CalcularPromedioEstrellas()
+    {
+        // Si no hay reseñas, el promedio es 0
+        if (listaReseñas.Count == 0)
+            return 0;
+
+        // Calcula el promedio de estrellas usando LINQ
+        return listaReseñas.Average(r => r.Estrellas);
+    }
+
+    // Método para obtener el total de reseñas
+    public int ObtenerTotalReseñas()
+    {
+        return listaReseñas.Count;
+    }
 }
