@@ -42,4 +42,17 @@ internal class Reseñas
     {
         return listaReseñas.Count;
     }
+
+    // Método para obtener los datos básicos de todas las reseñas
+    public List<Reseña> ObtenerDatosBasicos()
+    {
+        // Selecciona y retorna una lista con los datos básicos de cada reseña
+        return listaReseñas.Select(r => new Reseña
+        {
+            Autor = r.Autor,
+            Texto = r.Texto,
+            Estrellas = r.Estrellas,
+            FechaPublicacion = r.FechaPublicacion
+        }).ToList();
+    }
 }
