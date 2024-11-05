@@ -14,7 +14,10 @@ using Bookflix_Server.Data;
 
 namespace Bookflix_Server.Controllers
 {
-    internal class LibroController : ControllerBase
+
+    [ApiController]
+    [Route("api/[controller]")]
+    public class LibroController : ControllerBase
     {
         private readonly MyDbContext _context;
 
