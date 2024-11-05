@@ -9,16 +9,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Hosting;
+using Bookflix_Server.Models.Seeder;
 
 namespace Bookflix_Server;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args) // Cambiar Main a async
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-
 
         // Configuración de servicios de Swagger y autenticación JWT
         builder.Services.AddControllers();
@@ -89,14 +89,19 @@ public class Program
 
         var app = builder.Build();
 
+        // Crear base de datos y ejecutar el Seeder de libros al iniciar la aplicación
         using (IServiceScope scope = app.Services.CreateScope())
         {
-            var dbContext = scope.ServiceProvider.GetService<MyDbContext>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<MyDbContext>();
             if (dbContext == null)
             {
                 throw new Exception("MyDbContext no está registrado correctamente.");
             }
             dbContext.Database.EnsureCreated();
+
+            // Ejecutar el seeder
+            var seeder = new SeederLibros(dbContext);
+            await seeder.Seeder(); // Llamada al método asíncrono
         }
 
         // Configuración de middleware
@@ -118,6 +123,6 @@ public class Program
 
         app.MapControllers();
 
-        app.Run();
+        await app.RunAsync();
     }
 }

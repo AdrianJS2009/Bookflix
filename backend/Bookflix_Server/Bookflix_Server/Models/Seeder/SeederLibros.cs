@@ -7,12 +7,12 @@ public class SeederLibros
 {
     private readonly MyDbContext _context;
 
-    public SeederLibros (MyDbContext context)
+    public SeederLibros(MyDbContext context)
     {
         _context = context;
     }
 
-    public void Seeder()
+    public async Task Seeder()
     {
         List<Libro> libros =
         [
