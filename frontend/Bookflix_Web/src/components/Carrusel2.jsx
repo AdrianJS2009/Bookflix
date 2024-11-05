@@ -29,12 +29,12 @@ const Carrusel2 = () => {
   return (
     <section id="novedades">
       <div className={classes.carruselContainer}>
-        <button onClick={prevSlide} className={classes.prevBtn}>◀</button>
         <div className={classes.carruselWrapper}>
+        <button onClick={prevSlide} className={classes.prevBtn}>◀</button>
           <ul
             className={classes.listaElementos}
             style={{
-              transform: `translateX(-${currentIndex * 540}px)`,
+              transform: `translateX(-${currentIndex * 536}px)`,
             }}
           >
             {libros.map((libro) => (
@@ -51,8 +51,8 @@ const Carrusel2 = () => {
               </li>
             ))}
           </ul>
+          <button onClick={nextSlide} className={classes.nextBtn}>▶</button>
         </div>
-        <button onClick={nextSlide} className={classes.nextBtn}>▶</button>
       </div>
     </section>
   );
