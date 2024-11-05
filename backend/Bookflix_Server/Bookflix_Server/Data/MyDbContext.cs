@@ -6,6 +6,7 @@ namespace Bookflix_Server.Data
     public class MyDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<Libro> Libros { get; set; }
 
         public MyDbContext(DbContextOptions<MyDbContext> options) : base(options) { }
 
