@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-
+using Bookflix_Server.Models;
 public class Libro
 {
     [Key]
@@ -25,6 +25,6 @@ public class Libro
 
     public string Autor { get; set; }
 
-    public ICollection<Reseñas> Reseñas { get; set; }
+    public ICollection<Reseña> Reseñas { get; set; }
 }
 

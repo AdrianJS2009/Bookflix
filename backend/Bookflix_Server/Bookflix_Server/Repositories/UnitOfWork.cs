@@ -19,6 +19,7 @@ namespace Bookflix_Server.Repositories
             return await _context.SaveChangesAsync();
         }
 
+        public IReseñasRepository Reseña { get; private set; }
         // Hacemos dispose del contexto de base de datos la UnitOfWork termina
         public void Dispose()
         {
