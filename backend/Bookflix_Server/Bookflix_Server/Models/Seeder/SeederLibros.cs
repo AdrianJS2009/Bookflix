@@ -78,7 +78,7 @@ public class SeederLibros
                 Descripcion = "Curiosidades y cuentos sobre aviones.",
                 Stock = 90,
                 ISBN = "9781234567804",
-                Autor = "Anónimo",
+                Autor = "Dario Borhani",
                 Reseñas = new List<Reseña>()
             },
             new Libro
@@ -91,7 +91,7 @@ public class SeederLibros
                 Descripcion = "Análisis de accidentes aéreos y las lecciones aprendidas.",
                 Stock = 100,
                 ISBN = "9781234567805",
-                Autor = "Anónimo",
+                Autor = "Oliver Elliot",
                 Reseñas = new List<Reseña>()
             },
             new Libro
@@ -104,7 +104,7 @@ public class SeederLibros
                 Descripcion = "Preguntas y datos curiosos sobre aviación.",
                 Stock = 110,
                 ISBN = "9781234567806",
-                Autor = "Anónimo",
+                Autor = "Victor Díaz",
                 Reseñas = new List<Reseña>()
             },
             new Libro
@@ -117,7 +117,7 @@ public class SeederLibros
                 Descripcion = "Historia y detalles de aviones de combate legendarios.",
                 Stock = 120,
                 ISBN = "9781234567807",
-                Autor = "Anónimo",
+                Autor = "Riccardo Niccoli",
                 Reseñas = new List<Reseña>()
             },
             new Libro
@@ -130,7 +130,7 @@ public class SeederLibros
                 Descripcion = "Historia del retrogaming y los videojuegos clásicos.",
                 Stock = 130,
                 ISBN = "9781234567808",
-                Autor = "Anónimo",
+                Autor = "Iván Battle",
                 Reseñas = new List<Reseña>()
             },
             new Libro
@@ -143,7 +143,7 @@ public class SeederLibros
                 Descripcion = "Consejos y pasos para comenzar un negocio.",
                 Stock = 140,
                 ISBN = "9781234567809",
-                Autor = "Anónimo",
+                Autor = "Andrew Rehbein",
                 Reseñas = new List<Reseña>()
             },
             new Libro
@@ -156,7 +156,7 @@ public class SeederLibros
                 Descripcion = "Cómo usar la inteligencia artificial para potenciar la productividad.",
                 Stock = 150,
                 ISBN = "9781234567810",
-                Autor = "Anónimo",
+                Autor = "D. Nardo Publications",
                 Reseñas = new List<Reseña>()
             },
             new Libro
@@ -169,7 +169,7 @@ public class SeederLibros
                 Descripcion = "Manual esencial para aprender Java.",
                 Stock = 160,
                 ISBN = "9781234567811",
-                Autor = "Anónimo",
+                Autor = "Mariona Nadal Farre",
                 Reseñas = new List<Reseña>()
             },
             new Libro
@@ -182,7 +182,7 @@ public class SeederLibros
                 Descripcion = "Guía completa para aprender JavaScript.",
                 Stock = 170,
                 ISBN = "9781234567812",
-                Autor = "Anónimo",
+                Autor = "Astor de Caso Parra",
                 Reseñas = new List<Reseña>()
             },
             new Libro
@@ -195,7 +195,7 @@ public class SeederLibros
                 Descripcion = "Curso práctico de PHP y MySQL.",
                 Stock = 180,
                 ISBN = "9781234567813",
-                Autor = "Anónimo",
+                Autor = "Luis Miguel Cabezas Granado",
                 Reseñas = new List<Reseña>()
             },
             new Libro
@@ -208,7 +208,7 @@ public class SeederLibros
                 Descripcion = "Primera entrega de la serie Empíreo.",
                 Stock = 190,
                 ISBN = "9781234567814",
-                Autor = "Anónimo",
+                Autor = "Rebecca Yarros",
                 Reseñas = new List<Reseña>()
             },
             new Libro
@@ -221,7 +221,7 @@ public class SeederLibros
                 Descripcion = "Segunda entrega de la serie Empíreo.",
                 Stock = 200,
                 ISBN = "9781234567815",
-                Autor = "Anónimo",
+                Autor = "Rebecca Yarros",
                 Reseñas = new List<Reseña>()
             },
             new Libro
@@ -234,7 +234,7 @@ public class SeederLibros
                 Descripcion = "Una obra introspectiva y única.",
                 Stock = 210,
                 ISBN = "9781234567816",
-                Autor = "Anónimo",
+                Autor = "Blake Pierce",
                 Reseñas = new List<Reseña>()
             },
             new Libro
@@ -260,7 +260,7 @@ public class SeederLibros
                 Descripcion = "Un análisis profundo del negocio de las materias primas.",
                 Stock = 230,
                 ISBN = "9781234567818",
-                Autor = "Anónimo",
+                Autor = "Javier Blas",
                 Reseñas = new List<Reseña>()
             },
             new Libro
@@ -273,7 +273,7 @@ public class SeederLibros
                 Descripcion = "Una historia sobre lazos familiares y secretos.",
                 Stock = 240,
                 ISBN = "9781234567819",
-                Autor = "Anónimo",
+                Autor = "Carmen Mola",
                 Reseñas = new List<Reseña>()
             },
             new Libro
@@ -286,7 +286,7 @@ public class SeederLibros
                 Descripcion = "Una historia conmovedora sobre un niño y la guerra.",
                 Stock = 250,
                 ISBN = "9781234567820",
-                Autor = "Anónimo",
+                Autor = "Julia Navarro",
                 Reseñas = new List<Reseña>()
             },
             new Libro
@@ -299,7 +299,7 @@ public class SeederLibros
                 Descripcion = "Una trama oscura sobre el destino de niñas perdidas.",
                 Stock = 260,
                 ISBN = "9781234567821",
-                Autor = "Anónimo",
+                Autor = "Marta Martín Girón",
                 Reseñas = new List<Reseña>()
             },
             new Libro
@@ -377,7 +377,7 @@ public class SeederLibros
                 Descripcion = "Un libro introspectivo sobre el propósito de la vida.",
                 Stock = 320,
                 ISBN = "9781234567827",
-                Autor = "Anónimo",
+                Autor = "Jesús Yanes",
                 Reseñas = new List<Reseña>()
             },
             new Libro
@@ -403,7 +403,7 @@ public class SeederLibros
                 Descripcion = "Exploración sobre el poder de la palabra y la PNL.",
                 Stock = 340,
                 ISBN = "9781234567829",
-                Autor = "Anónimo",
+                Autor = "Robert Dilts",
                 Reseñas = new List<Reseña>()
             }
         ];
