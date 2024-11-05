@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-    internal class Reseñas
+    public class Reseñas
 {
     public int IdReseñas { get; set; }
 

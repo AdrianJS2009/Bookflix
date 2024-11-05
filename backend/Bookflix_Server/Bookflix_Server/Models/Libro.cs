@@ -21,7 +21,7 @@ public class Libro
 
     public int Stock { get; set; }
 
-    public int ISBN { get; set; }
+    public string ISBN { get; set; }
 
     public string Autor { get; set; }
 

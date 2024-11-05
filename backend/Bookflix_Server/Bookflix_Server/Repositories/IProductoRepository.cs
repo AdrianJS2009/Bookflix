@@ -5,13 +5,13 @@ namespace Bookflix_Server.Repositories
 {
     internal interface IProductoRepository
     {
-        Task<IEnumerable<Libro>> ObtenerTodosAsync();
-        Task<Libro> ObtenerPorIdAsync(int id);
-        Task AgregarAsync(Libro libro);
-        Task ActualizarAsync(Libro libro);
-        Task EliminarAsync(int id);
+        Task<IEnumerable<Libro>> GetAllLibrosAsync();
+        Task<Libro> GetByIdAsync(int id);
+        Task AddAsync(Libro libro);
+        Task UpdateAsync(Libro libro);
 
-        Task<IEnumerable<Libro>> FiltrarLibrosAsync(
+        Task<IEnumerable<Libro>> FiltrarLibrosAsync
+        (
             string autor = null,
             string genero = null,
             string isbn = null,
@@ -21,8 +21,8 @@ namespace Bookflix_Server.Repositories
             bool ascendente = true
         );
 
-        Task<IEnumerable<Libro>> ObtenerPorAutorAsync(string autor);
-        Task<IEnumerable<Libro>> ObtenerPorGeneroAsync(string genero);
-        Task<Libro> ObtenerPorISBNAsync(string isbn);
+        Task<IEnumerable<Libro>> GetByAutorAsync(string autor);
+        Task<IEnumerable<Libro>> GetByGeneroAsync(string genero);
+        Task<Libro> GetByISBNAsync(string isbn);
     }
 }
