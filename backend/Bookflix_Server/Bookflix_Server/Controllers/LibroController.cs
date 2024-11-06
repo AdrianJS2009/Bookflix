@@ -23,6 +23,7 @@ namespace Bookflix_Server.Controllers
         // Endpoint para listar libros con opciones de filtrado, orden y paginación
         [HttpGet("ListarLibros")]
         public async Task<ActionResult<IEnumerable<Libro>>> GetLibros(
+            string nombre = null,
             string autor = null,
             string genero = null,
             string isbn = null,
@@ -37,6 +38,7 @@ namespace Bookflix_Server.Controllers
 
             var librosQuery = _context.Libros
                 .Where(l =>
+                    (nombre == null || l.Nombre.Contains(nombre)) &&
                     (autor == null || l.Autor.Contains(autor)) &&
                     (genero == null || l.Genero.Contains(genero)) &&
                     (isbn == null || l.ISBN == isbn) &&
