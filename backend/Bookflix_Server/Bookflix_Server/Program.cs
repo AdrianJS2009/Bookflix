@@ -155,7 +155,7 @@ public class Program
                   .AllowAnyHeader()
                   .AllowAnyMethod());
 
-        app.UseHttpsRedirection();
+      
         app.UseAuthentication();
         app.UseAuthorization();
 
