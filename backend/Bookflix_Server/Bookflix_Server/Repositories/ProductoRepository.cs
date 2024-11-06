@@ -99,6 +99,19 @@ namespace Bookflix_Server.Repositories
             return await query.ToListAsync();
         }
 
+        public async Task<IEnumerable<Libro>> Buscador(string textoBuscado = null)
+        {
+            var query = _context.Libros.AsQueryable();
+
+            if (!string.IsNullOrEmpty(textoBuscado))
+                query = query.Where(l => l.Nombre.Contains(textoBuscado));
+                query = query.Where(l => l.Autor.Contains(textoBuscado));
+                query = query.Where(l => l.Genero.Contains(textoBuscado));
+                query = query.Where(l => l.ISBN == textoBuscado);
+
+            return await query.ToListAsync();
+        }
+
 
         public async Task<IEnumerable<Libro>> GetByAutorAsync(string autor)
         {

@@ -59,6 +59,30 @@ namespace Bookflix_Server.Controllers
             return Ok(libros);
         }
 
+        [HttpGet("Buscador")]
+        public async Task<ActionResult<IEnumerable<Libro>>> GetBusqueda(
+            string textoBuscado = null,
+            int pagina = 1,
+            int tamanoPagina = TamañoPagina)
+        {
+            if (pagina <= 0) return BadRequest("El número de página debe ser mayor que cero.");
+
+            var librosQuery = _context.Libros
+                .Where(l =>
+                    (l.Nombre.Contains(textoBuscado)) ||
+                    (l.Autor.Contains(textoBuscado)) ||
+                    (l.Genero.Contains(textoBuscado)) ||
+                    (l.ISBN == textoBuscado)
+                );
+
+
+            var libros = await librosQuery
+                .Skip((pagina - 1) * tamanoPagina)
+                .Take(tamanoPagina)
+                .ToListAsync();
+
+            return Ok(libros);
+        }
         // Endpoint para obtener detalles de un libro específico
         [HttpGet("Detalle/{id}")]
         public async Task<ActionResult<Libro>> GetLibroById(int id)

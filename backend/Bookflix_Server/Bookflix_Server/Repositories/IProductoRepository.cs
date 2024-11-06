@@ -31,6 +31,8 @@
             bool ascendente = true
         );
 
+        Task<IEnumerable<Libro>> Buscador(string textoBuscado = null);
+
 
         Task<IEnumerable<Libro>> GetByAutorAsync(string autor);
 
