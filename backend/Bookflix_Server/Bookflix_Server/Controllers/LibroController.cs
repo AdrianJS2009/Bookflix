@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Bookflix_Server.Data;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Bookflix_Server.Data;
 
 namespace Bookflix_Server.Controllers
 {
-
     [ApiController]
     [Route("api/[controller]")]
     public class LibroController : ControllerBase
@@ -13,10 +12,9 @@ namespace Bookflix_Server.Controllers
 
         public LibroController(MyDbContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        // GET para obtener todos los libros con filtros que se nos pide
         [HttpGet("ListarLibros")]
         public async Task<ActionResult<IEnumerable<Libro>>> GetLibros(
             string autor = null,
@@ -37,16 +35,12 @@ namespace Bookflix_Server.Controllers
                     (precioMin == null || l.Precio >= precioMin) &&
                     (precioMax == null || l.Precio <= precioMax));
 
-            if (ordenPor == "precio")
+            librosQuery = ordenPor switch
             {
-                librosQuery = ascendente ? librosQuery.OrderBy(l => l.Precio) : librosQuery.OrderByDescending(l => l.Precio);
-            }
-            else
-            {
-                librosQuery = ascendente ? librosQuery.OrderBy(l => l.Nombre) : librosQuery.OrderByDescending(l => l.Nombre);
-            }
+                "precio" => ascendente ? librosQuery.OrderBy(l => l.Precio) : librosQuery.OrderByDescending(l => l.Precio),
+                _ => ascendente ? librosQuery.OrderBy(l => l.Nombre) : librosQuery.OrderByDescending(l => l.Nombre)
+            };
 
-            //Paginación
             var libros = await librosQuery
                 .Skip((pagina - 1) * tamanoPagina)
                 .Take(tamanoPagina)
@@ -55,17 +49,15 @@ namespace Bookflix_Server.Controllers
             return Ok(libros);
         }
 
-
         [HttpGet("Detalle/{id}")]
         public async Task<ActionResult<Libro>> GetLibroById(int id)
         {
             var libro = await _context.Libros.FirstOrDefaultAsync(l => l.IdLibro == id);
             if (libro == null)
             {
-                return NotFound();
+                return NotFound("Libro no encontrado.");
             }
             return Ok(libro);
         }
-
     }
 }
