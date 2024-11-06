@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Bookflix_Server.Data;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Bookflix_Server.Data;
-using Bookflix_Server.Models;
 
 namespace Bookflix_Server.Controllers
 {

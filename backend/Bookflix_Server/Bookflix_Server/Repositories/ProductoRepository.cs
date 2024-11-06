@@ -1,113 +1,50 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Bookflix_Server.Data;
+﻿using Bookflix_Server.Data;
 using Bookflix_Server.Models;
 using Microsoft.EntityFrameworkCore;
-
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Bookflix_Server.Repositories
 {
-    internal class ProductoRepository : IProductoRepository
+    public class ProductoRepository : IProductoRepository
     {
         private readonly MyDbContext _context;
 
         public ProductoRepository(MyDbContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        //Funciones de los libros
-        public async Task<IEnumerable<Libro>> GetAllLibrosAsync()
+        public async Task<IEnumerable<Libro>> GetAllAsync()
         {
             return await _context.Libros.ToListAsync();
         }
 
         public async Task<Libro> GetByIdAsync(int id)
         {
-            return await _context.Libros.FirstOrDefaultAsync(p => p.IdLibro == id);
+            return await _context.Libros.FirstOrDefaultAsync(l => l.IdLibro == id);
         }
 
         public async Task AddAsync(Libro libro)
         {
             await _context.Libros.AddAsync(libro);
+            await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Libro libro)
         {
-            _context.Entry(libro).State = EntityState.Modified;
+            _context.Libros.Update(libro);
             await _context.SaveChangesAsync();
         }
-        
-        //FiltrarCatalogo
-        public async Task<IEnumerable<Libro>> FiltrarLibrosAsync
-            (
-                string autor, 
-                string genero,
-                string isbn,
-                decimal? precioMin,
-                decimal? precioMax,
-                string ordenPor,
-                bool ascendente
-            ) 
+
+        public async Task DeleteAsync(int id)
         {
-            IQueryable<Libro> query = _context.Libros;
-
-            if (!string.IsNullOrEmpty(autor)) { 
-                query = query.Where(q => q.Autor == autor);
-            }
-
-            if (!string.IsNullOrEmpty(genero))
+            var libro = await GetByIdAsync(id);
+            if (libro != null)
             {
-                query = query.Where(q => q.Genero == genero);
+                _context.Libros.Remove(libro);
+                await _context.SaveChangesAsync();
             }
-
-            if (!string.IsNullOrEmpty(isbn))
-            {
-                query = query.Where(q => q.ISBN == isbn);
-            }
-
-            if (!precioMin.HasValue)
-            {
-                query = query.Where(q => q.Precio <= precioMin.Value);
-            }
-
-            if (!precioMax.HasValue)
-            {
-                query = query.Where(q => q.Precio >= precioMax.Value);
-            }
-
-            if (!string.IsNullOrEmpty(ordenPor))
-            {
-                query = ordenPor switch
-                {
-                    "autor" => ascendente ? query.OrderBy(q => q.Autor) : query.OrderByDescending(q => q.Autor),
-                    "precio" => ascendente ? query.OrderBy(q => q.Precio) : query.OrderByDescending(q => q.Precio),
-                    "titulo" => ascendente ? query.OrderBy(q => q.Nombre) : query.OrderByDescending(q => q.Nombre),
-                    _ => query
-                };
-            }
-
-            return await query.ToListAsync();
-        }
-
-        public async Task<Libro> GetLibroByNombreAsync(string nombre)
-        {
-            return await _context.Libros.FirstOrDefaultAsync(p => p.Nombre == nombre);
-        }
-
-        public async Task<IEnumerable<Libro>> GetByGeneroAsync(string genero)
-        {
-            return await _context.Libros.Where(p => p.Genero == genero).ToListAsync();
-        }
-
-        public async Task<IEnumerable<Libro>> GetByAutorAsync(string nombreAutor)
-        {
-            return await _context.Libros.Where(p => p.Autor == nombreAutor).ToListAsync();
-        }
-
-        public async Task<Libro> GetByISBNAsync(string ISBN)
-        {
-            return await _context.Libros.FirstOrDefaultAsync(p => p.ISBN == ISBN);
         }
     }
 }

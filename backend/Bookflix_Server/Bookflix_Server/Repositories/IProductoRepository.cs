@@ -1,14 +1,12 @@
-﻿using System.Threading.Tasks;
-using Bookflix_Server.Models;
-
-namespace Bookflix_Server.Repositories
+﻿namespace Bookflix_Server.Repositories
 {
-    internal interface IProductoRepository
+    public interface IProductoRepository
     {
-        Task<IEnumerable<Libro>> GetAllLibrosAsync();
+        Task<IEnumerable<Libro>> GetAllAsync();
         Task<Libro> GetByIdAsync(int id);
         Task AddAsync(Libro libro);
         Task UpdateAsync(Libro libro);
+        Task DeleteAsync(int id);
 
         Task<IEnumerable<Libro>> FiltrarLibrosAsync
         (
