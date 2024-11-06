@@ -1,0 +1,71 @@
+.catalogoBookflix {
+    padding: 20px;
+}
+
+.catalogo {
+    display: flex;
+    box-sizing: border-box;
+}
+
+.catalogoFiltro {
+    width: 200px;
+    padding: 10px;
+    box-sizing: border-box;
+    border-right: 1px solid #ccc;
+}
+
+.catalogoItems {
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.catalogoItem {
+    background-color: white;
+    border-radius: 15px;
+    box-sizing: border-box;
+    width: calc(25% - 20px);
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.catalogoItemContent {
+    flex-grow: 1;
+    text-align: center;
+    align-items: center;
+}
+
+.catalogoItemButtons {
+    margin: auto;
+}
+
+.catalogoItemButtons button {
+    margin: auto 5px;
+    /* padding: 10px; */
+}
+
+.imgItemCatalogo {
+    width: 100%; 
+    border-radius: 15px;
+}
+
+.titulo, .precio {
+    margin: 5px 0;
+    text-align: center;
+}
+
+.filtroPrecio {
+    margin-bottom: 20px;
+}
+
+.filtroPrecio label {
+    display: block;
+    margin: 10px 0;
+}
+
+input[type="range"] {
+    width: 100%;
+}
