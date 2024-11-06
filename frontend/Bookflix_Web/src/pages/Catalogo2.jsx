@@ -6,7 +6,7 @@ const Catalogo = () => {
   const [nombre, setNombre] = useState("");
   const [genero, setGenero] = useState("");
   const [precioOrden, setPrecioOrden] = useState("");
-  const [alfabeticoOrden, setAlfabeticoOrden] = useState("");
+  const [alfabeticoOrden, setAlfabeticoOrden] = useState("Ascendente");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -14,21 +14,18 @@ const Catalogo = () => {
     setIsLoading(true);
     setError(null);
 
-    try {
-      // Base URL
-      let url = `http://localhost:5000/api/Libro/ListarLibros?pagina=1&tamanoPagina=10`;
+    // Determina los valores para `ordenPor` y `ascendente` basados en los filtros seleccionados
+    const ordenPor = precioOrden ? "precio" : "nombre";
+    const ascendente = precioOrden
+      ? precioOrden === "Ascendente"
+      : alfabeticoOrden === "Ascendente";
 
-      // Añadir parámetros solo si tienen valor
+    try {
+      // Construcción dinámica de la URL con los filtros aplicados
+      let url = `http://localhost:5000/api/Libro/ListarLibros?pagina=1&tamanoPagina=10`;
       if (nombre) url += `&nombre=${encodeURIComponent(nombre)}`;
       if (genero) url += `&genero=${encodeURIComponent(genero)}`;
-      if (precioOrden)
-        url += `&ordenPor=precio&ascendente=${precioOrden === "Ascendente"}`;
-      else if (alfabeticoOrden)
-        url += `&ordenPor=nombre&ascendente=${
-          alfabeticoOrden === "Ascendente"
-        }`;
-
-      console.log("URL de la solicitud:", url); // Para verificar la URL generada
+      url += `&ordenPor=${ordenPor}&ascendente=${ascendente}`;
 
       const response = await fetch(url, {
         headers: {
@@ -41,11 +38,9 @@ const Catalogo = () => {
       }
 
       const data = await response.json();
-      console.log("Respuesta del servidor:", data); // Imprimir la respuesta aquí
       setLibros(data);
     } catch (error) {
       setError(error.message);
-      console.error("Error en fetch:", error);
     } finally {
       setIsLoading(false);
     }
