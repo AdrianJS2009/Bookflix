@@ -412,7 +412,20 @@ public class SeederLibros
                 ISBN = "9781234567829",
                 Autor = "Robert Dilts",
                 Reseñas = new List<Reseña>()
-            }
+            },
+            new Libro
+            {
+                IdLibro = 31,
+                Nombre = "Invisible",
+                Precio = 10.0m,
+                UrlImagen = "https://m.media-amazon.com/images/I/71rDyMBfBoL._SY466_.jpg",
+                Genero = "Literatura",
+                Descripcion = "Descripción del libro Invisible",
+                Stock = 50,
+                ISBN = "9781234567800",
+                Autor = "Eloy Moreno",
+                Reseñas = new List<Reseña>()
+            },
         };
         _context.Libros.AddRange(libros);
         await _context.SaveChangesAsync();
