@@ -13,10 +13,10 @@ const Footer = () => {
       </div>
       <ul className={`texto-blanco texto-pequeño ${classes.listaFooter}`}>
         <li>
-          <NavLink to="/metodos-de-pago" activeClassName="active">Métodos de pago</NavLink>
+          <NavLink to="/sobre-nosotros" activeClassName="active">Sobre nosotros</NavLink>
         </li>
         <li>
-          <NavLink to="/tarjetas-de-regalo" activeClassName="active">Tarjetas de regalo</NavLink>
+        <NavLink to="/metodos-de-pago" activeClassName="active">Métodos de pago</NavLink>
         </li>
         <li>
           <NavLink to="/ayuda" activeClassName="active">Ayuda</NavLink>

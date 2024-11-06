@@ -1,0 +1,119 @@
+
+.sobrenosotros-container {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px;
+  color: #333;
+}
+
+
+h2, h3 {
+  text-align: center;
+  font-weight: 600;
+  color: #333;
+}
+
+
+.team-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.team-members {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.team-member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 220px;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.team-member img {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  margin-bottom: 10px;
+}
+
+.team-member h3 {
+  font-size: 18px;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.team-member ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #666;
+}
+
+.team-member ul li {
+  margin-bottom: 5px;
+}
+
+/* Sección de la misión empresarial */
+/* .mision-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.mision-section p {
+  max-width: 800px;
+  font-size: 16px;
+  color: #555;
+} */
+
+/* Sección de los valores corporativos */
+/* .valores-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.valores-section p {
+  max-width: 800px;
+  font-size: 16px;
+  color: #555;
+} */
+
+/* Contenedor del mapa */
+.map-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.map-container iframe {
+  width: 100%;
+  height: 300px;
+  border: none;
+  border-radius: 8px;
+}
+
+/* Información de contacto */
+.valores-section p:last-child {
+  margin-top: 15px;
+  font-weight: bold;
+  color: #333;
+}
