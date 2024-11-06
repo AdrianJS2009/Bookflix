@@ -30,7 +30,7 @@ namespace Bookflix_Server.Data
                 .IsUnique()
                 .HasDatabaseName("IX_Unique_Email");  // Nombre opcional para el índice
 
-           
+
         }
     }
 }

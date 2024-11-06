@@ -1,17 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Bookflix_Server.Data;
+﻿using Bookflix_Server.Data;
+using Bookflix_Server.Models.Seeder;
 using Bookflix_Server.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.OpenApi.Models;
-using Bookflix_Server.Models.Seeder;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 
 namespace Bookflix_Server;
+
 
 public class Program
 {
@@ -68,13 +69,15 @@ public class Program
             });
         });
 
-        // Configuración de la base de datos
+        // Configuración de la bbdd
         builder.Services.AddDbContext<MyDbContext>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-        // Registro de dependencias
+        // Dependencias
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IProductoRepository, ProductoRepository>(); 
+        builder.Services.AddScoped<IReseñasRepository, ReseñasRepository>();   
 
         // Configuración de CORS solo para el entorno de desarrollo
         if (builder.Environment.IsDevelopment())
