@@ -23,15 +23,24 @@ function Catalogo2() {
             const response = await fetch(
                 `http://localhost:5000/api/libro/ListarLibros?nombre=${buscar}&precioMin=${rangoPrecio[0]}&precioMax=${rangoPrecio[1]}&genero=${generosSeleccionados.join(",")}&pagina=${pagina}&tamanoPagina=${TAMANO_PAGINA}`
             );
+            const totalLibros = response.headers.get("totalLibros");
+            const totalPaginas = response.headers.get("totalPaginas");
+            // Obtener el cuerpo de la respuesta
             const data = await response.json();
+    
+            // Leer los encabezados de la respuesta para obtener totalPaginas y totalLibros
+            
+    
+            // Establecer los valores en el estado
             setLibros(data);
-            const totalLibros = response.headers.get("X-Total-Count");
-            setTotalPaginas(Math.ceil(totalLibros / TAMANO_PAGINA));
+            setTotalPaginas(Number(totalPaginas)); // Convertir a número
+    
         } catch (error) {
             console.error("Error al obtener libros", error);
         }
         setCargando(false);
     };
+    
 
     // Llamar a la API cuando cambia la página, los filtros o la búsqueda
     useEffect(() => {

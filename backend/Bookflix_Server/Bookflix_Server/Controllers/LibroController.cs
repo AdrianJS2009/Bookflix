@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace Bookflix_Server.Controllers
 {
@@ -56,6 +57,13 @@ namespace Bookflix_Server.Controllers
                 .Take(tamanoPagina)
                 .ToListAsync();
 
+            var totalLibros = await _context.Libros.CountAsync();
+
+            // Calcular el número total de páginas
+            var totalPaginas = (int)Math.Ceiling(totalLibros / (double)TamañoPagina);
+            Response.Headers.Append("totalLibros", totalLibros.ToString());
+            Response.Headers.Append("totalPaginas", totalPaginas.ToString());
+
             return Ok(libros);
         }
 
@@ -80,6 +88,7 @@ namespace Bookflix_Server.Controllers
                 .Skip((pagina - 1) * tamanoPagina)
                 .Take(tamanoPagina)
                 .ToListAsync();
+            
 
             return Ok(libros);
         }
