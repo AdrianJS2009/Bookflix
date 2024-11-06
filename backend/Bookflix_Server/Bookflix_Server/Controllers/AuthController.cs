@@ -9,62 +9,46 @@ using System.Text;
 
 namespace Bookflix_Server.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork; // UOW para entrar en los repos
-        private readonly IConfiguration _config; // Config para utilizar claves JWT
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IConfiguration _config;
 
         public AuthController(IUnitOfWork unitOfWork, IConfiguration config)
         {
-            _unitOfWork = unitOfWork;
-            _config = config;
+            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            _config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
-        // Endpoint
-        //[HttpPost("login")]
-        //public async Task<ActionResult<string>> Login([FromBody] LoginDto model)
-        //{
-        //    // Usuario temporal para pruebas
-        //    var tempUserName = "string";
-        //    var tempPassword = "string";
-
-        //    // Comprobar el usuario y la contraseña
-        //    if (model.UserName != tempUserName || model.Password != tempPassword)
-        //    {
-        //        return Unauthorized(); // Si no coincide, devuelve 401
-        //    }
-
-        //    // Crear el token para el usuario temporal
-        //    var token = GenerateToken(tempUserName);
-        //    return Ok(token);
-        //}
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login([FromBody] LoginDto model)
         {
-            // Buscar el usuario en la base de datos por el email
+            // Comprobación de los inputs de entrada
+            if (!ModelState.IsValid)
+                return BadRequest("Datos de inicio de sesión no válidos.");
+
+            // Busqueda del usuario por correo
             var user = await _unitOfWork.Users.GetByEmailAsync(model.Email);
 
-            // Verificar si el usuario existe y la contraseña coincide
+            // Comprobación de si el usuario existe y su contraseña coincide
             if (user == null || user.Password != model.Password)
-            {
-                return Unauthorized(); // Devuelve 401 si las credenciales no son válidas
-            }
+                return Unauthorized("Credenciales incorrectas.");
 
-            // Crear el token para el usuario
+            // Generar token para el usuario
             var token = GenerateToken(user.Email);
-            return Ok(token);
+            return Ok(new { Token = token });
         }
 
-        // Genera el token JWT basado en las claims del usuario
-        private string GenerateToken(string userName)
+        // Token JWT en base al correo
+        private string GenerateToken(string email)
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, userName),
+                new Claim(JwtRegisteredClaimNames.Sub, email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Name, userName)
+                new Claim(ClaimTypes.Name, email)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
@@ -74,7 +58,7 @@ namespace Bookflix_Server.Controllers
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddHours(700),
+                expires: DateTime.Now.AddHours(1),
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
