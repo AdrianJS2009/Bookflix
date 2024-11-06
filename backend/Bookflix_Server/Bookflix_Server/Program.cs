@@ -76,8 +76,8 @@ public class Program
         // Dependencias
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
-        builder.Services.AddScoped<IProductoRepository, ProductoRepository>(); 
-        builder.Services.AddScoped<IReseñasRepository, ReseñasRepository>();   
+        builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
+        builder.Services.AddScoped<IReseñasRepository, ReseñasRepository>();
 
         // Configuración de CORS solo para el entorno de desarrollo
         if (builder.Environment.IsDevelopment())
@@ -138,7 +138,7 @@ public class Program
 
     private static void ConfigureMiddleware(WebApplication app)
     {
-        // Middleware de Swagger y CORS para entorno de desarrollo
+        // Configuración de Swagger
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
@@ -147,9 +147,13 @@ public class Program
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bookflix API V1");
                 c.RoutePrefix = string.Empty;
             });
-
-            app.UseCors("AllowFrontend");
         }
+
+        // Configuración de CORS
+        app.UseCors(policy =>
+            policy.WithOrigins("http://localhost:5173")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod());
 
         app.UseHttpsRedirection();
         app.UseAuthentication();
