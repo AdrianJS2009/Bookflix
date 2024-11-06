@@ -1,5 +1,4 @@
-﻿using Bookflix_Server.Models;
-using Bookflix_Server.Data;
+﻿using Bookflix_Server.Data;
 
 namespace Bookflix_Server.Models.Seeder;
 
@@ -14,8 +13,16 @@ public class SeederLibros
 
     public async Task Seeder()
     {
-        List<Libro> libros =
-        [
+
+        //Verificamos si ya hay libros en la BBDD antes de nada
+        if (_context.Libros.Any())
+        {
+            return;
+        }
+
+        List<Libro> libros = new List<Libro>
+        {
+
             new Libro
             {
                 IdLibro = 1,
@@ -406,8 +413,8 @@ public class SeederLibros
                 Autor = "Robert Dilts",
                 Reseñas = new List<Reseña>()
             }
-        ];
+        };
         _context.Libros.AddRange(libros);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 }

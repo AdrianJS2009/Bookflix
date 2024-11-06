@@ -4,23 +4,41 @@ using System.Text;
 using Bookflix_Server.Data;
 using Bookflix_Server.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
+using Bookflix_Server.Models.Seeder;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Hosting;
-using Bookflix_Server.Models.Seeder;
 
 namespace Bookflix_Server;
 
 public class Program
 {
-    public static async Task Main(string[] args) // Cambiar Main a async
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        // Cargar configuración de appsettings.json
         builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-        // Configuración de servicios de Swagger y autenticación JWT
+        // Configuración de servicios
+        ConfigureServices(builder);
+
+        var app = builder.Build();
+
+        // Inicialización de la base de datos y ejecución del seeder
+        await InitializeDatabaseAsync(app);
+
+        // Configuración del middleware
+        ConfigureMiddleware(app);
+
+        await app.RunAsync();
+    }
+
+    private static void ConfigureServices(WebApplicationBuilder builder)
+    {
+        // Servicios de controladores y Swagger
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
@@ -50,12 +68,15 @@ public class Program
             });
         });
 
+        // Configuración de la base de datos
         builder.Services.AddDbContext<MyDbContext>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+        // Registro de dependencias
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+        // Configuración de CORS solo para el entorno de desarrollo
         if (builder.Environment.IsDevelopment())
         {
             builder.Services.AddCors(options =>
@@ -70,7 +91,13 @@ public class Program
         }
 
         // Configuración de autenticación JWT
+        ConfigureJwtAuthentication(builder);
+    }
+
+    private static void ConfigureJwtAuthentication(WebApplicationBuilder builder)
+    {
         string key = builder.Configuration["Jwt:Key"] ?? Environment.GetEnvironmentVariable("JWT_KEY");
+
         if (string.IsNullOrEmpty(key))
         {
             throw new ArgumentNullException("Jwt:Key", "La clave JWT no está configurada en appsettings.");
@@ -86,10 +113,10 @@ public class Program
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
                 };
             });
+    }
 
-        var app = builder.Build();
-
-        // Crear base de datos y ejecutar el Seeder de libros al iniciar la aplicación
+    private static async Task InitializeDatabaseAsync(WebApplication app)
+    {
         using (IServiceScope scope = app.Services.CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<MyDbContext>();
@@ -97,14 +124,18 @@ public class Program
             {
                 throw new Exception("MyDbContext no está registrado correctamente.");
             }
+
             dbContext.Database.EnsureCreated();
 
-            // Ejecutar el seeder
+            // Ejecutar el seeder de libros
             var seeder = new SeederLibros(dbContext);
-            await seeder.Seeder(); // Llamada al método asíncrono
+            await seeder.Seeder();
         }
+    }
 
-        // Configuración de middleware
+    private static void ConfigureMiddleware(WebApplication app)
+    {
+        // Middleware de Swagger y CORS para entorno de desarrollo
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
@@ -122,7 +153,5 @@ public class Program
         app.UseAuthorization();
 
         app.MapControllers();
-
-        await app.RunAsync();
     }
 }

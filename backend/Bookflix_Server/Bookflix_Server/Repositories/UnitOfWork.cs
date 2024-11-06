@@ -6,23 +6,27 @@ namespace Bookflix_Server.Repositories
     {
         private readonly MyDbContext _context;
 
-        public UnitOfWork(MyDbContext context)
+        public IProductoRepository Productos { get; private set; }
+        public IUserRepository Users { get; private set; }
+        public IReseñasRepository Reseñas { get; private set; }
+
+        public UnitOfWork(MyDbContext context, IProductoRepository productoRepository, IUserRepository userRepository, IReseñasRepository reseñasRepository)
         {
-            _context = context;
-            Users = new UserRepository(_context); // Iniciamos el repo de Users
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            Productos = productoRepository ?? throw new ArgumentNullException(nameof(productoRepository));
+            Users = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            Reseñas = reseñasRepository ?? throw new ArgumentNullException(nameof(reseñasRepository));
         }
 
-        public IUserRepository Users { get; private set; }
-
-        public async Task<int> CompleteAsync()
+        public async Task<int> SaveChangesAsync()
         {
+            // Guarda los cambios en la base de datos
             return await _context.SaveChangesAsync();
         }
 
-        public IReseñasRepository Reseña { get; private set; }
-        // Hacemos dispose del contexto de base de datos la UnitOfWork termina
         public void Dispose()
         {
+            // Libera los recursos del contexto
             _context.Dispose();
         }
     }
