@@ -20,6 +20,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  margin: -30px 25px  25px 25px;
 }
 
 .catalogoItem {
@@ -69,4 +70,60 @@
 
 input[type="range"] {
   width: 100%;
+}
+
+div.catalogo-container {
+  justify-items: center;
+  margin-top: 10px;
+}
+
+div.catalogoBuscadorFiltros {
+  width: 40%;
+  justify-items: center;
+}
+
+div.catalogoBuscadorFiltros select,input,button {
+  font-family: var(--texto);
+  padding: 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid var(--negro);
+}
+
+div.catalogoBuscador {
+  position: relative;
+  border: 1px solid var(--negro);
+  width: fit-content;
+  padding: 2px 2px;
+  border-radius: 20px;
+  width: 100%;
+  margin: 5px auto;
+}
+
+div.catalogoBuscador button {
+  border: 0px solid;
+  background-color: var(--azul-normal);
+  width: 15%;
+  padding: 8px 15px;
+  border-radius: 20px;
+  position: absolute;
+  right: 2px;
+}
+
+div.catalogoBuscador input {
+  border: 0px solid;
+  background-color: transparent;
+  width: 85%;
+}
+
+div.catalogoBuscador input:focus {
+  outline: none;
+}
+
+div.catalogoFiltros select {
+  margin: 2px 5px;
+}
+
+div.paginacion {
+  margin-bottom: 25px;
 }

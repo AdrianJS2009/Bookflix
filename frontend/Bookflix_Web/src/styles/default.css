@@ -23,6 +23,8 @@
     --mediano:       18px;
     --grande:        36px;
     --extra-grande:  36px;
+
+    --texto: "Inter", sans-serif;
 }
 
 /* Clases de css default para texto */
