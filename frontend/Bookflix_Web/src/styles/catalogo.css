@@ -21,13 +21,15 @@
   flex-wrap: wrap;
   gap: 20px;
   margin: -30px 25px  25px 25px;
+  justify-content: center;
 }
 
 .catalogoItem {
+  flex: 0 1 18%;
+  min-width: 250px;
   background-color: white;
   border-radius: 15px;
   box-sizing: border-box;
-  width: 350px;
   display: flex;
   flex-direction: column;
   padding: 10px;
@@ -40,12 +42,9 @@
 }
 
 .catalogoItemButtons {
-  margin: auto;
-}
-
-.catalogoItemButtons button {
-  margin: auto 5px;
-  /* padding: 10px; */
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .imgItemCatalogo {
@@ -70,6 +69,10 @@
 
 input[type="range"] {
   width: 100%;
+}
+
+div.catalogoItems {
+  
 }
 
 div.catalogo-container {
