@@ -99,8 +99,8 @@ h2, h3 {
 .mision-section, .vision-section, .valores-section {
   background-color: #e0f2f1;
   border-radius: 10px;
-  padding: 30px 60px; /* Espaciado lateral aumentado */
-  max-width: 1200px; /* Más ancho para ocupar mayor espacio en la pantalla */
+  padding: 30px 60px;
+  max-width: 1200px; 
   margin: 20px auto;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -125,7 +125,7 @@ h2, h3 {
   color: #4f4f4f;
   line-height: 1.6;
   margin: 0 auto;
-  max-width: 1100px; /* Ajustado para ocupar más espacio dentro del contenedor */
+  max-width: 1100px; 
   padding: 10px 0;
 }
 

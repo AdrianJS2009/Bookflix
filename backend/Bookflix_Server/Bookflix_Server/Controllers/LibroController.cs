@@ -19,16 +19,16 @@ namespace Bookflix_Server.Controllers
         // Endpoint para listar libros con opciones de filtrado, orden y paginación
         [HttpGet("ListarLibros")]
         public async Task<IActionResult> GetLibros(
-    string nombre = null,
-    string autor = null,
-    string genero = null,
-    string isbn = null,
-    double? precioMin = null,
-    double? precioMax = null,
-    string ordenPor = null,
-    bool ascendente = true,
-    int pagina = 1,
-    int tamanoPagina = TamañoPagina)
+        string nombre = null,
+        string autor = null,
+        string genero = null,
+        string isbn = null,
+        double? precioMin = null,
+        double? precioMax = null,
+        string ordenPor = null,
+        bool ascendente = true,
+        int pagina = 1,
+        int tamanoPagina = TamañoPagina)
         {
             try
             {
