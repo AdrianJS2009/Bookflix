@@ -27,7 +27,7 @@ const Catalogo = () => {
 
     try {
       // Construcción dinámica de la URL con los filtros aplicados
-      let url = `http://localhost:5000/api/Libro/ListarLibros?pagina=1&tamanoPagina=8`;
+      let url = `http://localhost:5000/api/Libro/ListarLibros?pagina=1&tamanoPagina=10`;
       if (nombre) url += `&nombre=${encodeURIComponent(nombre)}`;
       if (genero) url += `&genero=${encodeURIComponent(genero)}`;
       url += `&ordenPor=${ordenPor}&ascendente=${ascendente}`;
