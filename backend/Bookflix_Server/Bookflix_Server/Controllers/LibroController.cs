@@ -46,7 +46,7 @@ namespace Bookflix_Server.Controllers
 
                 librosQuery = ordenPor switch
                 {
-                    "precio" => ascendente ? librosQuery.OrderBy(l => l.Precio) : librosQuery.OrderByDescending(l => l.Precio),
+                    "precio" => ascendente ? librosQuery.OrderBy(l => (double)l.Precio) : librosQuery.OrderByDescending(l => (double)l.Precio),
                     "nombre" => ascendente ? librosQuery.OrderBy(l => l.Nombre) : librosQuery.OrderByDescending(l => l.Nombre),
                     _ => librosQuery
                 };
