@@ -1,4 +1,3 @@
-
 .sobrenosotros-container {
   display: grid;
   grid-template-rows: auto auto auto;
@@ -9,13 +8,11 @@
   color: #333;
 }
 
-
 h2, h3 {
   text-align: center;
   font-weight: 600;
-  color: #333;
+  color: #2c3e50;
 }
-
 
 .team-section {
   display: flex;
@@ -37,10 +34,17 @@ h2, h3 {
   align-items: center;
   text-align: center;
   width: 220px;
-  background-color: #f9f9f9;
+  background-color: #e8f5e9;
   padding: 15px;
   border-radius: 10px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.team-member:hover {
+  transform: translateY(-10px);
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  background-color: #e0f7fa;
 }
 
 .team-member img {
@@ -48,12 +52,16 @@ h2, h3 {
   width: 100px;
   height: 100px;
   margin-bottom: 10px;
+  transition: transform 0.3s ease;
+}
+
+.team-member:hover img {
+  transform: scale(1.1);
 }
 
 .team-member h3 {
   font-size: 18px;
   margin-bottom: 5px;
-  color: #333;
 }
 
 .team-member ul {
@@ -61,42 +69,13 @@ h2, h3 {
   padding: 0;
   margin-top: 10px;
   font-size: 14px;
-  color: #666;
+  color: #4f4f4f;
 }
 
 .team-member ul li {
   margin-bottom: 5px;
 }
 
-/* Sección de la misión empresarial */
-/* .mision-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.mision-section p {
-  max-width: 800px;
-  font-size: 16px;
-  color: #555;
-} */
-
-/* Sección de los valores corporativos */
-/* .valores-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.valores-section p {
-  max-width: 800px;
-  font-size: 16px;
-  color: #555;
-} */
-
-/* Contenedor del mapa */
 .map-container {
   width: 100%;
   max-width: 800px;
@@ -111,9 +90,60 @@ h2, h3 {
   border-radius: 8px;
 }
 
-/* Información de contacto */
 .valores-section p:last-child {
   margin-top: 15px;
   font-weight: bold;
   color: #333;
+}
+
+.mision-section, .vision-section, .valores-section {
+  background-color: #e0f2f1;
+  border-radius: 10px;
+  padding: 30px 60px; /* Espaciado lateral aumentado */
+  max-width: 1200px; /* Más ancho para ocupar mayor espacio en la pantalla */
+  margin: 20px auto;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mision-section:hover, .vision-section:hover, .valores-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.mision-section h3, .vision-section h3, .valores-section h3 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #00796b;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+.mision-section p, .vision-section p, .valores-section p {
+  font-size: 16px;
+  color: #4f4f4f;
+  line-height: 1.6;
+  margin: 0 auto;
+  max-width: 1100px; /* Ajustado para ocupar más espacio dentro del contenedor */
+  padding: 10px 0;
+}
+
+.mision-section p:hover, .vision-section p:hover, .valores-section p:hover {
+  color: #004d40;
+}
+
+.valores-section p:last-child {
+  margin-top: 15px;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+iframe {
+  width: 100%;
+  height: 300px;
+  border: none;
+  border-radius: 8px;
+  margin-top: 20px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
