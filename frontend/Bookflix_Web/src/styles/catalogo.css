@@ -91,6 +91,7 @@ div.catalogoBuscadorFiltros select,input,button {
 }
 
 div.catalogoBuscador {
+  background-color: var(--blanco);
   position: relative;
   border: 1px solid var(--negro);
   width: fit-content;
@@ -127,3 +128,4 @@ div.catalogoFiltros select {
 div.paginacion {
   margin-bottom: 25px;
 }
+

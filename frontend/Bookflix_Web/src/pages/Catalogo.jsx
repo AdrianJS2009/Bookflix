@@ -9,6 +9,7 @@ import "../styles/default.css";
 const Catalogo = () => {
   const [libros, setLibros] = useState([]);
   const [nombre, setNombre] = useState("");
+  const [autor, setAutor] = useState("");
   const [genero, setGenero] = useState("");
   const [precioOrden, setPrecioOrden] = useState("");
   const [alfabeticoOrden, setAlfabeticoOrden] = useState("Ascendente");
@@ -73,7 +74,7 @@ const Catalogo = () => {
               type="text"
               placeholder="Buscar por nombre o por autor"
               value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
+              onChange={(e) => (setNombre(e.target.value) || setAutor(e.target.value))}
               className="input-search"
             />
             <button onClick={() => fetchLibros(0)} className="btn-buscar">
@@ -87,7 +88,26 @@ const Catalogo = () => {
               className="filtro-select"
             >
               <option value="">Todos los géneros</option>
-              {/* Añade otras opciones de género aquí */}
+              <option value="Literatura">Literatura</option>
+              <option value="Autoayuda">Autoayuda</option>
+              <option value="Referencia">Referencia</option>
+              <option value="Ilustrado">Ilustrado</option>
+              <option value="Historia">Historia</option>
+              <option value="Emprendimiento">Emprendimiento</option>
+              <option value="Tecnología">Tecnología</option>
+              <option value="Programación">Programación</option>
+              <option value="Fantasía">Fantasía</option>
+              <option value="Narrativa">Narrativa</option>
+              <option value="Drama">Drama</option>
+              <option value="Economía">Economía</option>
+              <option value="Novela">Novela</option>
+              <option value="Thriller">Thriller</option>
+              <option value="Filosofía">Filosofía</option>
+              <option value="Filosofía militar">Filosofía militar</option>
+              <option value="No ficción">No ficción</option>
+              <option value="Reflexión">Reflexión</option>
+              <option value="Espiritualidad">Espiritualidad</option>
+              <option value="Psicología">Psicología</option>
             </select>
             <select
               value={precioOrden}
@@ -129,22 +149,6 @@ const Catalogo = () => {
                     alt={`Portada de ${libro.nombre}`}
                     className="imgItemCatalogo"
                   />
-<<<<<<< Updated upstream
-                  <h2 className="titulo">{libro.nombre}</h2>
-                  <p className="precio">{libro.precio} €</p>
-                </div>
-                <div className="catalogoItemButtons">
-                  <Button
-                    label="Comprar"
-                    styleType="btnComprar"
-                    onClick={() => alert("Compra realizada")}
-                  />
-                  <Button
-                    label="Añadir a la cesta"
-                    styleType="btnAñadir"
-                    onClick={() => alert("Añadido a la cesta")}
-                  />
-=======
                 </div>
                 <div className="catalogoItemButtons">
                   <h2 className="titulo">{libro.nombre}</h2>
@@ -152,14 +156,12 @@ const Catalogo = () => {
                   <p className="precio">{libro.precio} €</p>
                   <Button label="Comprar" styleType="btnComprar" onClick={() => alert("Compra realizada")} />
                   <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={() => alert("Añadido a la cesta")} />
->>>>>>> Stashed changes
                 </div>
               </div>
             ))}
           </div>
         )}
 
-        {/* Paginación */}
         <div className="paginacion">
           <ReactPaginate
             previousLabel={"Anterior"}

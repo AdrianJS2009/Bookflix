@@ -34,12 +34,12 @@ namespace Bookflix_Server.Controllers
             {
                 if (pagina <= 0) return BadRequest(new { error = "El número de página debe ser mayor que cero." });
 
-                // Filtros
+                // Filtros con ignore case
                 var librosQuery = _context.Libros
                     .Where(l =>
-                        (nombre == null || l.Nombre.Contains(nombre)) &&
-                        (autor == null || l.Autor.Contains(autor)) &&
-                        (genero == null || l.Genero.Contains(genero)) &&
+                        (nombre == null || l.Nombre.ToLower().Contains(nombre.ToLower())) &&
+                        (autor == null || l.Autor.ToLower().Contains(autor.ToLower())) &&
+                        (genero == null || l.Genero.ToLower().Contains(genero.ToLower())) &&
                         (isbn == null || l.ISBN == isbn) &&
                         (precioMin == null || l.Precio >= (decimal)precioMin) &&
                         (precioMax == null || l.Precio <= (decimal)precioMax));
