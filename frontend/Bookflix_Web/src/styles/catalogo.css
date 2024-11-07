@@ -1,110 +1,72 @@
-/* .catalogoBookflix {
-
-} */
-
-.catalogo {
-    display: flex;
-    flex-direction: row;
-    box-sizing: border-box;
-}
-
-.catalogoFiltro {
-    max-width: 30%;
-    display: block;
-    box-sizing: border-box;
-}
-
-.catalogoItems {
-    max-width: 70%;
-    box-sizing: border-box;
-} 
-
-.catalogoItem {
-    background-color: white;
-    border-radius: 15px;
-    box-sizing: border-box;
-    width: 350px;
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-}
-
-.catalogoItemContent {
-    flex-grow: 1;
-    flex-shrink: 1;
-    text-align: center;
-    align-items: center;
-}
-
-.catalogoItemButtons {
-    margin: auto;
-}
-
-.catalogoItemButtons Button {
-    margin: 5px;
-}
-.imgItemCatalogo  {
-    width: 100%;
-    border-radius: 15px;
-} 
-
-.titulo, .precio {
-    justify-content: center;
-}
-
-.catalogo-container {
+.catalogoBookflix {
   padding: 20px;
 }
 
-.search-bar {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .search-input-container {
-    display: flex;
-    width: 630px; /* Ancho combinado de los 3 desplegables */
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  
-  .search-bar input {
-    width: 100%;
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    outline: none;
-  }
-  
-  .search-bar button {
-    padding: 15px;
-    border: 1px solid #ccc;
-    background-color: #007bff;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 120px; /* Ajusta para que coincida con el espacio de los filtros */
-  }
-  
-  .search-bar button:hover {
-    background-color: #0056b3;
-  }
-  
-  .filters {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-  }
-  
-  .search-bar select {
-    width: 200px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    outline: none;
-  }
+.catalogo {
+  display: flex;
+  box-sizing: border-box;
+}
 
-  
-  
+.catalogoFiltro {
+  width: 200px;
+  padding: 10px;
+  box-sizing: border-box;
+  border-right: 1px solid #ccc;
+}
+
+.catalogoItems {
+  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.catalogoItem {
+  background-color: white;
+  border-radius: 15px;
+  box-sizing: border-box;
+  width: calc(25% - 20px);
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.catalogoItemContent {
+  flex-grow: 1;
+  text-align: center;
+  align-items: center;
+}
+
+.catalogoItemButtons {
+  margin: auto;
+}
+
+.catalogoItemButtons button {
+  margin: auto 5px;
+  /* padding: 10px; */
+}
+
+.imgItemCatalogo {
+  width: 100%;
+  border-radius: 15px;
+}
+
+.titulo,
+.precio {
+  margin: 5px 0;
+  text-align: center;
+}
+
+.filtroPrecio {
+  margin-bottom: 20px;
+}
+
+.filtroPrecio label {
+  display: block;
+  margin: 10px 0;
+}
+
+input[type="range"] {
+  width: 100%;
+}
