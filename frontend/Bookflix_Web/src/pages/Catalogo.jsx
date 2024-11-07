@@ -129,6 +129,7 @@ const Catalogo = () => {
                     alt={`Portada de ${libro.nombre}`}
                     className="imgItemCatalogo"
                   />
+<<<<<<< Updated upstream
                   <h2 className="titulo">{libro.nombre}</h2>
                   <p className="precio">{libro.precio} €</p>
                 </div>
@@ -143,6 +144,15 @@ const Catalogo = () => {
                     styleType="btnAñadir"
                     onClick={() => alert("Añadido a la cesta")}
                   />
+=======
+                </div>
+                <div className="catalogoItemButtons">
+                  <h2 className="titulo">{libro.nombre}</h2>
+                  <p className="precio">{libro.autor}</p>
+                  <p className="precio">{libro.precio} €</p>
+                  <Button label="Comprar" styleType="btnComprar" onClick={() => alert("Compra realizada")} />
+                  <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={() => alert("Añadido a la cesta")} />
+>>>>>>> Stashed changes
                 </div>
               </div>
             ))}
