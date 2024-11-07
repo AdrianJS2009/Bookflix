@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import { useEffect, useState } from "react";
+import ReactPaginate from "react-paginate";
 import Button from "../components/Button";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 import "../styles/catalogo.css";
 import "../styles/default.css";
 
@@ -13,21 +14,22 @@ const Catalogo = () => {
   const [alfabeticoOrden, setAlfabeticoOrden] = useState("Ascendente");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  
-  
-  const fetchLibros = async () => {
+  const [pageCount, setPageCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const fetchLibros = async (page) => {
     setIsLoading(true);
     setError(null);
 
-    // Determina los valores para `ordenPor` y `ascendente` basados en los filtros seleccionados
     const ordenPor = precioOrden ? "precio" : "nombre";
     const ascendente = precioOrden
       ? precioOrden === "Ascendente"
       : alfabeticoOrden === "Ascendente";
 
     try {
-      // Construcción dinámica de la URL con los filtros aplicados
-      let url = `http://localhost:5000/api/Libro/ListarLibros?pagina=1&tamanoPagina=8`;
+      let url = `http://localhost:5000/api/Libro/ListarLibros?pagina=${
+        page + 1
+      }&tamanoPagina=10`;
       if (nombre) url += `&nombre=${encodeURIComponent(nombre)}`;
       if (genero) url += `&genero=${encodeURIComponent(genero)}`;
       url += `&ordenPor=${ordenPor}&ascendente=${ascendente}`;
@@ -43,7 +45,8 @@ const Catalogo = () => {
       }
 
       const data = await response.json();
-      setLibros(data);
+      setLibros(data.libros || []);
+      setPageCount(data.totalPaginas || 0);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -51,14 +54,17 @@ const Catalogo = () => {
     }
   };
 
-  // Cargar libros al montar el componente
   useEffect(() => {
-    fetchLibros();
-  }, []);
+    fetchLibros(currentPage);
+  }, [currentPage, nombre, genero, precioOrden, alfabeticoOrden]);
+
+  const handlePageClick = (event) => {
+    setCurrentPage(event.selected);
+  };
 
   return (
     <>
-    <Header />
+      <Header />
       <div className="catalogo-container texto-pequeño">
         <h1>Catálogo</h1>
         <div className="catalogoBuscadorFiltros">
@@ -70,8 +76,8 @@ const Catalogo = () => {
               onChange={(e) => setNombre(e.target.value)}
               className="input-search"
             />
-            <button onClick={fetchLibros} className="btn-buscar">
-            Buscar
+            <button onClick={() => fetchLibros(0)} className="btn-buscar">
+              Buscar
             </button>
           </div>
           <div className="catalogoFiltros">
@@ -81,26 +87,7 @@ const Catalogo = () => {
               className="filtro-select"
             >
               <option value="">Todos los géneros</option>
-              <option value="Literatura">Literatura</option>
-              <option value="Autoayuda">Autoayuda</option>
-              <option value="Referencia">Referencia</option>
-              <option value="Ilustrado">Ilustrado</option>
-              <option value="Historia">Historia</option>
-              <option value="Emprendimiento">Emprendimiento</option>
-              <option value="Tecnología">Tecnología</option>
-              <option value="Programación">Programación</option>
-              <option value="Fantasía">Fantasía</option>
-              <option value="Narrativa">Narrativa</option>
-              <option value="Drama">Drama</option>
-              <option value="Economía">Economía</option>
-              <option value="Novela">Novela</option>
-              <option value="Thriller">Thriller</option>
-              <option value="Filosofía">Filosofía</option>
-              <option value="Filosofía militar">Filosofía militar</option>
-              <option value="No ficción">No ficción</option>
-              <option value="Reflexión">Reflexión</option>
-              <option value="Espiritualidad">Espiritualidad</option>
-              <option value="Psicología">Psicología</option>
+              {/* Añade otras opciones de género aquí */}
             </select>
             <select
               value={precioOrden}
@@ -127,8 +114,7 @@ const Catalogo = () => {
             </select>
           </div>
         </div>
-        <div className="catalogoBookflix">
-        </div>
+        <div className="catalogoBookflix"></div>
         {isLoading ? (
           <p>Cargando...</p>
         ) : error ? (
@@ -143,21 +129,39 @@ const Catalogo = () => {
                     alt={`Portada de ${libro.nombre}`}
                     className="imgItemCatalogo"
                   />
-                
                   <h2 className="titulo">{libro.nombre}</h2>
                   <p className="precio">{libro.precio} €</p>
                 </div>
                 <div className="catalogoItemButtons">
-                  <Button label="Comprar" styleType="btnComprar" onClick={() => alert("Compra realizada")} />
-                  <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={() => alert("Añadido a la cesta")} />
+                  <Button
+                    label="Comprar"
+                    styleType="btnComprar"
+                    onClick={() => alert("Compra realizada")}
+                  />
+                  <Button
+                    label="Añadir a la cesta"
+                    styleType="btnAñadir"
+                    onClick={() => alert("Añadido a la cesta")}
+                  />
                 </div>
               </div>
             ))}
           </div>
-
         )}
+
+        {/* Paginación */}
         <div className="paginacion">
-        
+          <ReactPaginate
+            previousLabel={"Anterior"}
+            nextLabel={"Siguiente"}
+            breakLabel={"..."}
+            pageCount={pageCount}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination"}
+            activeClassName={"active"}
+          />
         </div>
       </div>
       <Footer />
