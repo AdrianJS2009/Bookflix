@@ -23,7 +23,7 @@ const Catalogo = () => {
       });
 
       const response = await fetch(
-        `/api/Libro/ListarLibros?${params.toString()}`
+        `http://localhost:5000/api/Libro/ListarLibros?${params.toString()}`
       );
       if (!response.ok) {
         throw new Error("Error fetching books");

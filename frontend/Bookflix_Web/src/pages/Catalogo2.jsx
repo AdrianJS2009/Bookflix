@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import "../styles/catalogo2.css";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import "../styles/catalogo 2.css";
+import "../styles/catalogo.css"
+import "../styles/styles.css"
 
 const Catalogo = () => {
   const [libros, setLibros] = useState([]);
@@ -52,91 +56,95 @@ const Catalogo = () => {
   }, []);
 
   return (
-    <div className="catalogo-container">
-      <h1>Catálogo</h1>
-      <div className="catalogoBookflix">
-        <input
-          type="text"
-          placeholder="Buscar por nombre o por autor"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-          className="input-search"
-        />
-        <select
-          value={genero}
-          onChange={(e) => setGenero(e.target.value)}
-          className="filtro-select"
-        >
-          <option value="">Todos los géneros</option>
-          <option value="Literatura">Literatura</option>
-          <option value="Autoayuda">Autoayuda</option>
-          <option value="Referencia">Referencia</option>
-          <option value="Ilustrado">Ilustrado</option>
-          <option value="Historia">Historia</option>
-          <option value="Emprendimiento">Emprendimiento</option>
-          <option value="Tecnología">Tecnología</option>
-          <option value="Programación">Programación</option>
-          <option value="Fantasía">Fantasía</option>
-          <option value="Narrativa">Narrativa</option>
-          <option value="Drama">Drama</option>
-          <option value="Economía">Economía</option>
-          <option value="Novela">Novela</option>
-          <option value="Thriller">Thriller</option>
-          <option value="Filosofía">Filosofía</option>
-          <option value="Filosofía militar">Filosofía militar</option>
-          <option value="No ficción">No ficción</option>
-          <option value="Reflexión">Reflexión</option>
-          <option value="Espiritualidad">Espiritualidad</option>
-          <option value="Psicología">Psicología</option>
-        </select>
-        <select
-          value={precioOrden}
-          onChange={(e) => {
-            setPrecioOrden(e.target.value);
-            setAlfabeticoOrden("");
-          }}
-          className="filtro-select"
-        >
-          <option value="">Ordenar por precio</option>
-          <option value="Ascendente">Ascendente</option>
-          <option value="Descendente">Descendente</option>
-        </select>
-        <select
-          value={alfabeticoOrden}
-          onChange={(e) => {
-            setAlfabeticoOrden(e.target.value);
-            setPrecioOrden("");
-          }}
-          className="filtro-select"
-        >
-          <option value="Ascendente">Ordenar alfabéticamente (A-Z)</option>
-          <option value="Descendente">Ordenar alfabéticamente (Z-A)</option>
-        </select>
-        <button onClick={fetchLibros} className="btn-buscar">
-          Buscar
-        </button>
-      </div>
-      {isLoading ? (
-        <p>Cargando...</p>
-      ) : error ? (
-        <p>{error}</p>
-      ) : (
-        <div className="catalogoItems">
-          {libros.map((libro) => (
-            <div key={libro.idLibro} className="catalogoItem">
-              <div className="catalogoItemContent">
-                <h2 className="titulo">{libro.nombre}</h2>
-                <p className="precio">{libro.precio} €</p>
-              </div>
-              <div className="catalogoItemButtons">
-                <button className="btn-comprar">Comprar</button>
-                <button className="btn-anadir">Añadir a la cesta</button>
-              </div>
-            </div>
-          ))}
+    <>
+    <Header />
+      <div className="catalogo-container">
+        <h1>Catálogo</h1>
+        <div className="catalogoBookflix">
+          <input
+            type="text"
+            placeholder="Buscar por nombre o por autor"
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+            className="input-search"
+          />
+          <select
+            value={genero}
+            onChange={(e) => setGenero(e.target.value)}
+            className="filtro-select"
+          >
+            <option value="">Todos los géneros</option>
+            <option value="Literatura">Literatura</option>
+            <option value="Autoayuda">Autoayuda</option>
+            <option value="Referencia">Referencia</option>
+            <option value="Ilustrado">Ilustrado</option>
+            <option value="Historia">Historia</option>
+            <option value="Emprendimiento">Emprendimiento</option>
+            <option value="Tecnología">Tecnología</option>
+            <option value="Programación">Programación</option>
+            <option value="Fantasía">Fantasía</option>
+            <option value="Narrativa">Narrativa</option>
+            <option value="Drama">Drama</option>
+            <option value="Economía">Economía</option>
+            <option value="Novela">Novela</option>
+            <option value="Thriller">Thriller</option>
+            <option value="Filosofía">Filosofía</option>
+            <option value="Filosofía militar">Filosofía militar</option>
+            <option value="No ficción">No ficción</option>
+            <option value="Reflexión">Reflexión</option>
+            <option value="Espiritualidad">Espiritualidad</option>
+            <option value="Psicología">Psicología</option>
+          </select>
+          <select
+            value={precioOrden}
+            onChange={(e) => {
+              setPrecioOrden(e.target.value);
+              setAlfabeticoOrden("");
+            }}
+            className="filtro-select"
+          >
+            <option value="">Ordenar por precio</option>
+            <option value="Ascendente">Ascendente</option>
+            <option value="Descendente">Descendente</option>
+          </select>
+          <select
+            value={alfabeticoOrden}
+            onChange={(e) => {
+              setAlfabeticoOrden(e.target.value);
+              setPrecioOrden("");
+            }}
+            className="filtro-select"
+          >
+            <option value="Ascendente">Ordenar alfabéticamente (A-Z)</option>
+            <option value="Descendente">Ordenar alfabéticamente (Z-A)</option>
+          </select>
+          <button onClick={fetchLibros} className="btn-buscar">
+            Buscar
+          </button>
         </div>
-      )}
-    </div>
+        {isLoading ? (
+          <p>Cargando...</p>
+        ) : error ? (
+          <p>{error}</p>
+        ) : (
+          <div className="catalogoItems">
+            {libros.map((libro) => (
+              <div key={libro.idLibro} className="catalogoItem">
+                <div className="catalogoItemContent">
+                  <h2 className="titulo">{libro.nombre}</h2>
+                  <p className="precio">{libro.precio} €</p>
+                </div>
+                <div className="catalogoItemButtons">
+                  <button className="btn-comprar">Comprar</button>
+                  <button className="btn-anadir">Añadir a la cesta</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      <Footer />
+    </>
   );
 };
 
