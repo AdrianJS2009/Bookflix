@@ -37,19 +37,21 @@ namespace Bookflix_Server.Controllers
                 return Unauthorized("Credenciales incorrectas.");
 
             // Generar token para el usuario
-            var token = GenerateToken(user.Email);
+            var token = GenerateToken(user);
             return Ok(new { Token = token });
         }
 
         // Token JWT en base al correo
-        private string GenerateToken(string email)
+        private string GenerateToken(User user)
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, email),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Name, email)
+                new Claim(ClaimTypes.Name, user.Nombre),
+                new Claim(ClaimTypes.Role, user.Rol)
             };
+            
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
