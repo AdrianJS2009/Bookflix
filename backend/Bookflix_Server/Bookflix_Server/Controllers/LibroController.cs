@@ -59,7 +59,7 @@ namespace Bookflix_Server.Controllers
                     librosQuery = librosQuery.Where(l => l.Precio <= precioMax.Value);
                 }
 
-                // Filtrar por género
+                
                 if (!string.IsNullOrEmpty(genero))
                 {
                     librosQuery = librosQuery.Where(l => l.Genero.ToLower() == genero.ToLower());

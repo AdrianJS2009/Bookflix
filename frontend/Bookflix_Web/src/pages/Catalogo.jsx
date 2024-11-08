@@ -16,6 +16,7 @@ const Catalogo = () => {
   const [error, setError] = useState(null);
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const fetchLibros = async (page) => {
     setIsLoading(true);
@@ -29,7 +30,7 @@ const Catalogo = () => {
     try {
       let url = `http://localhost:5000/api/Libro/ListarLibros?pagina=${
         page + 1
-      }&tamanoPagina=10`;
+      }&tamanoPagina=${itemsPerPage}`;
       if (nombre) url += `&textoBuscado=${encodeURIComponent(nombre)}`;
       if (genero) url += `&genero=${encodeURIComponent(genero)}`;
       url += `&ordenPor=${ordenPor}&ascendente=${ascendente}`;
@@ -56,10 +57,23 @@ const Catalogo = () => {
 
   useEffect(() => {
     fetchLibros(currentPage);
-  }, [currentPage, nombre, genero, precioOrden, alfabeticoOrden]);
+  }, [currentPage, nombre, genero, precioOrden, alfabeticoOrden, itemsPerPage]);
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
+  };
+
+  const handleItemsPerPageChange = (event) => {
+    const newItemsPerPage = parseInt(event.target.value, 10);
+    const startItemIndex = currentPage * itemsPerPage;
+    const newPage = Math.floor(startItemIndex / newItemsPerPage);
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(newPage);
+  };
+
+  const handleSearchInputChange = (event) => {
+    setNombre(event.target.value);
+    setCurrentPage(0);
   };
 
   return (
@@ -73,7 +87,7 @@ const Catalogo = () => {
               type="text"
               placeholder="Buscar por nombre o por autor"
               value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
+              onChange={handleSearchInputChange}
               className="input-search"
             />
             <button onClick={() => fetchLibros(0)} className="btn-buscar">
@@ -131,6 +145,16 @@ const Catalogo = () => {
               <option value="Ascendente">Ordenar alfabéticamente (A-Z)</option>
               <option value="Descendente">Ordenar alfabéticamente (Z-A)</option>
             </select>
+            <select
+              value={itemsPerPage}
+              onChange={handleItemsPerPageChange}
+              className="filtro-select"
+            >
+              <option value={5}>5 por página</option>
+              <option value={10}>10 por página</option>
+              <option value={20}>20 por página</option>
+              <option value={30}>30 por página</option>
+            </select>
           </div>
         </div>
         <div className="catalogoBookflix"></div>
@@ -180,6 +204,7 @@ const Catalogo = () => {
             onPageChange={handlePageClick}
             containerClassName={"pagination"}
             activeClassName={"active"}
+            forcePage={currentPage}
           />
         </div>
       </div>
