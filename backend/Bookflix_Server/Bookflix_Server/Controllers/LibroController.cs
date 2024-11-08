@@ -19,13 +19,14 @@ namespace Bookflix_Server.Controllers
         // Filtros y paginación
         [HttpGet("ListarLibros")]
         public async Task<IActionResult> GetLibros(
-           string textoBuscado = null,
-           double? precioMin = null,
-           double? precioMax = null,
-           string ordenPor = null,
-           bool ascendente = true,
-           int pagina = 1,
-           int tamanoPagina = TamañoPagina)
+    string textoBuscado = null,
+    double? precioMin = null,
+    double? precioMax = null,
+    string genero = null,  // Añadimos el parámetro genero
+    string ordenPor = null,
+    bool ascendente = true,
+    int pagina = 1,
+    int tamanoPagina = TamañoPagina)
         {
             try
             {
@@ -33,10 +34,9 @@ namespace Bookflix_Server.Controllers
 
                 IQueryable<Libro> librosQuery;
 
-               
+                // Filtrar por texto buscado
                 if (!string.IsNullOrWhiteSpace(textoBuscado))
                 {
-                    
                     librosQuery = _context.Libros
                         .Where(l =>
                             l.Nombre.ToLower().Contains(textoBuscado.ToLower()) ||
@@ -49,6 +49,7 @@ namespace Bookflix_Server.Controllers
                     librosQuery = _context.Libros;
                 }
 
+                // Filtrar por precio mínimo y máximo
                 if (precioMin.HasValue)
                 {
                     librosQuery = librosQuery.Where(l => l.Precio >= precioMin.Value);
@@ -58,15 +59,17 @@ namespace Bookflix_Server.Controllers
                     librosQuery = librosQuery.Where(l => l.Precio <= precioMax.Value);
                 }
 
+                // Filtrar por género
+                if (!string.IsNullOrEmpty(genero))
+                {
+                    librosQuery = librosQuery.Where(l => l.Genero.ToLower() == genero.ToLower());
+                }
+
                 // Ordenación
                 librosQuery = ordenPor switch
                 {
-                    "precio" => ascendente
-                        ? librosQuery.OrderBy(l => l.Precio)
-                        : librosQuery.OrderByDescending(l => l.Precio),
-                    "nombre" => ascendente
-                        ? librosQuery.OrderBy(l => l.Nombre)
-                        : librosQuery.OrderByDescending(l => l.Nombre),
+                    "precio" => ascendente ? librosQuery.OrderBy(l => l.Precio) : librosQuery.OrderByDescending(l => l.Precio),
+                    "nombre" => ascendente ? librosQuery.OrderBy(l => l.Nombre) : librosQuery.OrderByDescending(l => l.Nombre),
                     _ => librosQuery
                 };
 
@@ -92,31 +95,7 @@ namespace Bookflix_Server.Controllers
             }
         }
 
-        //[HttpGet("Buscador")]
-        //public async Task<ActionResult<IEnumerable<Libro>>> GetBusqueda(
-        //    string textoBuscado = null,
-        //    int pagina = 1,
-        //    int tamanoPagina = TamañoPagina)
-        //{
-        //    if (pagina <= 0) return BadRequest("El número de página debe ser mayor que cero.");
 
-        //    var librosQuery = _context.Libros
-        //        .Where(l =>
-        //            (l.Nombre.Contains(textoBuscado)) ||
-        //            (l.Autor.Contains(textoBuscado)) ||
-        //            (l.Genero.Contains(textoBuscado)) ||
-        //            (l.ISBN == textoBuscado)
-        //        );
-
-
-        //    var libros = await librosQuery
-        //        .Skip((pagina - 1) * tamanoPagina)
-        //        .Take(tamanoPagina)
-        //        .ToListAsync();
-
-
-        //    return Ok(libros);
-        //}
         // Endpoint para obtener detalles de un libro específico
         [HttpGet("Detalle/{id}")]
         public async Task<ActionResult<Libro>> GetLibroById(int id)

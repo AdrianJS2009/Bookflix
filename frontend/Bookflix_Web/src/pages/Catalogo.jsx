@@ -9,7 +9,6 @@ import "../styles/default.css";
 const Catalogo = () => {
   const [libros, setLibros] = useState([]);
   const [nombre, setNombre] = useState("");
-  const [autor, setAutor] = useState("");
   const [genero, setGenero] = useState("");
   const [precioOrden, setPrecioOrden] = useState("");
   const [alfabeticoOrden, setAlfabeticoOrden] = useState("Ascendente");
@@ -31,7 +30,7 @@ const Catalogo = () => {
       let url = `http://localhost:5000/api/Libro/ListarLibros?pagina=${
         page + 1
       }&tamanoPagina=10`;
-      if (nombre) url += `&nombre=${encodeURIComponent(nombre)}`;
+      if (nombre) url += `&textoBuscado=${encodeURIComponent(nombre)}`;
       if (genero) url += `&genero=${encodeURIComponent(genero)}`;
       url += `&ordenPor=${ordenPor}&ascendente=${ascendente}`;
 
@@ -74,9 +73,7 @@ const Catalogo = () => {
               type="text"
               placeholder="Buscar por nombre o por autor"
               value={nombre}
-              onChange={(e) =>
-                setNombre(e.target.value) || setAutor(e.target.value)
-              }
+              onChange={(e) => setNombre(e.target.value)}
               className="input-search"
             />
             <button onClick={() => fetchLibros(0)} className="btn-buscar">
