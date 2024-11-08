@@ -74,6 +74,7 @@ input[type="range"] {
 div.catalogo-container {
   justify-items: center;
   margin-top: 10px;
+  min-height: calc(100vh - 80px);
 }
 
 div.catalogoBuscadorFiltros {
