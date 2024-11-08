@@ -16,6 +16,7 @@ const Catalogo = () => {
   const [error, setError] = useState(null);
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
+  const [tamañoPagina, setTamañoPagina] = useState(10);
 
   const fetchLibros = async (page) => {
     setIsLoading(true);
@@ -29,7 +30,7 @@ const Catalogo = () => {
     try {
       let url = `http://localhost:5000/api/Libro/ListarLibros?pagina=${
         page + 1
-      }&tamanoPagina=10`;
+      }&tamanoPagina=${encodeURIComponent(tamañoPagina)}`;
       if (nombre) url += `&textoBuscado=${encodeURIComponent(nombre)}`;
       if (genero) url += `&genero=${encodeURIComponent(genero)}`;
       url += `&ordenPor=${ordenPor}&ascendente=${ascendente}`;
@@ -61,6 +62,11 @@ const Catalogo = () => {
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
+
+  const handleLibrosPorPagina = (e) => {
+    setTamañoPagina(parseInt(e.target.value, 10));
+    setCurrentPage(0)
+  }
 
   return (
     <>
@@ -181,6 +187,15 @@ const Catalogo = () => {
             containerClassName={"pagination"}
             activeClassName={"active"}
           />
+          <select
+              value={tamañoPagina}
+              onChange={handleLibrosPorPagina}
+              className="filtro-select"
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={15}>15</option>
+            </select>
         </div>
       </div>
       <Footer />
