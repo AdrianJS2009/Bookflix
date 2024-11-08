@@ -74,7 +74,9 @@ const Catalogo = () => {
               type="text"
               placeholder="Buscar por nombre o por autor"
               value={nombre}
-              onChange={(e) => (setNombre(e.target.value) || setAutor(e.target.value))}
+              onChange={(e) =>
+                setNombre(e.target.value) || setAutor(e.target.value)
+              }
               className="input-search"
             />
             <button onClick={() => fetchLibros(0)} className="btn-buscar">
@@ -154,8 +156,16 @@ const Catalogo = () => {
                   <h2 className="titulo">{libro.nombre}</h2>
                   <p className="precio">{libro.autor}</p>
                   <p className="precio">{libro.precio} €</p>
-                  <Button label="Comprar" styleType="btnComprar" onClick={() => alert("Compra realizada")} />
-                  <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={() => alert("Añadido a la cesta")} />
+                  <Button
+                    label="Comprar"
+                    styleType="btnComprar"
+                    onClick={() => alert("Compra realizada")}
+                  />
+                  <Button
+                    label="Añadir a la cesta"
+                    styleType="btnAñadir"
+                    onClick={() => alert("Añadido a la cesta")}
+                  />
                 </div>
               </div>
             ))}

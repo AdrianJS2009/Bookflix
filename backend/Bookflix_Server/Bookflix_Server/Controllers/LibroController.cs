@@ -9,47 +9,61 @@ namespace Bookflix_Server.Controllers
     public class LibroController : ControllerBase
     {
         private readonly MyDbContext _context;
-        private const int TamañoPagina = 10;  // Constante para tamaño de página
+        private const int TamañoPagina = 10;
 
         public LibroController(MyDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        // Endpoint para listar libros con opciones de filtrado, orden y paginación
+        // Filtros y paginación
         [HttpGet("ListarLibros")]
         public async Task<IActionResult> GetLibros(
-        string nombre = null,
-        string autor = null,
-        string genero = null,
-        string isbn = null,
-        double? precioMin = null,
-        double? precioMax = null,
-        string ordenPor = null,
-        bool ascendente = true,
-        int pagina = 1,
-        int tamanoPagina = TamañoPagina)
+           string textoBuscado = null,
+           double? precioMin = null,
+           double? precioMax = null,
+           string ordenPor = null,
+           bool ascendente = true,
+           int pagina = 1,
+           int tamanoPagina = TamañoPagina)
         {
             try
             {
                 if (pagina <= 0) return BadRequest(new { error = "El número de página debe ser mayor que cero." });
 
-                // Filtros con ignore case
-                var librosQuery = _context.Libros
-                    .Where(l =>
-                        (nombre == null || l.Nombre.ToLower().Contains(nombre.ToLower())) &&
-                        (autor == null || l.Autor.ToLower().Contains(autor.ToLower())) &&
-                        (genero == null || l.Genero.ToLower().Contains(genero.ToLower())) &&
-                        (isbn == null || l.ISBN == isbn) &&
-                        (precioMin == null || l.Precio >= (decimal)precioMin) &&
-                        (precioMax == null || l.Precio <= (decimal)precioMax));
+                IQueryable<Libro> librosQuery;
+
+               
+                if (!string.IsNullOrWhiteSpace(textoBuscado))
+                {
+                    
+                    librosQuery = _context.Libros
+                        .Where(l =>
+                            l.Nombre.ToLower().Contains(textoBuscado.ToLower()) ||
+                            l.Autor.ToLower().Contains(textoBuscado.ToLower()) ||
+                            l.Genero.ToLower().Contains(textoBuscado.ToLower()) ||
+                            l.ISBN == textoBuscado);
+                }
+                else
+                {
+                    librosQuery = _context.Libros;
+                }
+
+                if (precioMin.HasValue)
+                {
+                    librosQuery = librosQuery.Where(l => l.Precio >= precioMin.Value);
+                }
+                if (precioMax.HasValue)
+                {
+                    librosQuery = librosQuery.Where(l => l.Precio <= precioMax.Value);
+                }
 
                 // Ordenación
                 librosQuery = ordenPor switch
                 {
                     "precio" => ascendente
-                        ? librosQuery.OrderBy(l => (double)l.Precio)
-                        : librosQuery.OrderByDescending(l => (double)l.Precio),
+                        ? librosQuery.OrderBy(l => l.Precio)
+                        : librosQuery.OrderByDescending(l => l.Precio),
                     "nombre" => ascendente
                         ? librosQuery.OrderBy(l => l.Nombre)
                         : librosQuery.OrderByDescending(l => l.Nombre),
@@ -57,14 +71,13 @@ namespace Bookflix_Server.Controllers
                 };
 
                 // Paginación
+                var totalLibros = await librosQuery.CountAsync();
+                var totalPaginas = (int)Math.Ceiling(totalLibros / (double)tamanoPagina);
+
                 var libros = await librosQuery
                     .Skip((pagina - 1) * tamanoPagina)
                     .Take(tamanoPagina)
                     .ToListAsync();
-
-                // Cálculo del total de libros y páginas
-                var totalLibros = await librosQuery.CountAsync();
-                var totalPaginas = (int)Math.Ceiling(totalLibros / (double)tamanoPagina);
 
                 return Ok(new
                 {
@@ -79,31 +92,31 @@ namespace Bookflix_Server.Controllers
             }
         }
 
-        [HttpGet("Buscador")]
-        public async Task<ActionResult<IEnumerable<Libro>>> GetBusqueda(
-            string textoBuscado = null,
-            int pagina = 1,
-            int tamanoPagina = TamañoPagina)
-        {
-            if (pagina <= 0) return BadRequest("El número de página debe ser mayor que cero.");
+        //[HttpGet("Buscador")]
+        //public async Task<ActionResult<IEnumerable<Libro>>> GetBusqueda(
+        //    string textoBuscado = null,
+        //    int pagina = 1,
+        //    int tamanoPagina = TamañoPagina)
+        //{
+        //    if (pagina <= 0) return BadRequest("El número de página debe ser mayor que cero.");
 
-            var librosQuery = _context.Libros
-                .Where(l =>
-                    (l.Nombre.Contains(textoBuscado)) ||
-                    (l.Autor.Contains(textoBuscado)) ||
-                    (l.Genero.Contains(textoBuscado)) ||
-                    (l.ISBN == textoBuscado)
-                );
-
-
-            var libros = await librosQuery
-                .Skip((pagina - 1) * tamanoPagina)
-                .Take(tamanoPagina)
-                .ToListAsync();
+        //    var librosQuery = _context.Libros
+        //        .Where(l =>
+        //            (l.Nombre.Contains(textoBuscado)) ||
+        //            (l.Autor.Contains(textoBuscado)) ||
+        //            (l.Genero.Contains(textoBuscado)) ||
+        //            (l.ISBN == textoBuscado)
+        //        );
 
 
-            return Ok(libros);
-        }
+        //    var libros = await librosQuery
+        //        .Skip((pagina - 1) * tamanoPagina)
+        //        .Take(tamanoPagina)
+        //        .ToListAsync();
+
+
+        //    return Ok(libros);
+        //}
         // Endpoint para obtener detalles de un libro específico
         [HttpGet("Detalle/{id}")]
         public async Task<ActionResult<Libro>> GetLibroById(int id)

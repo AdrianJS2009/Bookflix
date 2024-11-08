@@ -25,8 +25,8 @@
             string autor = null,
             string genero = null,
             string isbn = null,
-            decimal? precioMin = null,
-            decimal? precioMax = null,
+            double? precioMin = null,
+            double? precioMax = null,
             string ordenPor = null,
             bool ascendente = true
         );

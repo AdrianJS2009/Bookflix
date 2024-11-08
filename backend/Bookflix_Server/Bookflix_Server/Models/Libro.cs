@@ -10,7 +10,7 @@ public class Libro
     public string Nombre { get; set; }
 
     [Required]
-    public decimal Precio { get; set; }
+    public double Precio { get; set; }
 
     [Required]
     public string UrlImagen { get; set; }

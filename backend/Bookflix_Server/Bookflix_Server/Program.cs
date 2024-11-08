@@ -20,18 +20,18 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Cargar configuración de appsettings.json
+
         builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-        // Configuración de servicios
+
         ConfigureServices(builder);
 
         var app = builder.Build();
 
-        // Inicialización de la base de datos y ejecución del seeder
+
         await InitializeDatabaseAsync(app);
 
-        // Configuración del middleware
+
         ConfigureMiddleware(app);
 
         await app.RunAsync();
@@ -128,11 +128,13 @@ public class Program
                 throw new Exception("MyDbContext no está registrado correctamente.");
             }
 
-            dbContext.Database.EnsureCreated();
 
-            // Ejecutar el seeder de libros
-            var seeder = new SeederLibros(dbContext);
-            await seeder.Seeder();
+
+            if (dbContext.Database.EnsureCreated())
+            {
+                var seeder = new SeederLibros(dbContext);
+                await seeder.Seeder();
+            }
         }
     }
 
@@ -155,7 +157,7 @@ public class Program
                   .AllowAnyHeader()
                   .AllowAnyMethod());
 
-      
+
         app.UseAuthentication();
         app.UseAuthorization();
 
