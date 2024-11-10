@@ -1,10 +1,11 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Layout from "./components/Layout";
+import Catalogo from "./pages/Catalogo";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import ProductoDetalle from "./pages/ProductoDetalle"; // Nueva vista de detalles del producto
 import Registro from "./pages/Registro";
-import Catalogo from "./pages/Catalogo";
 import SobreNosotros from "./pages/SobreNosotros";
-import Layout from "./components/Layout"; // Nuevo componente para el layout
 
 import "./styles/default.css";
 
@@ -18,6 +19,7 @@ function App() {
           <Route path="registro" element={<Registro />} />
           <Route path="catalogo" element={<Catalogo />} />
           <Route path="sobre-nosotros" element={<SobreNosotros />} />
+          <Route path="producto/:id" element={<ProductoDetalle />} />
         </Route>
       </Routes>
     </BrowserRouter>

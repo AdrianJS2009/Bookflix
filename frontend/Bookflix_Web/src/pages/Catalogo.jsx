@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
+import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import "../styles/catalogo.css";
 import "../styles/default.css";
 
-const Catalogo = () => {
+const Catalogo = ({ productos }) => {
+  const navigate = useNavigate(); // Usar useNavigate para redirección
   const [libros, setLibros] = useState([]);
   const [nombre, setNombre] = useState("");
   const [genero, setGenero] = useState("");
@@ -22,18 +24,19 @@ const Catalogo = () => {
     setIsLoading(true);
     setError(null);
 
-    const ordenPor = precioOrden ? "precio" : "nombre";
+    const ordenPor = precioOrden ? "precio" : "nombre"; // Define el campo de ordenación
     const ascendente = precioOrden
       ? precioOrden === "Ascendente"
-      : alfabeticoOrden === "Ascendente";
+      : alfabeticoOrden === "Ascendente"; // Define el orden ascendente o descendente
 
     try {
+      // Construye la URL con los filtros aplicados
       let url = `http://localhost:5000/api/Libro/ListarLibros?pagina=${
         page + 1
       }&tamanoPagina=${itemsPerPage}`;
-      if (nombre) url += `&textoBuscado=${encodeURIComponent(nombre)}`;
-      if (genero) url += `&genero=${encodeURIComponent(genero)}`;
-      url += `&ordenPor=${ordenPor}&ascendente=${ascendente}`;
+      if (nombre) url += `&textoBuscado=${encodeURIComponent(nombre)}`; // Filtro de búsqueda por nombre o autor
+      if (genero) url += `&genero=${encodeURIComponent(genero)}`; // Filtro por género
+      url += `&ordenPor=${ordenPor}&ascendente=${ascendente}`; // Añade el orden y el tipo de orden
 
       const response = await fetch(url, {
         headers: {
@@ -76,6 +79,10 @@ const Catalogo = () => {
     setCurrentPage(0);
   };
 
+  const handleProductoClick = (id) => {
+    navigate(`/producto/${id}`); // Redirige a la página de detalles
+  };
+
   return (
     <>
       <Header />
@@ -95,6 +102,7 @@ const Catalogo = () => {
             </button>
           </div>
           <div className="catalogoFiltros">
+            {/* Filtro por género */}
             <select
               value={genero}
               onChange={(e) => setGenero(e.target.value)}
@@ -122,11 +130,12 @@ const Catalogo = () => {
               <option value="Espiritualidad">Espiritualidad</option>
               <option value="Psicología">Psicología</option>
             </select>
+            {/* Filtro por precio */}
             <select
               value={precioOrden}
               onChange={(e) => {
                 setPrecioOrden(e.target.value);
-                setAlfabeticoOrden("");
+                setAlfabeticoOrden(""); // Resetea el orden alfabético al aplicar orden por precio
               }}
               className="filtro-select"
             >
@@ -134,17 +143,19 @@ const Catalogo = () => {
               <option value="Ascendente">Ascendente</option>
               <option value="Descendente">Descendente</option>
             </select>
+            {/* Filtro alfabético */}
             <select
               value={alfabeticoOrden}
               onChange={(e) => {
                 setAlfabeticoOrden(e.target.value);
-                setPrecioOrden("");
+                setPrecioOrden(""); // Resetea el orden de precio al aplicar orden alfabético
               }}
               className="filtro-select"
             >
               <option value="Ascendente">Ordenar alfabéticamente (A-Z)</option>
               <option value="Descendente">Ordenar alfabéticamente (Z-A)</option>
             </select>
+            {/* Selección de elementos por página */}
             <select
               value={itemsPerPage}
               onChange={handleItemsPerPageChange}
@@ -165,7 +176,11 @@ const Catalogo = () => {
         ) : (
           <div className="catalogoItems">
             {libros.map((libro) => (
-              <div key={libro.idLibro} className="catalogoItem">
+              <div
+                key={libro.idLibro}
+                className="catalogoItem"
+                onClick={() => handleProductoClick(libro.idLibro)} // Redirige a la página de detalles con el ID del libro
+              >
                 <div className="catalogoItemContent">
                   <img
                     src={libro.urlImagen}
@@ -180,19 +195,24 @@ const Catalogo = () => {
                   <Button
                     label="Comprar"
                     styleType="btnComprar"
-                    onClick={() => alert("Compra realizada")}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      alert("Compra realizada");
+                    }}
                   />
                   <Button
                     label="Añadir a la cesta"
                     styleType="btnAñadir"
-                    onClick={() => alert("Añadido a la cesta")}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      alert("Añadido a la cesta");
+                    }}
                   />
                 </div>
               </div>
             ))}
           </div>
         )}
-
         <div className="paginacion">
           <ReactPaginate
             previousLabel={"Anterior"}
