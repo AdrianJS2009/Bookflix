@@ -27,7 +27,7 @@ public class SeederLibros
             {
                 IdLibro = 1,
                 Nombre = "Invisible",
-                Precio = 10.0,
+                Precio = 1000,
                 UrlImagen = "https://m.media-amazon.com/images/I/71rDyMBfBoL._SY466_.jpg",
                 Genero = "Literatura",
                 Descripcion = "Descripción del libro Invisible",
@@ -40,7 +40,7 @@ public class SeederLibros
             {
                 IdLibro = 2,
                 Nombre = "Hábitos atómicos: Cambios pequeños, resultados extraordinarios",
-                Precio = 11.5,
+                Precio = 1150,
                 UrlImagen = "https://m.media-amazon.com/images/I/71prwdyuE7L._SY466_.jpg",
                 Genero = "Autoayuda",
                 Descripcion = "Un libro sobre cómo pequeños cambios pueden traer resultados extraordinarios.",
@@ -53,7 +53,7 @@ public class SeederLibros
             {
                 IdLibro = 3,
                 Nombre = "Redes (Invisible 2)",
-                Precio = 13.0,
+                Precio = 1300,
                 UrlImagen = "https://m.media-amazon.com/images/I/71qlSpgJHBL._SY466_.jpg",
                 Genero = "Literatura",
                 Descripcion = "Continuación de la historia de 'Invisible', explorando nuevos desafíos.",
@@ -66,7 +66,7 @@ public class SeederLibros
             {
                 IdLibro = 4,
                 Nombre = "Enciclopedia Pokémon (Colección Pokémon)-Español",
-                Precio = 14.5,
+                Precio = 1450,
                 UrlImagen = "https://m.media-amazon.com/images/I/81ZP7q5e78L._SY466_.jpg",
                 Genero = "Referencia",
                 Descripcion = "Una enciclopedia completa sobre Pokémon.",
@@ -79,7 +79,7 @@ public class SeederLibros
             {
                 IdLibro = 5,
                 Nombre = "Un Libro Guay Sobre Aviones: Curiosidades y otros cuentos",
-                Precio = 16.0,
+                Precio = 1600,
                 UrlImagen = "https://m.media-amazon.com/images/I/51MAm1ubRLL._SY466_.jpg",
                 Genero = "Literatura",
                 Descripcion = "Curiosidades y cuentos sobre aviones.",
@@ -92,7 +92,7 @@ public class SeederLibros
             {
                 IdLibro = 6,
                 Nombre = "Accidentes Aéreos: Las 10 Catástrofes Aéreas Más Mortíferas y las Lecciones Que Hemos Aprendido Para Mejorar la Seguridad Aérea",
-                Precio = 17.5,
+                Precio = 1750,
                 UrlImagen = "https://m.media-amazon.com/images/I/61tBF4gNZhL._SY466_.jpg",
                 Genero = "Literatura",
                 Descripcion = "Análisis de accidentes aéreos y las lecciones aprendidas.",
@@ -105,7 +105,7 @@ public class SeederLibros
             {
                 IdLibro = 7,
                 Nombre = "1000 preguntas y curiosidades sobre aviación",
-                Precio = 19.0,
+                Precio = 1900,
                 UrlImagen = "https://m.media-amazon.com/images/I/61QtqaX-k-L._SY466_.jpg",
                 Genero = "Literatura",
                 Descripcion = "Preguntas y datos curiosos sobre aviación.",
@@ -118,7 +118,7 @@ public class SeederLibros
             {
                 IdLibro = 8,
                 Nombre = "Aviones de combate. Los cazas legendarios (ILUSTRADO)",
-                Precio = 20.5,
+                Precio = 2050,
                 UrlImagen = "https://m.media-amazon.com/images/I/81AH9tAltbL._SY466_.jpg",
                 Genero = "Ilustrado",
                 Descripcion = "Historia y detalles de aviones de combate legendarios.",
@@ -131,7 +131,7 @@ public class SeederLibros
             {
                 IdLibro = 9,
                 Nombre = "La edad de oro de los videojuegos 1970-1999: La historia del retrogaming (LOOK)",
-                Precio = 22.0,
+                Precio = 2200,
                 UrlImagen = "https://m.media-amazon.com/images/I/71ZMdyOmX8L._SY466_.jpg",
                 Genero = "Historia",
                 Descripcion = "Historia del retrogaming y los videojuegos clásicos.",
@@ -144,7 +144,7 @@ public class SeederLibros
             {
                 IdLibro = 10,
                 Nombre = "Guía para principiantes: Cómo empezar un negocio",
-                Precio = 23.5,
+                Precio = 2350,
                 UrlImagen = "https://m.media-amazon.com/images/I/61SDQNykgXL._SY466_.jpg",
                 Genero = "Emprendimiento",
                 Descripcion = "Consejos y pasos para comenzar un negocio.",
@@ -157,7 +157,7 @@ public class SeederLibros
             {
                 IdLibro = 11,
                 Nombre = "ChatGPT Hecho Simple",
-                Precio = 25.0,
+                Precio = 2500,
                 UrlImagen = "https://m.media-amazon.com/images/I/61ZIdmNjTWL._SY466_.jpg",
                 Genero = "Tecnología",
                 Descripcion = "Cómo usar la inteligencia artificial para potenciar la productividad.",
@@ -170,7 +170,7 @@ public class SeederLibros
             {
                 IdLibro = 12,
                 Nombre = "Curso de programación Java (MANUALES IMPRESCINDIBLES)",
-                Precio = 26.5,
+                Precio = 2650,
                 UrlImagen = "https://m.media-amazon.com/images/I/41BSkOAx8-L._SX342_SY445_.jpg",
                 Genero = "Programación",
                 Descripcion = "Manual esencial para aprender Java.",
@@ -183,7 +183,7 @@ public class SeederLibros
             {
                 IdLibro = 13,
                 Nombre = "Curso de JavaScript (MANUALES IMPRESCINDIBLES)",
-                Precio = 28.0,
+                Precio = 2800,
                 UrlImagen = "https://m.media-amazon.com/images/I/61zCD57q64L._SY466_.jpg",
                 Genero = "Programación",
                 Descripcion = "Guía completa para aprender JavaScript.",
@@ -196,7 +196,7 @@ public class SeederLibros
             {
                 IdLibro = 14,
                 Nombre = "Curso de PHP 8 y MySQL 8",
-                Precio = 29.5,
+                Precio = 2950,
                 UrlImagen = "https://m.media-amazon.com/images/I/61q+BrtK31L._SY466_.jpg",
                 Genero = "Programación",
                 Descripcion = "Curso práctico de PHP y MySQL.",
@@ -209,7 +209,7 @@ public class SeederLibros
             {
                 IdLibro = 15,
                 Nombre = "Alas de sangre (Empíreo 1) Edición coleccionista enriquecida y limitada",
-                Precio = 31.0,
+                Precio = 3100,
                 UrlImagen = "https://m.media-amazon.com/images/I/814lXWoCIFL._SY466_.jpg",
                 Genero = "Fantasía",
                 Descripcion = "Primera entrega de la serie Empíreo.",
@@ -222,7 +222,7 @@ public class SeederLibros
             {
                 IdLibro = 16,
                 Nombre = "Alas de hierro (Empíreo 2) Edición coleccionista enriquecida y limitada",
-                Precio = 32.5,
+                Precio = 3250,
                 UrlImagen = "https://m.media-amazon.com/images/I/81zBPZ2O+sL._SY466_.jpg",
                 Genero = "Fantasía",
                 Descripcion = "Segunda entrega de la serie Empíreo.",
@@ -235,7 +235,7 @@ public class SeederLibros
             {
                 IdLibro = 17,
                 Nombre = "Sólo yo",
-                Precio = 34.0,
+                Precio = 3400,
                 UrlImagen = "https://m.media-amazon.com/images/I/71eoASuyuhL._SY466_.jpg",
                 Genero = "Narrativa",
                 Descripcion = "Una obra introspectiva y única.",
@@ -248,7 +248,7 @@ public class SeederLibros
             {
                 IdLibro = 18,
                 Nombre = "El niño con el pijama de rayas",
-                Precio = 35.5,
+                Precio = 3550,
                 UrlImagen = "https://m.media-amazon.com/images/I/91OyzQ4MrJL._SY466_.jpg",
                 Genero = "Drama",
                 Descripcion = "Una conmovedora historia ambientada en la Segunda Guerra Mundial.",
@@ -261,7 +261,7 @@ public class SeederLibros
             {
                 IdLibro = 19,
                 Nombre = "El mundo está en venta: La cara oculta del negocio de las materias primas",
-                Precio = 37.0,
+                Precio = 3700,
                 UrlImagen = "https://m.media-amazon.com/images/I/812WF976qML._SY466_.jpg",
                 Genero = "Economía",
                 Descripcion = "Un análisis profundo del negocio de las materias primas.",
@@ -274,7 +274,7 @@ public class SeederLibros
             {
                 IdLibro = 20,
                 Nombre = "El Clan",
-                Precio = 38.5,
+                Precio = 3850,
                 UrlImagen = "https://m.media-amazon.com/images/I/71aoW-+kY+L._SY466_.jpg",
                 Genero = "Novela",
                 Descripcion = "Una historia sobre lazos familiares y secretos.",
@@ -287,7 +287,7 @@ public class SeederLibros
             {
                 IdLibro = 21,
                 Nombre = "El niño que perdió la guerra",
-                Precio = 40.0,
+                Precio = 4000,
                 UrlImagen = "https://m.media-amazon.com/images/I/81nDcs2hHzL._SY466_.jpg",
                 Genero = "Drama",
                 Descripcion = "Una historia conmovedora sobre un niño y la guerra.",
@@ -300,7 +300,7 @@ public class SeederLibros
             {
                 IdLibro = 22,
                 Nombre = "CADA NIÑA QUE MURIÓ",
-                Precio = 41.5,
+                Precio = 4150,
                 UrlImagen = "https://m.media-amazon.com/images/I/81TdmBJ0tqL._SY466_.jpg",
                 Genero = "Thriller",
                 Descripcion = "Una trama oscura sobre el destino de niñas perdidas.",
@@ -313,7 +313,7 @@ public class SeederLibros
             {
                 IdLibro = 23,
                 Nombre = "El monje que vendió su Ferrari",
-                Precio = 43.0,
+                Precio = 4300,
                 UrlImagen = "https://m.media-amazon.com/images/I/81KbajSAThL._SY466_.jpg",
                 Genero = "Autoayuda",
                 Descripcion = "Una parábola sobre cómo encontrar la felicidad.",
@@ -326,7 +326,7 @@ public class SeederLibros
             {
                 IdLibro = 24,
                 Nombre = "Meditaciones",
-                Precio = 44.5,
+                Precio = 4450,
                 UrlImagen = "https://m.media-amazon.com/images/I/71fiwEr3WGL._SY466_.jpg",
                 Genero = "Filosofía",
                 Descripcion = "Pensamientos de Marco Aurelio sobre la vida y la virtud.",
@@ -339,7 +339,7 @@ public class SeederLibros
             {
                 IdLibro = 25,
                 Nombre = "El arte de la guerra",
-                Precio = 46.0,
+                Precio = 4600,
                 UrlImagen = "https://m.media-amazon.com/images/I/61HSZIxRXjL._SY466_.jpg",
                 Genero = "Filosofía militar",
                 Descripcion = "El tratado clásico sobre estrategia y táctica militar.",
@@ -352,7 +352,7 @@ public class SeederLibros
             {
                 IdLibro = 26,
                 Nombre = "Las 48 leyes del poder",
-                Precio = 47.5,
+                Precio = 4750,
                 UrlImagen = "https://m.media-amazon.com/images/I/61JKEWnsikL._SY466_.jpg",
                 Genero = "No ficción",
                 Descripcion = "Una guía sobre cómo obtener y mantener el poder.",
@@ -365,7 +365,7 @@ public class SeederLibros
             {
                 IdLibro = 27,
                 Nombre = "Burlando al Diablo",
-                Precio = 49.0,
+                Precio = 4900,
                 UrlImagen = "https://m.media-amazon.com/images/I/61te9K3LxPL._SY466_.jpg",
                 Genero = "Autoayuda",
                 Descripcion = "Una conversación con el diablo sobre el miedo y el éxito.",
@@ -378,7 +378,7 @@ public class SeederLibros
             {
                 IdLibro = 28,
                 Nombre = "Quién eres tú y qué haces aquí",
-                Precio = 50.5,
+                Precio = 5050,
                 UrlImagen = "https://m.media-amazon.com/images/I/51kEpUge-yL._SY466_.jpg",
                 Genero = "Reflexión",
                 Descripcion = "Un libro introspectivo sobre el propósito de la vida.",
@@ -391,7 +391,7 @@ public class SeederLibros
             {
                 IdLibro = 29,
                 Nombre = "100 Dias de Despertar, Un diario espiritual",
-                Precio = 52.0,
+                Precio = 5200,
                 UrlImagen = "https://m.media-amazon.com/images/I/61y1mlbs6DL._SY466_.jpg",
                 Genero = "Espiritualidad",
                 Descripcion = "Un diario para reflexionar y despertar la conciencia.",
@@ -404,7 +404,7 @@ public class SeederLibros
             {
                 IdLibro = 30,
                 Nombre = "El poder de la palabra: PNL",
-                Precio = 53.5,
+                Precio = 5350,
                 UrlImagen = "https://m.media-amazon.com/images/I/61L4j3QD7XL._SY466_.jpg",
                 Genero = "Psicología",
                 Descripcion = "Exploración sobre el poder de la palabra y la PNL.",
@@ -417,7 +417,7 @@ public class SeederLibros
             {
                 IdLibro = 31,
                 Nombre = "Invisible",
-                Precio = 10.0,
+                Precio = 1000,
                 UrlImagen = "https://m.media-amazon.com/images/I/71rDyMBfBoL._SY466_.jpg",
                 Genero = "Literatura",
                 Descripcion = "Descripción del libro Invisible",
