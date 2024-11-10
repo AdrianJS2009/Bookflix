@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import classes from "../components/styles/ProductoDetalle.module.css";
+import "../styles/ProductoDetalle.css";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import Button from "../components/Button";
 
 const ProductoDetalle = () => {
   const { id } = useParams();
@@ -21,6 +24,9 @@ const ProductoDetalle = () => {
         const data = await response.json();
         setProducto(data);
       } catch (error) {
+        if (!producto) {
+          return <p>Producto no encontrado.</p>;
+        }
         setError(error.message);
       } finally {
         setLoading(false);
@@ -43,39 +49,69 @@ const ProductoDetalle = () => {
   }
 
   return (
-    <div className={classes.productoDetalle}>
-      <div className={classes.imagenContainer}>
-        <img
-          src={producto.urlImagen}
-          alt={producto.nombre}
-          className={classes.imagen}
-        />
-      </div>
-      <div className={classes.detalles}>
-        <h1>{producto.nombre}</h1>
-        <p className={classes.descripcion}>{producto.descripcion}</p>
-        <p className={classes.precio}>Precio: €{producto.precio}</p>
-        <p className={classes.stock}>
-          {producto.stock > 0 ? "En stock" : "Agotado"}
-        </p>
-        <p className={classes.valoracion}>
-          Valoración Media: {producto.valoracionMedia}
-        </p>
+    <>
+      <Header />
+      <div className="productoDetalle">
 
-        <h2>Reseñas</h2>
-        {producto.reseñas && producto.reseñas.length > 0 ? (
-          producto.reseñas.map((reseña, index) => (
-            <div key={index} className={classes.reseña}>
-              <p>Autor: {reseña.autor}</p>
-              <p>Estrellas: {"⭐".repeat(reseña.estrellas)}</p>
-              <p>{reseña.texto}</p>
-            </div>
-          ))
-        ) : (
-          <p>No hay reseñas para este producto.</p>
-        )}
+        <div className="principal">
+          <div className="imagenContainer">
+            <img
+              src={producto.urlImagen}
+              alt={producto.nombre}
+              className="imagen"
+            />
+          </div>
+          <div className="info">
+            <h1>{producto.nombre}</h1>
+            <p className="descripcion">{producto.descripcion}</p>
+            <p className="isbn">{producto.isbn}</p>
+          </div>
+          <div className="detalles">           
+            <p className="precio">Precio: €{(producto.precio / 100).toFixed(2)}</p>
+            <p className="stock">
+              {producto.stock > 0 ? "En stock" : "Agotado"}
+            </p>
+            <Button
+              label="Comprar"
+              styleType="btnComprar"
+              onClick={(e) => {
+                e.stopPropagation();
+                alert("Compra realizada");
+              }}
+            />
+            <Button
+              label="Añadir a la cesta"
+              styleType="btnAñadir"
+              onClick={(e) => {
+                e.stopPropagation();
+                alert("Añadido a la cesta");
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="reseñas">
+          
+          <p className="valoracion">
+            Valoración Media: {producto.valoracionMedia}
+          </p>
+
+          <h2>Reseñas</h2>
+          {producto.reseñas && producto.reseñas.length > 0 ? (
+            producto.reseñas.map((reseña, index) => (
+              <div key={index} className="reseña">
+                <p>Autor: {reseña.autor}</p>
+                <p>Estrellas: {"⭐".repeat(reseña.estrellas)}</p>
+                <p>{reseña.texto}</p>
+              </div>
+            ))
+          ) : (
+            <p>No hay reseñas para este producto.</p>
+          )}
+        </div>
       </div>
-    </div>
+      <Footer />
+    </>
   );
 };
 

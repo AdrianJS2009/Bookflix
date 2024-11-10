@@ -33,6 +33,14 @@
   display: flex;
   flex-direction: column;
   padding: 10px;
+
+  /* Arreglos para detalle producto*/
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.catalogoItem:hover {
+  transform: scale(1.02);
 }
 
 .catalogoItemContent {

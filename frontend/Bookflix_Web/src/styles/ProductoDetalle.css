@@ -1,6 +1,6 @@
 /* ProductoDetalle.module.css */
 
-.productoDetalle {
+/* .productoDetalle {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -62,4 +62,24 @@
 
 .reseña p {
   margin: 5px 0;
+} */
+
+.productoDetalle {
+  display: block;
+  max-width: 90%;
+  justify-content: center;
+  justify-items: center;
+}
+
+.principal {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 20% 50% 20%;
+  justify-items: stretch;
+  justify-content: space-evenly;
+  grid-gap: 10px;
+}
+
+img.imagen {
+  max-width: 350px;
 }

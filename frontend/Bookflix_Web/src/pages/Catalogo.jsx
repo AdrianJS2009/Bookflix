@@ -102,7 +102,7 @@ const Catalogo = ({ productos }) => {
             </button>
           </div>
           <div className="catalogoFiltros">
-            {/* Filtro por género */}
+
             <select
               value={genero}
               onChange={(e) => setGenero(e.target.value)}
@@ -130,7 +130,7 @@ const Catalogo = ({ productos }) => {
               <option value="Espiritualidad">Espiritualidad</option>
               <option value="Psicología">Psicología</option>
             </select>
-            {/* Filtro por precio */}
+            
             <select
               value={precioOrden}
               onChange={(e) => {
@@ -143,7 +143,7 @@ const Catalogo = ({ productos }) => {
               <option value="Ascendente">Ascendente</option>
               <option value="Descendente">Descendente</option>
             </select>
-            {/* Filtro alfabético */}
+            
             <select
               value={alfabeticoOrden}
               onChange={(e) => {
@@ -155,7 +155,7 @@ const Catalogo = ({ productos }) => {
               <option value="Ascendente">Ordenar alfabéticamente (A-Z)</option>
               <option value="Descendente">Ordenar alfabéticamente (Z-A)</option>
             </select>
-            {/* Selección de elementos por página */}
+            
             <select
               value={itemsPerPage}
               onChange={handleItemsPerPageChange}
@@ -191,7 +191,7 @@ const Catalogo = ({ productos }) => {
                 <div className="catalogoItemButtons">
                   <h2 className="titulo">{libro.nombre}</h2>
                   <p className="precio">{libro.autor}</p>
-                  <p className="precio">{libro.precio} €</p>
+                  <p className="precio">{(libro.precio / 100).toFixed(2)} €</p>
                   <Button
                     label="Comprar"
                     styleType="btnComprar"
