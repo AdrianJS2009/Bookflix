@@ -4,6 +4,8 @@ import "../styles/ProductoDetalle.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Button from "../components/Button";
+import { Link } from "react-router-dom";
+
 
 const ProductoDetalle = () => {
   const { id } = useParams();
@@ -52,7 +54,9 @@ const ProductoDetalle = () => {
     <>
       <Header />
       <div className="productoDetalle">
-
+        <p className="volverAtras texto-pequeño">
+          <Link to="/catalogo">◄◄ Volver al catálogo</Link>
+        </p>
         <div className="principal">
           <div className="imagenContainer">
             <img
@@ -61,16 +65,28 @@ const ProductoDetalle = () => {
               className="imagen"
             />
           </div>
-          <div className="info">
-            <h1>{producto.nombre}</h1>
-            <p className="descripcion">{producto.descripcion}</p>
-            <p className="isbn">{producto.isbn}</p>
+          <div className="info texto-mediano">
+            <h1 className="texto-grande">{producto.nombre}</h1>
+            <p className="autor">Autor: {producto.autor}</p>
+            <p className="descripcion">Descripción: <br /> {producto.descripcion}</p>
+            <p className="generoLibro">
+              Género:{" "}
+              <Link to={`/catalogo?genero=${producto.genero}`}>
+                 <span className="genero"> {producto.genero} </span>
+              </Link>
+            </p>
+
+            <p className="isbn texto-pequeño">ISBN: {producto.isbn}</p>
           </div>
-          <div className="detalles">           
+          <div className="detalles texto-mediano">           
             <p className="precio">Precio: €{(producto.precio / 100).toFixed(2)}</p>
             <p className="stock">
               {producto.stock > 0 ? "En stock" : "Agotado"}
             </p>
+            <p className="valoracion">
+            Valoración Media: {producto.valoracionMedia}
+            </p>
+
             <Button
               label="Comprar"
               styleType="btnComprar"
@@ -89,14 +105,10 @@ const ProductoDetalle = () => {
             />
           </div>
         </div>
-
-        <div className="reseñas">
-          
-          <p className="valoracion">
-            Valoración Media: {producto.valoracionMedia}
-          </p>
-
-          <h2>Reseñas</h2>
+        
+        <hr/>
+        <div className="reseñas texto-pequeño">
+          <h2 className="texto-grande">Reseñas</h2>
           {producto.reseñas && producto.reseñas.length > 0 ? (
             producto.reseñas.map((reseña, index) => (
               <div key={index} className="reseña">
