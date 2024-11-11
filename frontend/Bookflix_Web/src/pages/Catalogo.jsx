@@ -8,7 +8,7 @@ import "../styles/catalogo.css";
 import "../styles/default.css";
 
 const Catalogo = ({ productos }) => {
-  const navigate = useNavigate(); // Usar useNavigate para redirección
+  const navigate = useNavigate();
   const [libros, setLibros] = useState([]);
   const [nombre, setNombre] = useState("");
   const [genero, setGenero] = useState("");

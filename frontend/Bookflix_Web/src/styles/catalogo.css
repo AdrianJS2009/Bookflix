@@ -113,7 +113,6 @@ div.catalogoBuscador {
 div.catalogoBuscador button {
   border: 0px solid;
   background-color: var(--azul-normal);
-  width: 15%;
   padding: 8px 15px;
   border-radius: 20px;
   position: absolute;
