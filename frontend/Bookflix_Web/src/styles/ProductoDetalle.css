@@ -1,75 +1,9 @@
-/* ProductoDetalle.module.css */
-
-/* .productoDetalle {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.imagenContainer {
-  max-width: 300px;
-  margin-bottom: 20px;
-}
-
-.imagen {
-  width: 100%;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.detalles {
-  width: 100%;
-  text-align: center;
-}
-
-.detalles h1 {
-  font-size: var(--grande);
-  margin-bottom: 10px;
-}
-
-.descripcion {
-  font-size: var(--mediano);
-  color: var(--negro);
-  margin-bottom: 15px;
-}
-
-.precio {
-  font-size: var(--mediano);
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.stock {
-  font-size: var(--pequeño);
-  color: var(--verde-normal);
-  margin-bottom: 20px;
-}
-
-.valoracion {
-  font-size: var(--mediano);
-  margin-bottom: 20px;
-}
-
-.reseña {
-  text-align: left;
-  margin-top: 15px;
-  padding: 10px;
-  border-top: 1px solid #ccc;
-}
-
-.reseña p {
-  margin: 5px 0;
-} */
-
 .productoDetalle {
   margin-top: 20px;
   display: block;
   max-width: 90%;
   justify-self: center;
-  min-height: calc(100vh - 80px); 
+  min-height: calc(100vh - 80px);
 }
 
 .principal {
@@ -79,7 +13,6 @@
   justify-items: stretch;
   justify-content: space-evenly;
   grid-gap: 20px;
-  
 }
 
 img.imagen {
@@ -103,7 +36,6 @@ div.info {
   display: flex;
   row-gap: 10px;
   flex-direction: column;
-  
 }
 
 hr {
@@ -118,7 +50,6 @@ hr {
   border-radius: 15px;
   border: 1px solid var(--azul-normal);
 }
-
 
 .volverAtras {
   margin-bottom: 20px;
