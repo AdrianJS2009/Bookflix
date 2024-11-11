@@ -1,9 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-
+import { jwtDecode } from "jwt-decode";
 import classes from "./styles/Header.module.css";
 
 const Header = () => {
+  const [userName, setUsername] = useState('Usuario');
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        // console.log('Token decodificado:', decoded); //Pruebas
+        setUsername(decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]);
+      } catch (error) {
+        console.error("Error decodificando el token:", error);
+        setUsername('Usuario');
+      }
+    }
+  }, []);
+
   return (
     <header className={`${classes.header} fondo-negro`}>
       <div className={classes.navLogo}>
@@ -20,15 +36,15 @@ const Header = () => {
               src="/assets/iconos/Logo Usuario.png"
               className={classes.iconos}
               alt="Iconos"
-            />{" "}
-            Usuario
+            />
+            {userName}
           </NavLink>
           <NavLink to="/carrito">
             <img
               src="/assets/iconos/Logo Cesta.png"
               className={classes.iconos}
               alt="Iconos"
-            />{" "}
+            />
             Cesta
           </NavLink>
         </div>

@@ -20,18 +20,18 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Cargar configuración de appsettings.json
+
         builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-        // Configuración de servicios
+
         ConfigureServices(builder);
 
         var app = builder.Build();
 
-        // Inicialización de la base de datos y ejecución del seeder
+
         await InitializeDatabaseAsync(app);
 
-        // Configuración del middleware
+
         ConfigureMiddleware(app);
 
         await app.RunAsync();
@@ -76,8 +76,8 @@ public class Program
         // Dependencias
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
-        builder.Services.AddScoped<IProductoRepository, ProductoRepository>(); 
-        builder.Services.AddScoped<IReseñasRepository, ReseñasRepository>();   
+        builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
+        builder.Services.AddScoped<IReseñasRepository, ReseñasRepository>();
 
         // Configuración de CORS solo para el entorno de desarrollo
         if (builder.Environment.IsDevelopment())
@@ -128,17 +128,19 @@ public class Program
                 throw new Exception("MyDbContext no está registrado correctamente.");
             }
 
-            dbContext.Database.EnsureCreated();
 
-            // Ejecutar el seeder de libros
-            var seeder = new SeederLibros(dbContext);
-            await seeder.Seeder();
+
+            if (dbContext.Database.EnsureCreated())
+            {
+                var seeder = new SeederLibros(dbContext);
+                await seeder.Seeder();
+            }
         }
     }
 
     private static void ConfigureMiddleware(WebApplication app)
     {
-        // Middleware de Swagger y CORS para entorno de desarrollo
+        // Configuración de Swagger
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
@@ -147,11 +149,15 @@ public class Program
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bookflix API V1");
                 c.RoutePrefix = string.Empty;
             });
-
-            app.UseCors("AllowFrontend");
         }
 
-        app.UseHttpsRedirection();
+        // Configuración de CORS
+        app.UseCors(policy =>
+            policy.WithOrigins("http://localhost:5173")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod());
+
+
         app.UseAuthentication();
         app.UseAuthorization();
 

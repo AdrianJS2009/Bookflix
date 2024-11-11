@@ -68,8 +68,8 @@ namespace Bookflix_Server.Repositories
             string autor = null,
             string genero = null,
             string isbn = null,
-            decimal? precioMin = null,
-            decimal? precioMax = null,
+            double? precioMin = null,
+            double? precioMax = null,
             string ordenPor = null,
             bool ascendente = true)
         {
@@ -95,6 +95,19 @@ namespace Bookflix_Server.Repositories
                 "precio" => ascendente ? query.OrderBy(l => l.Precio) : query.OrderByDescending(l => l.Precio),
                 _ => ascendente ? query.OrderBy(l => l.Nombre) : query.OrderByDescending(l => l.Nombre)
             };
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Libro>> Buscador(string textoBuscado = null)
+        {
+            var query = _context.Libros.AsQueryable();
+
+            if (!string.IsNullOrEmpty(textoBuscado))
+                query = query.Where(l => l.Nombre.Contains(textoBuscado));
+                query = query.Where(l => l.Autor.Contains(textoBuscado));
+                query = query.Where(l => l.Genero.Contains(textoBuscado));
+                query = query.Where(l => l.ISBN == textoBuscado);
 
             return await query.ToListAsync();
         }
