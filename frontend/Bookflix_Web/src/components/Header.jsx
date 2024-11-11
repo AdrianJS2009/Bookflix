@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
 import classes from "./styles/Header.module.css";
 
 const Header = () => {
-  const [userName, setUsername] = useState('Usuario');
+  const [userName, setUsername] = useState("Usuario");
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        // console.log('Token decodificado:', decoded); //Pruebas
-        setUsername(decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]);
+        setUsername(
+          decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]
+        );
       } catch (error) {
         console.error("Error decodificando el token:", error);
-        setUsername('Usuario');
+        setUsername("Usuario");
       }
     }
   }, []);
@@ -52,19 +53,23 @@ const Header = () => {
       <nav className={`${classes.navPrincipal} fondo-verde`}>
         <ul className="texto-pequeño-bold texto-negro">
           <li>
-            <NavLink to="/#novedades" activeClassName="active-link">Novedades</NavLink>
+            <a href="#novedades">Novedades</a>
           </li>
           <li>
-            <NavLink to="/#generos" activeClassName="active-link">Géneros</NavLink>
+            <a href="#generos">Géneros</a>
           </li>
           <li>
-            <NavLink to="/#top-ventas" activeClassName="active-link">Top ventas</NavLink>
+            <a href="#top-ventas">Top ventas</a>
           </li>
           <li>
-            <NavLink to="/bundles" activeClassName="active-link">Bundles</NavLink>
+            <NavLink to="/bundles" activeClassName="active-link">
+              Bundles
+            </NavLink>
           </li>
           <li>
-            <NavLink to="/catalogo" activeClassName="active-link">Catálogo</NavLink>
+            <NavLink to="/catalogo" activeClassName="active-link">
+              Catálogo
+            </NavLink>
           </li>
         </ul>
       </nav>

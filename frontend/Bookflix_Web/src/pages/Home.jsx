@@ -22,7 +22,7 @@ export default function Home() {
           imageSrc="/assets/banner/BannerEnvioGratuito.png"
           altText="Banner Envío Gratuito"
         />
-        {/* <Carrusel /> */}
+
         <Carrusel2 />
         <TopVentas />
         <Banner
@@ -30,7 +30,7 @@ export default function Home() {
           altText="Banner Web Amigas"
         />
       </div>
-      {/* <Button /> */}
+
       <Footer />
     </>
   );

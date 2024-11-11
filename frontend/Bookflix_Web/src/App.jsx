@@ -3,7 +3,7 @@ import Layout from "./components/Layout";
 import Catalogo from "./pages/Catalogo";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import ProductoDetalle from "./pages/ProductoDetalle"; // Nueva vista de detalles del producto
+import ProductoDetalle from "./pages/ProductoDetalle";
 import Registro from "./pages/Registro";
 import SobreNosotros from "./pages/SobreNosotros";
 

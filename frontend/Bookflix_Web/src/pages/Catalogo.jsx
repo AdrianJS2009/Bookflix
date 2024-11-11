@@ -24,19 +24,18 @@ const Catalogo = ({ productos }) => {
     setIsLoading(true);
     setError(null);
 
-    const ordenPor = precioOrden ? "precio" : "nombre"; // Define el campo de ordenación
+    const ordenPor = precioOrden ? "precio" : "nombre";
     const ascendente = precioOrden
       ? precioOrden === "Ascendente"
-      : alfabeticoOrden === "Ascendente"; // Define el orden ascendente o descendente
+      : alfabeticoOrden === "Ascendente";
 
     try {
-      // Construye la URL con los filtros aplicados
       let url = `http://localhost:5000/api/Libro/ListarLibros?pagina=${
         page + 1
       }&tamanoPagina=${itemsPerPage}`;
-      if (nombre) url += `&textoBuscado=${encodeURIComponent(nombre)}`; // Filtro de búsqueda por nombre o autor
-      if (genero) url += `&genero=${encodeURIComponent(genero)}`; // Filtro por género
-      url += `&ordenPor=${ordenPor}&ascendente=${ascendente}`; // Añade el orden y el tipo de orden
+      if (nombre) url += `&textoBuscado=${encodeURIComponent(nombre)}`;
+      if (genero) url += `&genero=${encodeURIComponent(genero)}`;
+      url += `&ordenPor=${ordenPor}&ascendente=${ascendente}`;
 
       const response = await fetch(url, {
         headers: {
@@ -80,7 +79,7 @@ const Catalogo = ({ productos }) => {
   };
 
   const handleProductoClick = (id) => {
-    navigate(`/producto/${id}`); // Redirige a la página de detalles
+    navigate(`/producto/${id}`);
   };
 
   return (
@@ -102,7 +101,6 @@ const Catalogo = ({ productos }) => {
             </button>
           </div>
           <div className="catalogoFiltros">
-
             <select
               value={genero}
               onChange={(e) => setGenero(e.target.value)}
@@ -130,12 +128,12 @@ const Catalogo = ({ productos }) => {
               <option value="Espiritualidad">Espiritualidad</option>
               <option value="Psicología">Psicología</option>
             </select>
-            
+
             <select
               value={precioOrden}
               onChange={(e) => {
                 setPrecioOrden(e.target.value);
-                setAlfabeticoOrden(""); // Resetea el orden alfabético al aplicar orden por precio
+                setAlfabeticoOrden("");
               }}
               className="filtro-select"
             >
@@ -143,19 +141,19 @@ const Catalogo = ({ productos }) => {
               <option value="Ascendente">Ascendente</option>
               <option value="Descendente">Descendente</option>
             </select>
-            
+
             <select
               value={alfabeticoOrden}
               onChange={(e) => {
                 setAlfabeticoOrden(e.target.value);
-                setPrecioOrden(""); // Resetea el orden de precio al aplicar orden alfabético
+                setPrecioOrden("");
               }}
               className="filtro-select"
             >
               <option value="Ascendente">Ordenar alfabéticamente (A-Z)</option>
               <option value="Descendente">Ordenar alfabéticamente (Z-A)</option>
             </select>
-            
+
             <select
               value={itemsPerPage}
               onChange={handleItemsPerPageChange}
@@ -179,7 +177,7 @@ const Catalogo = ({ productos }) => {
               <div
                 key={libro.idLibro}
                 className="catalogoItem"
-                onClick={() => handleProductoClick(libro.idLibro)} // Redirige a la página de detalles con el ID del libro
+                onClick={() => handleProductoClick(libro.idLibro)}
               >
                 <div className="catalogoItemContent">
                   <img
