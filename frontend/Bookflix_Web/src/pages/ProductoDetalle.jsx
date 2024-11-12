@@ -18,21 +18,20 @@ const ProductoDetalle = () => {
           `http://localhost:5000/api/Libro/Detalle/${id}`
         );
         if (!response.ok) {
-          throw new Error("Error al obtener los detalles del producto");
+          throw new Error("Producto no encontrado");
         }
         const data = await response.json();
-        setProducto(data);
-      } catch (error) {
-        if (!producto) {
-          return <p>Producto no encontrado.</p>;
-        }
-        setError(error.message);
+        setProducto(data.libro);
+      } catch (err) {
+        setError(err.message);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProducto();
+    if (id) {
+      fetchProducto();
+    }
   }, [id]);
 
   if (loading) {
@@ -74,7 +73,6 @@ const ProductoDetalle = () => {
                 <span className="genero"> {producto.genero} </span>
               </Link>
             </p>
-
             <p className="isbn texto-pequeño">ISBN: {producto.isbn}</p>
           </div>
           <div className="detalles texto-mediano">
