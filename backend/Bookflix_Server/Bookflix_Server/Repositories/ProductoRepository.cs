@@ -1,4 +1,5 @@
 ﻿using Bookflix_Server.Data;
+using Bookflix_Server.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bookflix_Server.Repositories
@@ -11,7 +12,6 @@ namespace Bookflix_Server.Repositories
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
-
 
         public async Task<int> GetCountAsync()
         {
@@ -37,14 +37,12 @@ namespace Bookflix_Server.Repositories
             return await _context.Libros.FindAsync(id);
         }
 
-
         public async Task AddAsync(Libro libro)
         {
             if (libro == null) throw new ArgumentNullException(nameof(libro));
             await _context.Libros.AddAsync(libro);
             await _context.SaveChangesAsync();
         }
-
 
         public async Task UpdateAsync(Libro libro)
         {
@@ -104,14 +102,15 @@ namespace Bookflix_Server.Repositories
             var query = _context.Libros.AsQueryable();
 
             if (!string.IsNullOrEmpty(textoBuscado))
-                query = query.Where(l => l.Nombre.Contains(textoBuscado));
-                query = query.Where(l => l.Autor.Contains(textoBuscado));
-                query = query.Where(l => l.Genero.Contains(textoBuscado));
-                query = query.Where(l => l.ISBN == textoBuscado);
+            {
+                query = query.Where(l => l.Nombre.Contains(textoBuscado) ||
+                                         l.Autor.Contains(textoBuscado) ||
+                                         l.Genero.Contains(textoBuscado) ||
+                                         l.ISBN == textoBuscado);
+            }
 
             return await query.ToListAsync();
         }
-
 
         public async Task<IEnumerable<Libro>> GetByAutorAsync(string autor)
         {
@@ -120,7 +119,6 @@ namespace Bookflix_Server.Repositories
                 .ToListAsync();
         }
 
-
         public async Task<IEnumerable<Libro>> GetByGeneroAsync(string genero)
         {
             return await _context.Libros
@@ -128,11 +126,38 @@ namespace Bookflix_Server.Repositories
                 .ToListAsync();
         }
 
-
         public async Task<Libro> GetByISBNAsync(string isbn)
         {
             return await _context.Libros
                 .FirstOrDefaultAsync(l => l.ISBN == isbn);
+        }
+
+        // Nuevos métodos para control de stock y reseñas
+        public async Task<bool> CheckStockAsync(int productId, int quantity)
+        {
+            var producto = await _context.Libros.FindAsync(productId);
+            return producto != null && producto.Stock >= quantity;
+        }
+
+        public async Task<decimal> GetAverageRatingAsync(int productId)
+        {
+            return await _context.Reseñas
+                .Where(r => r.ProductoId == productId)
+                .AverageAsync(r => (decimal?)r.Estrellas) ?? 0;
+        }
+
+        public async Task<int> GetReviewCountAsync(int productId)
+        {
+            return await _context.Reseñas
+                .CountAsync(r => r.ProductoId == productId);
+        }
+
+        public async Task<IEnumerable<Reseña>> GetReseñasByProductoIdAsync(int productId)
+        {
+            return await _context.Reseñas
+                .Where(r => r.ProductoId == productId)
+                .OrderByDescending(r => r.FechaPublicacion)
+                .ToListAsync();
         }
     }
 }

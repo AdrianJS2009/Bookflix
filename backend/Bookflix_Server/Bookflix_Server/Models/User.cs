@@ -1,25 +1,30 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Bookflix_Server.Models;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 public class User
 {
     [Key]
-    public int IdUser { get; set; }  // Identificador único del usuario
+    public int IdUser { get; set; }  
 
     [Required]
-    public string Nombre { get; set; }  // Nombre del usuario
+    public string Nombre { get; set; }  
 
     [Required]
-    public string Apellidos { get; set; }  // Apellidos del usuario
+    public string Apellidos { get; set; }  
 
     [Required]
-    [EmailAddress]  // Validación de formato de correo electrónico
-    public string Email { get; set; }  // Correo electrónico del usuario (considerar restricción de unicidad)
+    [EmailAddress]  
+    public string Email { get; set; } 
 
-    public string Direccion { get; set; }  // Dirección del usuario (opcional)
-
-    [Required]
-    public string Rol { get; set; } = "usuario";  // Rol del usuario, por defecto "usuario"
+    public string Direccion { get; set; }  
 
     [Required]
-    public string Password { get; set; }  // Contraseña del usuario
+    public string Rol { get; set; } = "usuario";  
+
+    [Required]
+    public string Password { get; set; }  
+
+    
+    public ICollection<Reseña> Reseñas { get; set; } = new List<Reseña>();
 }
