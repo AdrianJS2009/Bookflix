@@ -1,6 +1,11 @@
 ﻿using Bookflix_Server.Data;
+using Bookflix_Server.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Bookflix_Server.Controllers
 {
@@ -19,14 +24,14 @@ namespace Bookflix_Server.Controllers
         // Filtros y paginación
         [HttpGet("ListarLibros")]
         public async Task<IActionResult> GetLibros(
-    string textoBuscado = null,
-    double? precioMin = null,
-    double? precioMax = null,
-    string genero = null,  // Añadimos el parámetro genero
-    string ordenPor = null,
-    bool ascendente = true,
-    int pagina = 1,
-    int tamanoPagina = TamañoPagina)
+            string textoBuscado = null,
+            double? precioMin = null,
+            double? precioMax = null,
+            string genero = null,
+            string ordenPor = null,
+            bool ascendente = true,
+            int pagina = 1,
+            int tamanoPagina = TamañoPagina)
         {
             try
             {
@@ -34,7 +39,6 @@ namespace Bookflix_Server.Controllers
 
                 IQueryable<Libro> librosQuery;
 
-                // Filtrar por texto buscado
                 if (!string.IsNullOrWhiteSpace(textoBuscado))
                 {
                     librosQuery = _context.Libros
@@ -49,23 +53,14 @@ namespace Bookflix_Server.Controllers
                     librosQuery = _context.Libros;
                 }
 
-                // Filtrar por precio mínimo y máximo
-                if (precioMin.HasValue)
-                {
-                    librosQuery = librosQuery.Where(l => l.Precio >= precioMin.Value);
-                }
-                if (precioMax.HasValue)
-                {
-                    librosQuery = librosQuery.Where(l => l.Precio <= precioMax.Value);
-                }
+                if (precioMin.HasValue) librosQuery = librosQuery.Where(l => l.Precio >= precioMin.Value);
+                if (precioMax.HasValue) librosQuery = librosQuery.Where(l => l.Precio <= precioMax.Value);
 
-                
                 if (!string.IsNullOrEmpty(genero))
                 {
                     librosQuery = librosQuery.Where(l => l.Genero.ToLower() == genero.ToLower());
                 }
 
-                // Ordenación
                 librosQuery = ordenPor switch
                 {
                     "precio" => ascendente ? librosQuery.OrderBy(l => l.Precio) : librosQuery.OrderByDescending(l => l.Precio),
@@ -73,13 +68,21 @@ namespace Bookflix_Server.Controllers
                     _ => librosQuery
                 };
 
-                // Paginación
                 var totalLibros = await librosQuery.CountAsync();
                 var totalPaginas = (int)Math.Ceiling(totalLibros / (double)tamanoPagina);
 
                 var libros = await librosQuery
                     .Skip((pagina - 1) * tamanoPagina)
                     .Take(tamanoPagina)
+                    .Select(l => new LibroDTO
+                    {
+                        IdLibro = l.IdLibro,
+                        Nombre = l.Nombre,
+                        Precio = l.Precio,
+                        UrlImagen = l.UrlImagen,
+                        Genero = l.Genero,
+                        Descripcion = l.Descripcion
+                    })
                     .ToListAsync();
 
                 return Ok(new
@@ -95,17 +98,52 @@ namespace Bookflix_Server.Controllers
             }
         }
 
-
-        // Endpoint para obtener detalles de un libro específico
+        // Obtener detalles de un libro y sus reseñas
         [HttpGet("Detalle/{id}")]
-        public async Task<ActionResult<Libro>> GetLibroById(int id)
+        public async Task<ActionResult> GetLibroById(int id)
         {
-            var libro = await _context.Libros.FirstOrDefaultAsync(l => l.IdLibro == id);
+            var libro = await _context.Libros
+                .Include(l => l.Reseñas)
+                .FirstOrDefaultAsync(l => l.IdLibro == id);
+
             if (libro == null)
             {
                 return NotFound("Libro no encontrado.");
             }
-            return Ok(libro);
+
+            var promedioEstrellas = libro.Reseñas.Any() ? libro.Reseñas.Average(r => r.Estrellas) : 0;
+            var totalReseñas = libro.Reseñas.Count;
+
+            var libroDto = new LibroDTO
+            {
+                IdLibro = libro.IdLibro,
+                Nombre = libro.Nombre,
+                Precio = libro.Precio,
+                UrlImagen = libro.UrlImagen,
+                Genero = libro.Genero,
+                Descripcion = libro.Descripcion
+            };
+
+            var reseñasDto = libro.Reseñas
+                .OrderByDescending(r => r.FechaPublicacion)
+                .Select(r => new ReseñaDetalleDTO
+                {
+                    IdReseña = r.IdReseña,
+                    Autor = r.Autor,
+                    Texto = r.Texto,
+                    Estrellas = r.Estrellas,
+                    Categoria = r.Categoria,
+                    FechaPublicacion = r.FechaPublicacion
+                })
+                .ToList();
+
+            return Ok(new
+            {
+                libro = libroDto,
+                promedioEstrellas = promedioEstrellas,
+                totalReseñas = totalReseñas,
+                reseñas = reseñasDto
+            });
         }
 
         // Paginación dinámica
@@ -114,16 +152,21 @@ namespace Bookflix_Server.Controllers
         {
             if (page <= 0) return BadRequest("El número de página debe ser mayor que cero.");
 
-
             var totalLibros = await _context.Libros.CountAsync();
-
-            // Calcular el número total de páginas
             var totalPaginas = (int)Math.Ceiling(totalLibros / (double)TamañoPagina);
 
-            // Obtener los libros de la página actual
             var libros = await _context.Libros
                 .Skip((page - 1) * TamañoPagina)
                 .Take(TamañoPagina)
+                .Select(l => new LibroDTO
+                {
+                    IdLibro = l.IdLibro,
+                    Nombre = l.Nombre,
+                    Precio = l.Precio,
+                    UrlImagen = l.UrlImagen,
+                    Genero = l.Genero,
+                    Descripcion = l.Descripcion
+                })
                 .ToListAsync();
 
             return Ok(new
@@ -132,6 +175,21 @@ namespace Bookflix_Server.Controllers
                 TotalPaginas = totalPaginas,
                 Libros = libros
             });
+        }
+
+        // Verificar stock antes de añadir al carrito
+        [HttpPost("CheckStock/{id}")]
+        public async Task<IActionResult> CheckStock(int id, [FromBody] int quantity)
+        {
+            var libro = await _context.Libros.FindAsync(id);
+
+            if (libro == null)
+                return NotFound("Libro no encontrado.");
+
+            if (libro.Stock >= quantity)
+                return Ok(new { stockDisponible = true });
+
+            return BadRequest(new { stockDisponible = false, mensaje = "No hay suficiente stock." });
         }
     }
 }

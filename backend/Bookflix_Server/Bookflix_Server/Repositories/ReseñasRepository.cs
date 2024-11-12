@@ -1,4 +1,8 @@
 ﻿using Bookflix_Server.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Bookflix_Server.Repositories
 {
@@ -36,13 +40,26 @@ namespace Bookflix_Server.Repositories
             return Task.FromResult(reseñas.AsEnumerable());
         }
 
-        public Task<double> CalcularPromedioEstrellasAsync()
+        public Task<double> CalcularPromedioEstrellasAsync(int productoId)
         {
-            if (!_listaReseñas.Any())
+            var reseñasProducto = _listaReseñas.Where(r => r.ProductoId == productoId);
+            if (!reseñasProducto.Any())
                 return Task.FromResult(0.0);
 
-            var promedio = _listaReseñas.Average(r => r.Estrellas);
+            var promedio = reseñasProducto.Average(r => r.Estrellas);
             return Task.FromResult(promedio);
+        }
+
+        public Task<int> ContarReseñasPorProductoAsync(int productoId)
+        {
+            var count = _listaReseñas.Count(r => r.ProductoId == productoId);
+            return Task.FromResult(count);
+        }
+
+        public Task<IEnumerable<Reseña>> GetReseñasByCategoriaAsync(int productoId, string categoria)
+        {
+            var reseñas = _listaReseñas.Where(r => r.ProductoId == productoId && r.Categoria.Equals(categoria, StringComparison.OrdinalIgnoreCase));
+            return Task.FromResult(reseñas.AsEnumerable());
         }
     }
 }
