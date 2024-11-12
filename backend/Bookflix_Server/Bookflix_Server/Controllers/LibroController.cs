@@ -82,7 +82,8 @@ namespace Bookflix_Server.Controllers
                         UrlImagen = l.UrlImagen,
                         Genero = l.Genero,
                         Descripcion = l.Descripcion,
-                        Autor = l.Autor
+                        Autor = l.Autor,
+                        ISBN = l.ISBN
                     })
                     .ToListAsync();
 
@@ -123,7 +124,8 @@ namespace Bookflix_Server.Controllers
                 UrlImagen = libro.UrlImagen,
                 Genero = libro.Genero,
                 Descripcion = libro.Descripcion,
-                Autor = libro.Autor
+                Autor = libro.Autor,
+                ISBN = libro.ISBN
             };
 
             var reseñasDto = libro.Reseñas
