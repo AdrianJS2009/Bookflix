@@ -421,7 +421,7 @@ public class SeederLibros
                 UrlImagen = "https://m.media-amazon.com/images/I/71rDyMBfBoL._SY466_.jpg",
                 Genero = "Literatura",
                 Descripcion = "Descripción del libro Invisible",
-                Stock = 50,
+                Stock = 0,
                 ISBN = "9781234567800",
                 Autor = "Eloy Moreno",
                 Reseñas = new List<Reseña>()
