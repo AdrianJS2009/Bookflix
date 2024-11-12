@@ -3,7 +3,6 @@ using F23.StringSimilarity.Interfaces;
 using Bookflix_Server.Repositories;
 using System.Text;
 using System.Globalization;
-using Bookflix_Server.Repositories.IProductoRepository;
 
 
 namespace Bookflix_Server.Services;
@@ -17,13 +16,15 @@ public class SmartSearchService
 
     private List<string> TituloLibros { get; set; } = new List<string>();
 
-    public SmartSearchService(UnitOfWork unitOfWork, IProductoRepository productoRepository)
+    public SmartSearchService(IUnitOfWork unitOfWork, IProductoRepository productoRepository)
     {
         _stringSimilarityComparer = new JaroWinkler();
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        _unitOfWork = (UnitOfWork)(unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork)));
         _productoRepository = productoRepository ?? throw new ArgumentNullException(nameof(productoRepository));
         InitializeLibrosAsync().Wait();
     }
+
+
 
     private async Task InitializeLibrosAsync()
     {

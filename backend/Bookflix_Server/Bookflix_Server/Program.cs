@@ -1,6 +1,7 @@
 ﻿using Bookflix_Server.Data;
 using Bookflix_Server.Models.Seeder;
 using Bookflix_Server.Repositories;
+using Bookflix_Server.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -78,6 +79,7 @@ public class Program
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
         builder.Services.AddScoped<IReseñasRepository, ReseñasRepository>();
+        builder.Services.AddScoped<SmartSearchService>();
 
         // Configuración de CORS solo para el entorno de desarrollo
         if (builder.Environment.IsDevelopment())
