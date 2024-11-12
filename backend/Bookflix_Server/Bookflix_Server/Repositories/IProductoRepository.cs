@@ -1,4 +1,5 @@
 ﻿using Bookflix_Server.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bookflix_Server.Repositories
 {
@@ -47,5 +48,7 @@ namespace Bookflix_Server.Repositories
 
 
         Task<Libro> GetByISBNAsync(string isbn);
+
+        public Task<List<string>> GetAllNombres();
     }
 }

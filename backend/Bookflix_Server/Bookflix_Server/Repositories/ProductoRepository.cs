@@ -159,5 +159,13 @@ namespace Bookflix_Server.Repositories
                 .OrderByDescending(r => r.FechaPublicacion)
                 .ToListAsync();
         }
+        public async Task<List<string>> GetAllNombres()
+        {
+            var nombres = await _context.Libros
+                                        .Select(l => l.Nombre)
+                                        .ToListAsync();
+
+            return nombres; // Devolver directamente la lista de nombres
+        }
     }
 }

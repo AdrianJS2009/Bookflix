@@ -1,11 +1,9 @@
 ﻿using Bookflix_Server.Data;
 using Bookflix_Server.Models;
+using Bookflix_Server.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace Bookflix_Server.Controllers
 {
@@ -14,11 +12,14 @@ namespace Bookflix_Server.Controllers
     public class LibroController : ControllerBase
     {
         private readonly MyDbContext _context;
+        private readonly SmartSearchService _smartSearchService;
         private const int TamañoPagina = 10;
+        
 
-        public LibroController(MyDbContext context)
+        public LibroController(MyDbContext context, SmartSearchService smartSearchService)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _smartSearchService = smartSearchService ?? throw new ArgumentNullException(nameof(smartSearchService));
         }
 
         // Filtros y paginación
@@ -41,12 +42,11 @@ namespace Bookflix_Server.Controllers
 
                 if (!string.IsNullOrWhiteSpace(textoBuscado))
                 {
-                    librosQuery = _context.Libros
-                        .Where(l =>
-                            l.Nombre.ToLower().Contains(textoBuscado.ToLower()) ||
-                            l.Autor.ToLower().Contains(textoBuscado.ToLower()) ||
-                            l.Genero.ToLower().Contains(textoBuscado.ToLower()) ||
-                            l.ISBN == textoBuscado);
+                    var resultadoBusqueda = _smartSearchService.Search(textoBuscado);
+                    librosQuery = _context.Libros.Where(l => resultadoBusqueda.Contains(l.Nombre) ||
+                                                             resultadoBusqueda.Contains(l.Autor) ||
+                                                             resultadoBusqueda.Contains(l.Genero) ||
+                                                             resultadoBusqueda.Contains(l.ISBN));
                 }
                 else
                 {
