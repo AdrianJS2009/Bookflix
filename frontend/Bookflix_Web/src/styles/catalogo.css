@@ -198,3 +198,18 @@ div.catalogoFiltros select {
   padding: 8px 12px;
   color: #777;
 }
+
+ul.pagination li.disabled a {
+  color: var(--difuminado);
+  background-color: var(--difuminado);
+  cursor: default;
+}
+
+ul.pagination li.disabled a:hover {
+  color: var(--difuminado);
+  background-color: var(--difuminado);
+}
+
+.pagination a {
+  cursor: pointer;
+}
