@@ -7,7 +7,9 @@ namespace Bookflix_Server.Data
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Libro> Libros { get; set; }
-        public DbSet<Reseña> Reseñas { get; set; }  
+        public DbSet<Reseña> Reseñas { get; set; }
+        public DbSet<CarritoItem> CarritoItems { get; set; }
+        public DbSet<Carrito> Carritos { get; set; }
 
         public MyDbContext(DbContextOptions<MyDbContext> options) : base(options) { }
 

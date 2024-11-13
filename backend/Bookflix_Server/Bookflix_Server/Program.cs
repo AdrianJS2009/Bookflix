@@ -80,6 +80,7 @@ public class Program
         builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
         builder.Services.AddScoped<IReseñasRepository, ReseñasRepository>();
         builder.Services.AddScoped<SmartSearchService>();
+        builder.Services.AddScoped<ICarritoRepository, CarritoRepository>();
 
         // Configuración de CORS solo para el entorno de desarrollo
         if (builder.Environment.IsDevelopment())
