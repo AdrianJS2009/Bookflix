@@ -1,38 +1,113 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Button from "../components/Button";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import "../styles/ProductoDetalle.css";
+import { useAuth } from "../utils/AuthContext";
 
 const ProductoDetalle = () => {
   const { id } = useParams();
+  const { user } = useAuth();
   const [producto, setProducto] = useState(null);
+  const [hasPurchased, setHasPurchased] = useState(false);
+  const [cantidad, setCantidad] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchProducto = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:5000/api/Libro/Detalle/${id}`
-        );
-        if (!response.ok) {
-          throw new Error("Producto no encontrado");
-        }
-        const data = await response.json();
-        setProducto(data.libro);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+    // Obtener el token y extraer el valor del campo "token"
+    const storedToken = localStorage.getItem("token");
+    const token = storedToken ? JSON.parse(storedToken).token : null;
 
-    if (id) {
-      fetchProducto();
+    if (!token) {
+      console.error(
+        "Token no encontrado o inválido. Redirigiendo a registro..."
+      );
+      navigate("/registro"); // Redirigir a la página de registro si no hay token
+      return;
     }
-  }, [id]);
+
+    // Cargar datos del producto
+    fetch(`http://localhost:5000/api/Libro/Detalle/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Incluye el token JWT extraído
+        "Content-Type": "application/json",
+      },
+      cache: "no-store", // Desactiva la caché para evitar respuestas 304
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `Error al cargar el producto: ${response.status} ${response.statusText}`
+          );
+        }
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("Respuesta no es JSON");
+        }
+        return response.json();
+      })
+      .then((data) => setProducto(data.libro))
+      .catch((error) => setError(error.message))
+      .finally(() => setLoading(false));
+
+    // Verificar si el usuario ha comprado el producto
+    if (user) {
+      fetch(`/api/User/${user.id}/purchases/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        cache: "no-store",
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+              `Error al verificar la compra del producto: ${response.status} ${response.statusText}`
+            );
+          }
+          return response.json();
+        })
+        .then((data) => setHasPurchased(data.hasPurchased))
+        .catch((error) =>
+          console.error("Error al verificar la compra del producto:", error)
+        );
+    }
+  }, [id, user, navigate]);
+
+  const handleAddToCart = () => {
+    const newCartItem = { productId: id, quantity: cantidad };
+    if (user) {
+      fetch(`/api/user/${user.id}/cart`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newCartItem),
+      }).then(() => navigate("/carrito"));
+    } else {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.push(newCartItem);
+      localStorage.setItem("cart", JSON.stringify(cart));
+    }
+  };
+
+  const handleReviewSubmit = (reviewText) => {
+    fetch("/api/reviews/classify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: reviewText }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const newReview = { text: reviewText, category: data.category };
+        fetch(`/api/productos/${id}/reviews`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newReview),
+        });
+      });
+  };
 
   if (loading) {
     return <p>Cargando...</p>;
@@ -80,15 +155,19 @@ const ProductoDetalle = () => {
               Precio: €{(producto.precio / 100).toFixed(2)}
             </p>
             <p className="stock">
-              {producto.stock > 0 
-                ? <span><span className="existencias">⬤</span> En stock</span>
-                : <span><span className="agotado">⬤</span> Agotado</span>}
+              {producto.stock > 0 ? (
+                <span>
+                  <span className="existencias">⬤</span> En stock
+                </span>
+              ) : (
+                <span>
+                  <span className="agotado">⬤</span> Agotado
+                </span>
+              )}
             </p>
-
             <p className="valoracion">
-              Valoración Media: {producto.valoracionMedia}
+              Valoración Media: {producto.valoracionMedia || "N/A"}
             </p>
-
             <Button
               label="Comprar"
               styleType="btnComprar"
@@ -100,14 +179,10 @@ const ProductoDetalle = () => {
             <Button
               label="Añadir a la cesta"
               styleType="btnAñadir"
-              onClick={(e) => {
-                e.stopPropagation();
-                alert("Añadido a la cesta");
-              }}
+              onClick={handleAddToCart}
             />
           </div>
         </div>
-
         <hr />
         <div className="reseñas texto-pequeño">
           <h2 className="texto-grande">Reseñas</h2>
@@ -123,6 +198,20 @@ const ProductoDetalle = () => {
             <p>No hay reseñas para este producto.</p>
           )}
         </div>
+        {user && hasPurchased && (
+          <section className="añadirReseña">
+            <h3>Escribe tu reseña</h3>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleReviewSubmit(e.target.elements.reviewText.value);
+              }}
+            >
+              <textarea name="reviewText" required />
+              <button type="submit">Enviar reseña</button>
+            </form>
+          </section>
+        )}
       </div>
       <Footer />
     </>

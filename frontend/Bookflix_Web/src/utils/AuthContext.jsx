@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
@@ -8,21 +8,53 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const loggedInUser = localStorage.getItem("user");
-    if (loggedInUser) {
-      setUser(JSON.parse(loggedInUser));
+    const token = localStorage.getItem("token");
+    if (token) {
+      fetchUserDetails(token);
     }
   }, []);
 
-  const login = (userData) => {
-    setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
-    navigate("/");
+  const fetchUserDetails = async (token) => {
+    try {
+      const response = await fetch("/api/auth/user", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData);
+      } else {
+        logout(); // Si el token es inválido
+      }
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+      logout();
+    }
+  };
+
+  const login = async (email, password) => {
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      if (response.ok) {
+        const { token, userData } = await response.json();
+        localStorage.setItem("token", token);
+        setUser(userData);
+        navigate("/");
+      } else {
+        alert("Credenciales incorrectas");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("Error al iniciar sesión");
+    }
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("user");
+    localStorage.removeItem("token");
     navigate("/login");
   };
 
