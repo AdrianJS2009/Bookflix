@@ -5,5 +5,6 @@
         public int ProductoId { get; set; }
         public string Texto { get; set; }
         public int Estrellas { get; set; }
+        public string Categoria { get; set; }
     }
 }

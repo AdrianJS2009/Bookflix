@@ -14,24 +14,23 @@ using System.Text;
 
 namespace Bookflix_Server;
 
-
 public class Program
 {
     public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
-
         builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-
 
         ConfigureServices(builder);
 
         var app = builder.Build();
 
+        // Entrenar el modelo de clasificación de reseñas al inicio
+        var classifierService = app.Services.GetRequiredService<ReseñaClassifierService>();
+        classifierService.TrainModel();
 
         await InitializeDatabaseAsync(app);
-
 
         ConfigureMiddleware(app);
 
@@ -42,6 +41,7 @@ public class Program
     {
         // Servicios de controladores y Swagger
         builder.Services.AddControllers();
+
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
         {
@@ -70,7 +70,7 @@ public class Program
             });
         });
 
-        // Configuración de la bbdd
+        // Configuración de la base de datos
         builder.Services.AddDbContext<MyDbContext>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -81,6 +81,9 @@ public class Program
         builder.Services.AddScoped<IReseñasRepository, ReseñasRepository>();
         builder.Services.AddScoped<SmartSearchService>();
         builder.Services.AddScoped<ICarritoRepository, CarritoRepository>();
+
+        // Configuración del servicio de clasificación de reseñas con IA
+        builder.Services.AddSingleton<ReseñaClassifierService>();
 
         // Configuración de CORS solo para el entorno de desarrollo
         if (builder.Environment.IsDevelopment())
@@ -131,8 +134,6 @@ public class Program
                 throw new Exception("MyDbContext no está registrado correctamente.");
             }
 
-
-
             if (dbContext.Database.EnsureCreated())
             {
                 var seeder = new SeederLibros(dbContext);
@@ -159,7 +160,6 @@ public class Program
             policy.WithOrigins("http://localhost:5173")
                   .AllowAnyHeader()
                   .AllowAnyMethod());
-
 
         app.UseAuthentication();
         app.UseAuthorization();

@@ -4,7 +4,6 @@ using Bookflix_Server.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace Bookflix_Server.Controllers
 {
     [ApiController]
@@ -13,13 +12,14 @@ namespace Bookflix_Server.Controllers
     {
         private readonly MyDbContext _context;
         private readonly SmartSearchService _smartSearchService;
+        private readonly ReseñaClassifierService _reseñaClassifierService;
         private const int TamañoPagina = 10;
-        
 
-        public LibroController(MyDbContext context, SmartSearchService smartSearchService)
+        public LibroController(MyDbContext context, SmartSearchService smartSearchService, ReseñaClassifierService reseñaClassifierService)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _smartSearchService = smartSearchService ?? throw new ArgumentNullException(nameof(smartSearchService));
+            _reseñaClassifierService = reseñaClassifierService ?? throw new ArgumentNullException(nameof(reseñaClassifierService));
         }
 
         // Filtros y paginación
@@ -98,6 +98,14 @@ namespace Bookflix_Server.Controllers
             {
                 return StatusCode(500, new { error = "Error interno del servidor", details = ex.Message });
             }
+        }
+
+        // Clasificación de una reseña usando IA
+        [HttpPost("clasificarReseña")]
+        public IActionResult ClasificarReseña([FromBody] string textoReseña)
+        {
+            var categoria = _reseñaClassifierService.PredictCategory(textoReseña);
+            return Ok(new { Categoria = categoria });
         }
 
         // Obtener detalles de un libro y sus reseñas
