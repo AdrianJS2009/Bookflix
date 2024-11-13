@@ -1,8 +1,6 @@
 ﻿using Bookflix_Server.Data;
 using Bookflix_Server.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Bookflix_Server.Repositories
 {
