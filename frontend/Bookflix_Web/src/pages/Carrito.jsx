@@ -15,8 +15,7 @@ const Carrito = ({ carrito }) => {
         setError(null);
 
         try {
-            let url = `http://localhost:5000/api/Libro/ListarLibros`
-            
+            let url = `http://localhost:5000/api/Carrito/carrtio-temporal`;
             const response = await fetch(url, {
                 headers: {
                   Accept: "application/json",
@@ -44,7 +43,7 @@ const Carrito = ({ carrito }) => {
             <Header />
             
             <div className="carrito-container texto-pequeño">
-                {}
+                <p>carritro</p>
             </div>
 
             <Footer />

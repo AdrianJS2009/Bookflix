@@ -4,6 +4,7 @@ using Bookflix_Server.Repositories;
 using Bookflix_Server.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,23 +15,24 @@ using System.Text;
 
 namespace Bookflix_Server;
 
+
 public class Program
 {
     public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
+
         builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
 
         ConfigureServices(builder);
 
         var app = builder.Build();
 
-        // Entrenar el modelo de clasificación de reseñas al inicio
-        var classifierService = app.Services.GetRequiredService<ReseñaClassifierService>();
-        classifierService.TrainModel();
 
         await InitializeDatabaseAsync(app);
+
 
         ConfigureMiddleware(app);
 
@@ -41,7 +43,6 @@ public class Program
     {
         // Servicios de controladores y Swagger
         builder.Services.AddControllers();
-
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
         {
@@ -70,7 +71,7 @@ public class Program
             });
         });
 
-        // Configuración de la base de datos
+        // Configuración de la bbdd
         builder.Services.AddDbContext<MyDbContext>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -81,9 +82,6 @@ public class Program
         builder.Services.AddScoped<IReseñasRepository, ReseñasRepository>();
         builder.Services.AddScoped<SmartSearchService>();
         builder.Services.AddScoped<ICarritoRepository, CarritoRepository>();
-
-        // Configuración del servicio de clasificación de reseñas con IA
-        builder.Services.AddSingleton<ReseñaClassifierService>();
 
         // Configuración de CORS solo para el entorno de desarrollo
         if (builder.Environment.IsDevelopment())
@@ -134,6 +132,8 @@ public class Program
                 throw new Exception("MyDbContext no está registrado correctamente.");
             }
 
+
+
             if (dbContext.Database.EnsureCreated())
             {
                 var seeder = new SeederLibros(dbContext);
@@ -161,9 +161,55 @@ public class Program
                   .AllowAnyHeader()
                   .AllowAnyMethod());
 
+
         app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();
     }
+
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddDistributedMemoryCache();
+        services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(30);
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
+        });
+
+        services.AddControllersWithViews();
+   
+    }
+
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+        }
+        else
+        {
+            app.UseExceptionHandler("/Home/Error");
+            app.UseHsts();
+        }
+
+        app.UseHttpsRedirection();
+        app.UseStaticFiles();
+
+        app.UseRouting();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.UseSession();
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
+        });
+    }
+
 }
