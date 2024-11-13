@@ -15,83 +15,116 @@ public class CarritoRepository : ICarritoRepository
 
     public async Task<Carrito> GetCarritoByUserIdAsync(int userId)
     {
-        return await _context.Carritos
-            .Include(c => c.Items)
-            .ThenInclude(ci => ci.Libro)
-            .FirstOrDefaultAsync(c => c.IdUser == userId);
+        try
+        {
+            return await _context.Carritos
+                .Include(c => c.Items)
+                .ThenInclude(ci => ci.Libro)
+                .FirstOrDefaultAsync(c => c.IdUser == userId);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error al obtener el carrito.", ex);
+        }
     }
 
     public async Task AñadirItemAsync(int userId, int libroId, int cantidad)
     {
-        var carrito = await _context.Carritos
-            .Include(c => c.Items)  // Incluimos los ítems del carrito para comprobar si el libro ya está en el carrito
-            .FirstOrDefaultAsync(c => c.IdUser == userId);
-
-        if (carrito == null)
+        try
         {
-            carrito = new Carrito { IdUser = userId };
-            _context.Carritos.Add(carrito);
-            await _context.SaveChangesAsync();  // Guardar el nuevo carrito si no existe
+            var carrito = await _context.Carritos
+                .Include(c => c.Items)
+                .FirstOrDefaultAsync(c => c.IdUser == userId);
+
+            if (carrito == null)
+            {
+                carrito = new Carrito { IdUser = userId };
+                _context.Carritos.Add(carrito);
+                await _context.SaveChangesAsync();
+            }
+
+            var itemExistente = carrito.Items.FirstOrDefault(i => i.LibroId == libroId);
+
+            if (itemExistente != null)
+            {
+                itemExistente.Cantidad += cantidad;
+            }
+            else
+            {
+                carrito.Items.Add(new CarritoItem { LibroId = libroId, Cantidad = cantidad });
+            }
+
+            await _context.SaveChangesAsync();
         }
-
-        var itemExistente = carrito.Items.FirstOrDefault(i => i.LibroId == libroId);
-
-        if (itemExistente != null)
+        catch (Exception ex)
         {
-            // Si el libro ya está en el carrito, actualizamos la cantidad
-            itemExistente.Cantidad += cantidad;
+            throw new Exception("Error al añadir un item al carrito.", ex);
         }
-        else
-        {
-            // Si el libro no está en el carrito, lo agregamos
-            carrito.Items.Add(new CarritoItem { LibroId = libroId, Cantidad = cantidad });
-        }
-
-        await _context.SaveChangesAsync();  // Guardamos los cambios
     }
-
 
     public async Task ActualizarCantidadProductoAsync(int userId, int libroId, int nuevaCantidad)
     {
-        var carrito = await GetCarritoByUserIdAsync(userId);
-        if (carrito != null)
+        try
         {
-            var item = carrito.Items.FirstOrDefault(ci => ci.LibroId == libroId);
+            var carrito = await GetCarritoByUserIdAsync(userId);
+            var item = carrito?.Items.FirstOrDefault(ci => ci.LibroId == libroId);
             if (item != null)
             {
                 item.Cantidad = nuevaCantidad;
                 await _context.SaveChangesAsync();
             }
         }
+        catch (Exception ex)
+        {
+            throw new Exception("Error al actualizar la cantidad del producto en el carrito.", ex);
+        }
     }
 
     public async Task BorrarItemAsync(int userId, int libroId)
     {
-        var carrito = await GetCarritoByUserIdAsync(userId);
-        if (carrito != null)
+        try
         {
-            var item = carrito.Items.FirstOrDefault(ci => ci.LibroId == libroId);
+            var carrito = await GetCarritoByUserIdAsync(userId);
+            var item = carrito?.Items.FirstOrDefault(ci => ci.LibroId == libroId);
             if (item != null)
             {
                 carrito.Items.Remove(item);
                 await _context.SaveChangesAsync();
             }
         }
+        catch (Exception ex)
+        {
+            throw new Exception("Error al borrar un item del carrito.", ex);
+        }
     }
 
     public async Task ClearCarritoAsync(int userId)
     {
-        var carrito = await GetCarritoByUserIdAsync(userId);
-        if (carrito != null)
+        try
         {
-            carrito.Items.Clear();
-            await _context.SaveChangesAsync();
+            var carrito = await GetCarritoByUserIdAsync(userId);
+            if (carrito != null)
+            {
+                carrito.Items.Clear();
+                await _context.SaveChangesAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error al limpiar el carrito.", ex);
         }
     }
 
     public async Task<int> GetCarritoTotalAsync(int userId)
     {
-        var carrito = await GetCarritoByUserIdAsync(userId);
-        return carrito?.Items.Sum(i => i.Subtotal) ?? 0;
+        try
+        {
+            var carrito = await GetCarritoByUserIdAsync(userId);
+            return carrito?.Items.Sum(i => i.Subtotal) ?? 0;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error al calcular el total del carrito.", ex);
+        }
     }
 }

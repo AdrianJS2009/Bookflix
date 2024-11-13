@@ -14,6 +14,5 @@ public class Carrito
     public ICollection<CarritoItem> Items { get; set; } = new List<CarritoItem>();
 
     [NotMapped]
-    public int Total => Items.Sum(item => item.Subtotal);
+    public int Total => Items?.Sum(item => item.Subtotal) ?? 0;
 }
-

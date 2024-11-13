@@ -2,7 +2,6 @@
 
 namespace Bookflix_Server.Repositories;
 
-
 public interface ICarritoRepository
 {
     Task<Carrito> GetCarritoByUserIdAsync(int userId);

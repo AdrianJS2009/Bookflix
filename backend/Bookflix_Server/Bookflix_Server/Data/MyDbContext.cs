@@ -17,7 +17,6 @@ namespace Bookflix_Server.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                // Configuración de la base de datos SQLite
                 optionsBuilder.UseSqlite("DataSource=bookflix.db");
             }
         }
@@ -26,26 +25,28 @@ namespace Bookflix_Server.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configuración única para Email en User
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
                 .IsUnique()
-                .HasDatabaseName("IX_Unique_Email"); 
+                .HasDatabaseName("IX_Unique_Email");
 
-           
             modelBuilder.Entity<Reseña>()
                 .HasOne<User>()
                 .WithMany(u => u.Reseñas)
                 .HasForeignKey(r => r.UsuarioId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-          
             modelBuilder.Entity<Reseña>()
                 .HasOne<Libro>(r => r.Libro)
                 .WithMany(l => l.Reseñas)
                 .HasForeignKey(r => r.ProductoId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Carrito>()
+                .HasMany(c => c.Items)
+                .WithOne()
+                .HasForeignKey(ci => ci.Id)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
-

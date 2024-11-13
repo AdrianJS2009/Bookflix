@@ -1,7 +1,8 @@
-﻿using Bookflix_Server.Models;
+﻿using Bookflix_Server.DTOs; // Agrega el using para el DTO
+using Bookflix_Server.Models;
 using Bookflix_Server.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+
 
 namespace Bookflix_Server.Controllers
 {
@@ -24,9 +25,10 @@ namespace Bookflix_Server.Controllers
         }
 
         [HttpPost("{userId}/agregar")]
-        public async Task<IActionResult> AgregarItem(int userId, [FromBody] CarritoItem item)
+        public async Task<IActionResult> AgregarItem(int userId, [FromBody] CarritoItemAgregarDto itemDto)
         {
-            await _carritoRepository.AñadirItemAsync(userId, item.LibroId, item.Cantidad);
+            // Usa el DTO en lugar del modelo completo
+            await _carritoRepository.AñadirItemAsync(userId, itemDto.LibroId, itemDto.Cantidad);
             return Ok();
         }
 

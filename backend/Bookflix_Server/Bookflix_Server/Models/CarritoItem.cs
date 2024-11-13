@@ -18,6 +18,5 @@ public class CarritoItem
     public int Cantidad { get; set; }
 
     [NotMapped]
-    public int Subtotal => Libro != null ? Libro.Precio * Cantidad : 0;
+    public int Subtotal => Libro?.Precio * Cantidad ?? 0;
 }
-
