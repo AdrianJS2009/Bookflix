@@ -125,7 +125,8 @@ namespace Bookflix_Server.Controllers
                 Genero = libro.Genero,
                 Descripcion = libro.Descripcion,
                 Autor = libro.Autor,
-                ISBN = libro.ISBN
+                ISBN = libro.ISBN,
+                Stock = libro.Stock
             };
 
             var reseñasDto = libro.Reseñas

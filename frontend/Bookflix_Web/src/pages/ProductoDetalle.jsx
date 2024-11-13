@@ -80,8 +80,11 @@ const ProductoDetalle = () => {
               Precio: €{(producto.precio / 100).toFixed(2)}
             </p>
             <p className="stock">
-              {producto.stock > 0 ? "En stock" : "Agotado"}
+              {producto.stock > 0 
+                ? <span><span className="existencias">⬤</span> En stock</span>
+                : <span><span className="agotado">⬤</span> Agotado</span>}
             </p>
+
             <p className="valoracion">
               Valoración Media: {producto.valoracionMedia}
             </p>
