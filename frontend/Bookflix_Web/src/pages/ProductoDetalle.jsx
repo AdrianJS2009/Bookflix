@@ -92,6 +92,14 @@ const ProductoDetalle = () => {
     }
   };
 
+  const cambiarCantidad = (operacion) => {
+    setCantidad((prevCantidad) => {
+      if (operacion === 'incrementar') return prevCantidad + 1;
+      if (operacion === 'decrementar' && prevCantidad > 1) return prevCantidad - 1;
+      return prevCantidad;
+    });
+  };
+
   const handleReviewSubmit = (reviewText) => {
     fetch("/api/reviews/classify", {
       method: "POST",
@@ -165,6 +173,13 @@ const ProductoDetalle = () => {
                 </span>
               )}
             </p>
+
+            <div className="cantidad">
+              <button className="masCantidad" onClick={() => cambiarCantidad('decrementar')}>-</button>
+              <input type="number" value={cantidad} readOnly />
+              <button className="menosCantidad" onClick={() => cambiarCantidad('incrementar')}>+</button>
+            </div>
+
             <p className="valoracion">
               Valoración Media: {producto.valoracionMedia || "N/A"}
             </p>

@@ -71,3 +71,31 @@ hr {
 .stock .agotado {
   color: var(--rojo);
 }
+
+div.cantidad {
+  display: flex;
+  justify-content: center;
+}
+
+div.cantidad input {
+  text-align: center;
+  width: 60px;
+  margin: 0 5px;
+}
+
+div.cantidad button {
+  padding: 8px 12px;
+  width: 38px;
+}
+
+div.cantidad button.masCantidad {
+  border: 2px solid var(--verde-oscuro);
+  color: var(--verde-oscuro);
+  font-weight: bold;
+}
+
+div.cantidad button.menosCantidad {
+  border: 2px solid var(--azul-oscuro);
+  color: var(--azul-oscuro);
+  font-weight: bold;
+}
