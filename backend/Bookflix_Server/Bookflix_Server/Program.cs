@@ -66,6 +66,7 @@ public class Program
             });
         });
 
+
         // Configuración de la base de datos
         builder.Services.AddDbContext<MyDbContext>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
