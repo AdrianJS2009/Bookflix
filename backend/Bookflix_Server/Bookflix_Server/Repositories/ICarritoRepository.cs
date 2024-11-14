@@ -1,13 +1,15 @@
 ﻿using Bookflix_Server.Models;
+using System.Threading.Tasks;
 
-namespace Bookflix_Server.Repositories;
-
-public interface ICarritoRepository
+namespace Bookflix_Server.Repositories
 {
-    Task<Carrito> GetCarritoByUserIdAsync(int userId);
-    Task AñadirItemAsync(int userId, int libroId, int cantidad);
-    Task ActualizarCantidadProductoAsync(int userId, int libroId, int nuevaCantidad);
-    Task BorrarItemAsync(int userId, int libroId);
-    Task ClearCarritoAsync(int userId);
-    Task<int> GetCarritoTotalAsync(int userId);
+    public interface ICarritoRepository
+    {
+        Task<Carrito> GetCarritoByUserIdAsync(int userId);
+        Task<Carrito> GetOrCreateCarritoByUserIdAsync(int userId);
+        Task AgregarItemAlCarritoAsync(Carrito carrito, int libroId, int cantidad);
+        Task<bool> EliminarItemDelCarritoAsync(Carrito carrito, int libroId);
+        Task LimpiarCarritoAsync(Carrito carrito);
+        Task SaveChangesAsync();
+    }
 }

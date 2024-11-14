@@ -1,8 +1,8 @@
-﻿using Bookflix_Server.DTOs; // Agrega el using para el DTO
+﻿using Bookflix_Server.DTOs;
 using Bookflix_Server.Models;
 using Bookflix_Server.Repositories;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Threading.Tasks;
 
 namespace Bookflix_Server.Controllers
 {
@@ -11,10 +11,12 @@ namespace Bookflix_Server.Controllers
     public class CarritoController : ControllerBase
     {
         private readonly ICarritoRepository _carritoRepository;
+        private readonly IProductoRepository _productoRepository; // Usando IProductoRepository
 
-        public CarritoController(ICarritoRepository carritoRepository)
+        public CarritoController(ICarritoRepository carritoRepository, IProductoRepository productoRepository)
         {
             _carritoRepository = carritoRepository;
+            _productoRepository = productoRepository;
         }
 
         [HttpGet("{userId}")]
@@ -27,30 +29,61 @@ namespace Bookflix_Server.Controllers
         [HttpPost("{userId}/agregar")]
         public async Task<IActionResult> AgregarItem(int userId, [FromBody] CarritoItemAgregarDto itemDto)
         {
-            // Usa el DTO en lugar del modelo completo
-            await _carritoRepository.AñadirItemAsync(userId, itemDto.LibroId, itemDto.Cantidad);
-            return Ok();
+            // Verificar si el producto existe y chequear stock
+            var producto = await _productoRepository.GetByIdAsync(itemDto.LibroId);
+            if (producto == null)
+            {
+                return NotFound(new { error = "Producto no encontrado" });
+            }
+
+            if (producto.Stock < itemDto.Cantidad)
+            {
+                return BadRequest(new { error = "Stock insuficiente", stockDisponible = producto.Stock });
+            }
+
+            // Añadir el artículo al carrito si el stock es suficiente
+            var carrito = await _carritoRepository.GetOrCreateCarritoByUserIdAsync(userId);
+            await _carritoRepository.AgregarItemAlCarritoAsync(carrito, itemDto.LibroId, itemDto.Cantidad);
+
+            // Guardar cambios
+            await _carritoRepository.SaveChangesAsync();
+
+            return Ok(new { success = true, message = "Producto añadido al carrito correctamente" });
         }
 
-        [HttpPut("{userId}/actualizar")]
-        public async Task<IActionResult> ActualizarCantidad(int userId, [FromBody] CarritoItem item)
+        [HttpDelete("{userId}/eliminar/{libroId}")]
+        public async Task<IActionResult> EliminarItem(int userId, int libroId)
         {
-            await _carritoRepository.ActualizarCantidadProductoAsync(userId, item.LibroId, item.Cantidad);
-            return Ok();
+            var carrito = await _carritoRepository.GetCarritoByUserIdAsync(userId);
+            if (carrito == null)
+            {
+                return NotFound(new { error = "Carrito no encontrado" });
+            }
+
+            bool itemEliminado = await _carritoRepository.EliminarItemDelCarritoAsync(carrito, libroId);
+            if (!itemEliminado)
+            {
+                return NotFound(new { error = "El artículo no está en el carrito" });
+            }
+
+            await _carritoRepository.SaveChangesAsync();
+
+            return Ok(new { success = true, message = "Artículo eliminado del carrito correctamente" });
         }
 
-        [HttpDelete("{userId}/borrar/{libroId}")]
-        public async Task<IActionResult> BorrarItem(int userId, int libroId)
+        [HttpDelete("{userId}/limpiar")]
+        public async Task<IActionResult> LimpiarCarrito(int userId)
         {
-            await _carritoRepository.BorrarItemAsync(userId, libroId);
-            return Ok();
-        }
+            var carrito = await _carritoRepository.GetCarritoByUserIdAsync(userId);
+            if (carrito == null)
+            {
+                return NotFound(new { error = "Carrito no encontrado" });
+            }
 
-        [HttpDelete("{userId}/clear")]
-        public async Task<IActionResult> ClearCarrito(int userId)
-        {
-            await _carritoRepository.ClearCarritoAsync(userId);
-            return Ok();
+            await _carritoRepository.LimpiarCarritoAsync(carrito);
+            await _carritoRepository.SaveChangesAsync();
+
+            return Ok(new { success = true, message = "Carrito limpiado correctamente" });
         }
     }
 }

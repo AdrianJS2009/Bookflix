@@ -9,7 +9,7 @@ public class Carrito
     public int Id { get; set; }
 
     [Required]
-    public int IdUser { get; set; }
+    public int UserId { get; set; }
 
     public ICollection<CarritoItem> Items { get; set; } = new List<CarritoItem>();
 
