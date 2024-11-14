@@ -1,133 +1,72 @@
-import React, { useEffect, useState } from 'react';
-import { jwtDecode } from 'jwt-decode';
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { vaciarCarrito } from "../redux/slices/carritoSlice";
 
-const Carrito = ({ isAuthenticated }) => {
-    const [cartItems, setCartItems] = useState([]);
-    const [userId, setUserId] = useState(null); // Almacena el userId
+const Carrito = () => {
+  const { productos } = useSelector((state) => state.carrito);
+  const { usuario } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    
-    const getUserIdFromToken = () => {
-        const token = localStorage.getItem('authToken'); // Suponiendo que el token está en localStorage
-        if (token) {
-            try {
-                const decodedToken = jwtDecode(token); // Decodifica el JWT
-                return decodedToken.userId; // O la clave que corresponda a tu userId en el payload
-            } catch (error) {
-                console.error('Error al decodificar el token:', error);
-                return null;
+  // Enviar el carrito al servidor si el usuario está autenticado
+  useEffect(() => {
+    if (usuario) {
+      const enviarCarrito = async () => {
+        try {
+          const response = await fetch(
+            `/api/carrito/${usuario.id}/actualizar`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${usuario.token}`,
+              },
+              body: JSON.stringify(productos),
             }
+          );
+          if (!response.ok) {
+            throw new Error("Error al sincronizar el carrito.");
+          }
+        } catch (error) {
+          console.error("Error al sincronizar el carrito:", error);
         }
-        return null;
-    };
+      };
+      enviarCarrito();
+    }
+  }, [usuario, productos]);
 
-    // Función para cargar el carrito, ya sea desde el backend o localStorage
-    const loadCart = async () => {
-        if (isAuthenticated) {
-            try {
-                getUserIdFromToken();
-                const response = await fetch(`/api/Carrito/${userId}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setCartItems(data.items || []);
-                } else {
-                    console.error("Error al cargar el carrito del servidor:", response.statusText);
-                }
-            } catch (error) {
-                console.error("Error al cargar el carrito del servidor:", error);
-            }
-        } else {
-            const localCart = JSON.parse(localStorage.getItem('cart')) || [];
-            setCartItems(localCart);
-        }
-    };
+  const handleVaciarCarrito = () => {
+    dispatch(vaciarCarrito());
+  };
 
-    // Función para agregar un artículo al carrito
-    const addItemToCart = async (libroId, cantidad) => {
-        if (isAuthenticated) {
-            try {
-                const response = await fetch(`/api/Carrito/${userId}/agregar`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ libroId, cantidad }),
-                });
-                if (response.ok) {
-                    loadCart();
-                } else {
-                    console.error("Error al agregar el artículo al carrito:", response.statusText);
-                }
-            } catch (error) {
-                console.error("Error al agregar el artículo al carrito:", error);
-            }
-        } else {
-            const updatedCart = [...cartItems, { libroId, cantidad }];
-            localStorage.setItem('cart', JSON.stringify(updatedCart));
-            setCartItems(updatedCart);
-        }
-    };
+  const handleCheckout = () => {
+    if (usuario) {
+      navigate("/checkout");
+    } else {
+      navigate("/login");
+    }
+  };
 
-    // Función para eliminar un artículo del carrito
-    const removeItemFromCart = async (libroId) => {
-        if (isAuthenticated) {
-            try {
-                const response = await fetch(`/api/Carrito/${userId}/eliminar/${libroId}`, {
-                    method: 'DELETE',
-                });
-                if (response.ok) {
-                    loadCart();
-                } else {
-                    console.error("Error al eliminar el artículo del carrito:", response.statusText);
-                }
-            } catch (error) {
-                console.error("Error al eliminar el artículo del carrito:", error);
-            }
-        } else {
-            const updatedCart = cartItems.filter(item => item.libroId !== libroId);
-            localStorage.setItem('cart', JSON.stringify(updatedCart));
-            setCartItems(updatedCart);
-        }
-    };
-
-    // Función para limpiar el carrito
-    const clearCart = async () => {
-        if (isAuthenticated) {
-            try {
-                const response = await fetch(`/api/Carrito/${userId}/limpiar`, {
-                    method: 'DELETE',
-                });
-                if (response.ok) {
-                    loadCart();
-                } else {
-                    console.error("Error al limpiar el carrito:", response.statusText);
-                }
-            } catch (error) {
-                console.error("Error al limpiar el carrito:", error);
-            }
-        } else {
-            localStorage.removeItem('cart');
-            setCartItems([]);
-        }
-    };
-
-    useEffect(() => {
-        loadCart();
-    }, [isAuthenticated, userId]);
-
-    return (
+  return (
+    <div className="carrito-container">
+      <h2>Carrito de Compras</h2>
+      {productos.length > 0 ? (
         <div>
-            <h2>Carrito</h2>
-            <ul>
-                {cartItems.map((item, index) => (
-                    <li key={index}>
-                        Libro ID: {item.libroId}, Cantidad: {item.cantidad}
-                        <button onClick={() => removeItemFromCart(item.libroId)}>Eliminar</button>
-                    </li>
-                ))}
-            </ul>
-            <button onClick={clearCart}>Limpiar Carrito</button>
+          {productos.map((producto) => (
+            <div key={producto.id} className="carrito-item">
+              <p>{producto.nombre}</p>
+              <p>Cantidad: {producto.cantidad}</p>
+            </div>
+          ))}
+          <button onClick={handleVaciarCarrito}>Vaciar Carrito</button>
+          <button onClick={handleCheckout}>Proceder a la Compra</button>
         </div>
-    );
+      ) : (
+        <p>El carrito está vacío.</p>
+      )}
+    </div>
+  );
 };
 
 export default Carrito;
