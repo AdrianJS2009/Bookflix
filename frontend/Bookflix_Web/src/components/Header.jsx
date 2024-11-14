@@ -52,7 +52,8 @@ const Header = () => {
               className={classes.iconos}
               alt="Icono Cesta"
             />
-            Cesta <span className={classes.cartCount}>({cartCount})</span>
+            <span className={classes.cartCount}>{cartCount}</span>
+            Cesta 
           </NavLink>
         </div>
       </div>

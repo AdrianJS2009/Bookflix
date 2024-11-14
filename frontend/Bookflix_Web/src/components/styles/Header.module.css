@@ -56,4 +56,23 @@ nav.navPrincipal li {
 
 img.iconos {
   width: 40px;
+  position: relative;
 }
+
+.cartCount {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  background-color: tomato;
+  padding: 0; /* Elimina el padding extra para mantener el círculo pequeño */
+  border-radius: 50%; /* Hace que el elemento sea un círculo */
+  width: 18px; /* Diámetro del círculo */
+  height: 18px; /* Asegura que la altura sea igual al ancho */
+  display: flex;
+  justify-content: center; /* Centra el contenido horizontalmente */
+  align-items: center; /* Centra el contenido verticalmente */
+  color: white; /* Color del texto (generalmente el número) */
+  font-size: 10px; /* Ajusta el tamaño del texto */
+  font-weight: bold; /* Hace que el número sea más visible */
+}
+
