@@ -12,7 +12,7 @@ const Header = () => {
       try {
         const decoded = jwtDecode(token);
         setUsername(
-          decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]
+          `Hola, ${decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]}`
         );
       } catch (error) {
         console.error("Error decodificando el token:", error);
