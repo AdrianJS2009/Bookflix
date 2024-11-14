@@ -3,6 +3,9 @@ using Bookflix_Server.Models;
 using Bookflix_Server.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Bookflix_Server.Controllers
 {
@@ -12,14 +15,14 @@ namespace Bookflix_Server.Controllers
     {
         private readonly MyDbContext _context;
         private readonly SmartSearchService _smartSearchService;
-        private readonly ReseñaClassifierService _reseñaClassifierService;
+        private readonly IAService _iaService; // Servicio de clasificación IA
         private const int TamañoPagina = 10;
 
-        public LibroController(MyDbContext context, SmartSearchService smartSearchService, ReseñaClassifierService reseñaClassifierService)
+        public LibroController(MyDbContext context, SmartSearchService smartSearchService, IAService iaService)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _smartSearchService = smartSearchService ?? throw new ArgumentNullException(nameof(smartSearchService));
-            _reseñaClassifierService = reseñaClassifierService ?? throw new ArgumentNullException(nameof(reseñaClassifierService));
+            _iaService = iaService ?? throw new ArgumentNullException(nameof(iaService));
         }
 
         // Filtros y paginación
@@ -107,9 +110,10 @@ namespace Bookflix_Server.Controllers
             if (string.IsNullOrEmpty(textoReseña))
                 return BadRequest("El texto de la reseña no puede estar vacío.");
 
-            var categoria = _reseñaClassifierService.ClassifyReview(textoReseña);
-            return Ok(new { categoria });
+            var resultado = _iaService.Predict(textoReseña);
+            return Ok(new { categoria = resultado.PredictedLabel });
         }
+
         // Obtener detalles de un libro y sus reseñas
         [HttpGet("Detalle/{id}")]
         public async Task<ActionResult> GetLibroById(int id)
