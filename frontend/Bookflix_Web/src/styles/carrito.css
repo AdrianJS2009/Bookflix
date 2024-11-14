@@ -1,0 +1,10 @@
+.carrito-container {
+    min-height: calc(100vh - 126px);
+    margin: 20px;
+}
+
+.carrito-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
