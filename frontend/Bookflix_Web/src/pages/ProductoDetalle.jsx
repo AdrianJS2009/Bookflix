@@ -15,27 +15,40 @@ const ProductoDetalle = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [textoReseña, setTextoReseña] = useState('');
+
+  const handleChange = (e) => {
+    setTextoReseña(e.target.value);
+  };
+
+  const handleCrearReseña = () => {
+    if (textoReseña.trim()) {
+      console.log("Reseña creada:", textoReseña);
+      
+      setTextoReseña('');
+    } else {
+      console.log("Por favor ingresa una reseña.");
+    }
+  };
 
   useEffect(() => {
-    // Obtener el token y extraer el valor del campo "token"
     const storedToken = localStorage.getItem("token");
     const token = storedToken ? JSON.parse(storedToken).token : null;
-
+    
     if (!token) {
       console.error(
         "Token no encontrado o inválido. Redirigiendo a registro..."
       );
-      navigate("/registro"); // Redirigir a la página de registro si no hay token
+      navigate("/registro");
       return;
     }
 
-    // Cargar datos del producto
     fetch(`http://localhost:5000/api/Libro/Detalle/${id}`, {
       headers: {
-        Authorization: `Bearer ${token}`, // Incluye el token JWT extraído
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      cache: "no-store", // Desactiva la caché para evitar respuestas 304
+      cache: "no-store",
     })
       .then((response) => {
         if (!response.ok) {
@@ -201,6 +214,17 @@ const ProductoDetalle = () => {
         <hr />
         <div className="reseñas texto-pequeño">
           <h2 className="texto-grande">Reseñas</h2>
+          
+          <div className="crearReseña">
+          <input 
+            className="textoReseñaNueva" 
+            value={textoReseña} 
+            onChange={handleChange}
+            placeholder="Escribe tu reseña aquí..." 
+          />
+            <button className="btnCrearReseña" onClick={handleCrearReseña}>Crear</button>
+          </div>
+
           {producto.reseñas && producto.reseñas.length > 0 ? (
             producto.reseñas.map((reseña, index) => (
               <div key={index} className="reseña">
