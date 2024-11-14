@@ -85,5 +85,21 @@ namespace Bookflix_Server.Controllers
 
             return Ok(new { success = true, message = "Carrito limpiado correctamente" });
         }
+
+        [HttpGet("{userId}/checkPurchase/{libroId}")]
+        public async Task<IActionResult> CheckPurchaseStatus(int userId, int libroId)
+        {
+            var carrito = await _carritoRepository.GetCarritoByUserIdAsync(userId);
+
+            if (carrito == null)
+            {
+                return NotFound(new { error = "Carrito no encontrado" });
+            }
+
+            // Verificar si el producto está en el carrito del usuario y ha sido comprado
+            bool hasPurchased = carrito.Items.Any(item => item.LibroId == libroId && item.Comprado);
+
+            return Ok(new { hasPurchased });
+        }
     }
 }

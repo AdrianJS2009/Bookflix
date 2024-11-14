@@ -1,66 +1,28 @@
-import { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { vaciarCarrito } from "../redux/slices/carritoSlice";
+import { limpiarCarrito } from "../redux/slices/carritoSlice"; // Corrected import for `limpiarCarrito`
 
 const Carrito = () => {
-  const { productos } = useSelector((state) => state.carrito);
-  const { usuario } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const carritoItems = useSelector((state) => state.carrito.items);
 
-  // Enviar el carrito al servidor si el usuario está autenticado
-  useEffect(() => {
-    if (usuario) {
-      const enviarCarrito = async () => {
-        try {
-          const response = await fetch(
-            `/api/carrito/${usuario.id}/actualizar`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${usuario.token}`,
-              },
-              body: JSON.stringify(productos),
-            }
-          );
-          if (!response.ok) {
-            throw new Error("Error al sincronizar el carrito.");
-          }
-        } catch (error) {
-          console.error("Error al sincronizar el carrito:", error);
-        }
-      };
-      enviarCarrito();
-    }
-  }, [usuario, productos]);
-
-  const handleVaciarCarrito = () => {
-    dispatch(vaciarCarrito());
-  };
-
-  const handleCheckout = () => {
-    if (usuario) {
-      navigate("/checkout");
-    } else {
-      navigate("/login");
-    }
+  const handleClearCart = () => {
+    dispatch(limpiarCarrito()); // Corrected usage of `limpiarCarrito`
   };
 
   return (
-    <div className="carrito-container">
-      <h2>Carrito de Compras</h2>
-      {productos.length > 0 ? (
+    <div>
+      <h1>Carrito de Compras</h1>
+      {carritoItems.length > 0 ? (
         <div>
-          {productos.map((producto) => (
-            <div key={producto.id} className="carrito-item">
-              <p>{producto.nombre}</p>
-              <p>Cantidad: {producto.cantidad}</p>
-            </div>
-          ))}
-          <button onClick={handleVaciarCarrito}>Vaciar Carrito</button>
-          <button onClick={handleCheckout}>Proceder a la Compra</button>
+          <ul>
+            {carritoItems.map((item) => (
+              <li key={item.idLibro}>
+                {item.nombre} - Cantidad: {item.cantidad}
+              </li>
+            ))}
+          </ul>
+          <button onClick={handleClearCart}>Vaciar Carrito</button>
         </div>
       ) : (
         <p>El carrito está vacío.</p>

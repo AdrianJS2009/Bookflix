@@ -1,5 +1,6 @@
 ﻿using Bookflix_Server.Data;
 using Bookflix_Server.Models;
+using Bookflix_Server.Repositories;
 using Bookflix_Server.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,14 +16,17 @@ namespace Bookflix_Server.Controllers
     {
         private readonly MyDbContext _context;
         private readonly SmartSearchService _smartSearchService;
-        private readonly IAService _iaService; // Servicio de clasificación IA
+        private readonly IAService _iaService; 
+        private readonly ICarritoRepository _icarritoRepository; 
         private const int TamañoPagina = 10;
 
-        public LibroController(MyDbContext context, SmartSearchService smartSearchService, IAService iaService)
+        public LibroController(MyDbContext context, SmartSearchService smartSearchService, IAService iaService, ICarritoRepository carritoRepository)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _smartSearchService = smartSearchService ?? throw new ArgumentNullException(nameof(smartSearchService));
             _iaService = iaService ?? throw new ArgumentNullException(nameof(iaService));
+            _icarritoRepository = carritoRepository ?? throw new ArgumentNullException(nameof(ICarritoRepository));
+
         }
 
         // Filtros y paginación
@@ -209,6 +213,22 @@ namespace Bookflix_Server.Controllers
                 return Ok(new { stockDisponible = true });
 
             return BadRequest(new { stockDisponible = false, mensaje = "No hay suficiente stock." });
+        }
+
+        [HttpGet("{userId}/checkPurchase/{libroId}")]
+        public async Task<IActionResult> CheckPurchaseStatus(int userId, int libroId)
+        {
+            var carrito = await _icarritoRepository.GetCarritoByUserIdAsync(userId);
+
+            if (carrito == null)
+            {
+                return NotFound(new { error = "Carrito no encontrado" });
+            }
+
+            // Verificar si el producto está en el carrito del usuario y ha sido comprado
+            bool hasPurchased = carrito.Items.Any(item => item.LibroId == libroId && item.Comprado);
+
+            return Ok(new { hasPurchased });
         }
     }
 }

@@ -87,6 +87,7 @@ public class Program
         builder.Services.AddScoped<SmartSearchService>();
         builder.Services.AddScoped<ICarritoRepository, CarritoRepository>();
         builder.Services.AddScoped<IAService>();
+        builder.Services.AddScoped<ICarritoRepository, CarritoRepository>();
 
         // Configuración de CORS solo para el entorno de desarrollo
         if (builder.Environment.IsDevelopment())

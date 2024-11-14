@@ -1,19 +1,25 @@
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Button from "../components/Button";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import { agregarProducto } from "../redux/slices/carritoSlice";
+import { selectToken, selectUsuario } from "../redux/slices/authSlice";
+import { agregarAlCarritoLocal } from "../redux/slices/carritoSlice";
 import "../styles/ProductoDetalle.css";
 
 const ProductoDetalle = () => {
   const { productoId } = useParams();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const usuario = useSelector(selectUsuario);
+  const token = useSelector(selectToken);
   const [producto, setProducto] = useState(null);
   const [error, setError] = useState(null);
   const [cantidad, setCantidad] = useState(1);
   const [textoReseña, setTextoReseña] = useState("");
+  const [reseñas, setReseñas] = useState([]);
+  const [hasPurchased, setHasPurchased] = useState(false); // To track purchase status
 
   useEffect(() => {
     const fetchProducto = async () => {
@@ -26,13 +32,35 @@ const ProductoDetalle = () => {
         }
         const data = await response.json();
         setProducto(data.libro);
+        setReseñas(data.libro.reseñas || []);
       } catch (error) {
         setError(error.message);
       }
     };
 
+    // Check if the user has purchased this product
+    const checkPurchaseStatus = async () => {
+      if (usuario && token) {
+        try {
+          const response = await fetch(
+            `http://localhost:5000/api/Libro/CheckPurchase/${usuario.id}/${productoId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          const result = await response.json();
+          setHasPurchased(result.hasPurchased); // Backend should return { hasPurchased: true/false }
+        } catch (error) {
+          console.error("Error al verificar el estado de compra:", error);
+        }
+      }
+    };
+
     fetchProducto();
-  }, [productoId]);
+    checkPurchaseStatus(); // Check purchase status on load
+  }, [productoId, usuario, token]);
 
   const cambiarCantidad = (accion) => {
     setCantidad((prevCantidad) =>
@@ -44,7 +72,7 @@ const ProductoDetalle = () => {
 
   const handleAddToCart = () => {
     if (producto) {
-      dispatch(agregarProducto({ ...producto, cantidad }));
+      dispatch(agregarAlCarritoLocal({ ...producto, cantidad }));
       alert("Producto añadido al carrito");
     }
   };
@@ -53,12 +81,54 @@ const ProductoDetalle = () => {
     setTextoReseña(e.target.value);
   };
 
-  const handleCrearReseña = () => {
+  const handleCrearReseña = async () => {
+    if (!usuario || !hasPurchased) {
+      alert(
+        "Debes haber iniciado sesión y comprado el producto para dejar una reseña."
+      );
+      navigate("/login");
+      return;
+    }
+
     if (textoReseña.trim()) {
-      console.log("Reseña creada:", textoReseña);
-      setTextoReseña("");
+      try {
+        const nuevaReseña = {
+          idLibro: producto.idLibro,
+          texto: textoReseña,
+          idUsuario: usuario.idUsuario,
+        };
+
+        const response = await fetch(
+          `http://localhost:5000/api/Libro/clasificarReseña`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(nuevaReseña),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Error al enviar la reseña");
+        }
+
+        const data = await response.json();
+        const classifiedReview = {
+          nombreUsuario: usuario.nombre,
+          fechaPublicacion: new Date().toISOString(),
+          texto: textoReseña,
+          estrellas: data.estrellas,
+        };
+
+        setReseñas([classifiedReview, ...reseñas]);
+        setTextoReseña("");
+      } catch (error) {
+        console.error("Error al crear la reseña:", error);
+      }
     } else {
-      console.log("Escribe una reseña antes de enviar");
+      alert("Escribe una reseña antes de enviar");
     }
   };
 
@@ -145,20 +215,25 @@ const ProductoDetalle = () => {
         <div className="reseñas texto-pequeño">
           <h2 className="texto-grande">Reseñas</h2>
           <div className="crearReseña">
-            <input
+            <textarea
               className="textoReseñaNueva"
               value={textoReseña}
               onChange={handleChange}
               placeholder="Escribe tu reseña aquí..."
             />
-            <button className="btnCrearReseña" onClick={handleCrearReseña}>
-              Crear
-            </button>
+            <Button
+              label="Crear"
+              styleType="btnCrearReseña"
+              onClick={handleCrearReseña}
+            />
           </div>
-          {producto.reseñas && producto.reseñas.length > 0 ? (
-            producto.reseñas.map((reseña, index) => (
+          {reseñas.length > 0 ? (
+            reseñas.map((reseña, index) => (
               <div key={index} className="reseña">
-                <p>Autor: {reseña.autor}</p>
+                <p>
+                  Autor: {reseña.nombreUsuario} - Fecha:{" "}
+                  {new Date(reseña.fechaPublicacion).toLocaleDateString()}
+                </p>
                 <p>Estrellas: {"⭐".repeat(reseña.estrellas)}</p>
                 <p>{reseña.texto}</p>
               </div>
