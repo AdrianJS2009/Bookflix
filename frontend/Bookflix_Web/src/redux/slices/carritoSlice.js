@@ -1,11 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+// almacenar en localstorage
 const cargarEstadoInicial = () => {
   const carrito = localStorage.getItem("carrito");
   return carrito ? JSON.parse(carrito) : [];
 };
 
-// Slice controlador del carrito
+// controlador del carro
 const carritoSlice = createSlice({
   name: "carrito",
   initialState: {
@@ -36,9 +37,18 @@ const carritoSlice = createSlice({
       state.productos = [];
       localStorage.removeItem("carrito");
     },
+    sincronizarCarrito: (state, action) => {
+      // si estas logeado, se sincroniza con el back
+      state.productos = action.payload;
+      localStorage.setItem("carrito", JSON.stringify(state.productos));
+    },
   },
 });
 
-export const { agregarProducto, removerProducto, vaciarCarrito } =
-  carritoSlice.actions;
+export const {
+  agregarProducto,
+  removerProducto,
+  vaciarCarrito,
+  sincronizarCarrito,
+} = carritoSlice.actions;
 export default carritoSlice.reducer;

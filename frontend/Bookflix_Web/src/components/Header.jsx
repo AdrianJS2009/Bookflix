@@ -1,10 +1,13 @@
 import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import classes from "./styles/Header.module.css";
 
 const Header = () => {
   const [userName, setUsername] = useState("Usuario");
+  const { productos } = useSelector((state) => state.carrito);
+  const cartCount = productos.reduce((total, item) => total + item.cantidad, 0); // Calculate total item count
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -16,7 +19,7 @@ const Header = () => {
         );
       } catch (error) {
         console.error("Error decodificando el token:", error);
-        setUsername("Usuario");
+        setUsername("Invitado");
       }
     }
   }, []);
@@ -36,7 +39,7 @@ const Header = () => {
             <img
               src="/assets/iconos/Logo Usuario.png"
               className={classes.iconos}
-              alt="Iconos"
+              alt="Icono Usuario"
             />
             {userName}
           </NavLink>
@@ -44,9 +47,9 @@ const Header = () => {
             <img
               src="/assets/iconos/Logo Cesta.png"
               className={classes.iconos}
-              alt="Iconos"
+              alt="Icono Cesta"
             />
-            Cesta
+            Cesta <span className="cart-count">({cartCount})</span>
           </NavLink>
         </div>
       </div>

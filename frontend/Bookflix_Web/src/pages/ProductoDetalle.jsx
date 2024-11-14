@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import Button from "../components/Button";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import { agregarProducto } from "../redux/slices/carritoSlice";
 import "../styles/ProductoDetalle.css";
 
 const ProductoDetalle = () => {
   const { productoId } = useParams();
+  const dispatch = useDispatch();
   const [producto, setProducto] = useState(null);
   const [error, setError] = useState(null);
   const [cantidad, setCantidad] = useState(1);
   const [textoReseña, setTextoReseña] = useState("");
 
   useEffect(() => {
-    // Fetch the product details using an absolute URL
     const fetchProducto = async () => {
       try {
         const response = await fetch(
@@ -23,7 +25,7 @@ const ProductoDetalle = () => {
           throw new Error("Error al cargar los detalles del producto");
         }
         const data = await response.json();
-        setProducto(data.libro); // Correctly accessing the 'libro' key in the response
+        setProducto(data.libro);
       } catch (error) {
         setError(error.message);
       }
@@ -41,7 +43,10 @@ const ProductoDetalle = () => {
   };
 
   const handleAddToCart = () => {
-    alert("Producto añadido al carrito");
+    if (producto) {
+      dispatch(agregarProducto({ ...producto, cantidad }));
+      alert("Producto añadido al carrito");
+    }
   };
 
   const handleChange = (e) => {
