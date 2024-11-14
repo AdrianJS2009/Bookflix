@@ -104,10 +104,12 @@ namespace Bookflix_Server.Controllers
         [HttpPost("clasificarReseña")]
         public IActionResult ClasificarReseña([FromBody] string textoReseña)
         {
-            var categoria = _reseñaClassifierService.PredictCategory(textoReseña);
-            return Ok(new { Categoria = categoria });
-        }
+            if (string.IsNullOrEmpty(textoReseña))
+                return BadRequest("El texto de la reseña no puede estar vacío.");
 
+            var categoria = _reseñaClassifierService.ClassifyReview(textoReseña);
+            return Ok(new { categoria });
+        }
         // Obtener detalles de un libro y sus reseñas
         [HttpGet("Detalle/{id}")]
         public async Task<ActionResult> GetLibroById(int id)
