@@ -23,10 +23,12 @@ function App() {
               <Route index element={<Home />} />
               <Route path="login" element={<Login />} />
               <Route path="registro" element={<Registro />} />
-              <Route path="catalogo" element={<Catalogo />}>
-                {/* Ruta hija para los detalles */}
-                <Route path=":productoId" element={<ProductoDetalle />} />
-              </Route>
+              <Route path="catalogo" element={<Catalogo />} />
+              <Route
+                path="producto/:productoId"
+                element={<ProductoDetalle />}
+              />{" "}
+              {/* Direct product route */}
               <Route path="sobre-nosotros" element={<SobreNosotros />} />
               <Route path="carrito" element={<Carrito />} />
             </Route>
