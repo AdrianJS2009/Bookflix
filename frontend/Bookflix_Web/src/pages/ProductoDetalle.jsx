@@ -25,7 +25,7 @@ const ProductoDetalle = () => {
     const fetchProducto = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/Libro/Detalle/${productoId}`
+          `http://localhost:7182/api/Libro/Detalle/${productoId}`
         );
         if (!response.ok) {
           throw new Error("Error al cargar los detalles del producto");
@@ -43,7 +43,7 @@ const ProductoDetalle = () => {
       if (usuario && token) {
         try {
           const response = await fetch(
-            `http://localhost:5000/api/Libro/CheckPurchase/${usuario.id}/${productoId}`,
+            `http://localhost:7182/api/Libro/CheckPurchase/${usuario.id}/${productoId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -99,7 +99,7 @@ const ProductoDetalle = () => {
         };
 
         const response = await fetch(
-          `http://localhost:5000/api/Libro/clasificarReseña`,
+          `http://localhost:7182/api/Libro/clasificarReseña`,
           {
             method: "POST",
             headers: {
@@ -176,7 +176,8 @@ const ProductoDetalle = () => {
             <p className="stock">
               {producto.stock > 0 ? (
                 <span>
-                  <span className="existencias">⬤</span> En stock
+                  <span className="existencias">⬤</span> En stock <br/>
+                  <span>Actualmente quedan {producto.stock}</span>
                 </span>
               ) : (
                 <span>

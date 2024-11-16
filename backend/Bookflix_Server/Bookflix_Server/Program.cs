@@ -152,11 +152,7 @@ public class Program
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bookflix API V1");
-                c.RoutePrefix = string.Empty;
-            });
+            app.UseSwaggerUI();
         }
 
         // Configuración de CORS

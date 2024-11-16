@@ -30,7 +30,7 @@ const Catalogo = ({ productos }) => {
       : alfabeticoOrden === "Ascendente";
 
     try {
-      let url = `http://localhost:5000/api/Libro/ListarLibros?pagina=${
+      let url = `http://localhost:7182/api/Libro/ListarLibros?pagina=${
         page + 1
       }&tamanoPagina=${itemsPerPage}`;
       if (nombre) url += `&textoBuscado=${encodeURIComponent(nombre)}`;

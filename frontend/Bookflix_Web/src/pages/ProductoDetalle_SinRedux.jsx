@@ -43,7 +43,7 @@ const ProductoDetalle = () => {
       return;
     }
 
-    fetch(`http://localhost:5000/api/Libro/Detalle/${id}`, {
+    fetch(`http://localhost:7182/api/Libro/Detalle/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
