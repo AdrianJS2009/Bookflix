@@ -99,3 +99,66 @@ div.cantidad button.menosCantidad {
   color: var(--azul-oscuro);
   font-weight: bold;
 }
+
+.crearReseña {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 20px;
+  border-bottom: 4px solid #007bff; 
+  border-radius: 8px;
+  background-color: #ffffff;
+  max-width: 330px; 
+  margin: auto;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); 
+}
+
+.crearReseña h2 {
+  font-size: 22px;
+  color: #333;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.crearReseña textarea {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: none;
+  font-size: 16px;
+  color: #555;
+}
+
+.crearReseña textarea::placeholder {
+  color: #999;
+  font-style: italic; 
+  font-size: 14px; 
+  opacity: 1; 
+}
+
+.crearReseña button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.crearReseña button:hover {
+  background-color: #0056b3;
+}
+
+.crearReseña p {
+  color: #777;
+  margin-top: 15px;
+}
+
+
