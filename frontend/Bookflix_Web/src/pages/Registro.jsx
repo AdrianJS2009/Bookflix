@@ -26,7 +26,7 @@ export default function Registro() {
       return;
     }
 
-    const response = await fetch("http://localhost:7182/api/user/crear", {
+    const response = await fetch("https://localhost:7182/api/user/crear", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

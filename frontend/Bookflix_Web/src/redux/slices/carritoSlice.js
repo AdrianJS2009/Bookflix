@@ -6,7 +6,7 @@ export const cargarCarrito = createAsyncThunk(
   async (userId, { getState }) => {
     const { auth } = getState();
     const response = await fetch(
-      `http://localhost:7182/api/Carrito/${userId}`,
+      `https://localhost:7182/api/Carrito/${userId}`,
       {
         headers: {
           Authorization: `Bearer ${auth.token}`,
@@ -24,7 +24,7 @@ export const agregarAlCarritoBackend = createAsyncThunk(
   async ({ userId, item }, { getState }) => {
     const { auth } = getState();
     const response = await fetch(
-      `http://localhost:7182/api/Carrito/${userId}/agregar`,
+      `https://localhost:7182/api/Carrito/${userId}/agregar`,
       {
         method: "POST",
         headers: {
@@ -45,7 +45,7 @@ export const eliminarDelCarritoBackend = createAsyncThunk(
   async ({ userId, libroId }, { getState }) => {
     const { auth } = getState();
     const response = await fetch(
-      `http://localhost:7182/api/Carrito/${userId}/eliminar/${libroId}`,
+      `https://localhost:7182/api/Carrito/${userId}/eliminar/${libroId}`,
       {
         method: "DELETE",
         headers: {
