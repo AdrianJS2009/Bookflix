@@ -66,7 +66,6 @@ const ProductoDetalle = () => {
       .catch((error) => setError(error.message))
       .finally(() => setLoading(false));
 
-    // Verificar si el usuario ha comprado el producto
     if (user) {
       fetch(`/api/User/${user.id}/purchases/${id}`, {
         headers: {

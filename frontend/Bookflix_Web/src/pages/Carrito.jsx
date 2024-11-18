@@ -1,18 +1,15 @@
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Button from "../components/Button";
-import Header from "../components/Header";
 import Footer from "../components/Footer";
-import "../styles/default.css"
+import Header from "../components/Header";
 import "../styles/carrito.css";
-
+import "../styles/default.css";
 
 const Carrito = () => {
   const dispatch = useDispatch();
   const carritoItems = useSelector((state) => state.carrito.items);
 
   const handleClearCart = () => {
-    dispatch(limpiarCarrito()); // Corrected usage of `limpiarCarrito`
+    dispatch(limpiarCarrito());
   };
 
   return (
@@ -25,7 +22,11 @@ const Carrito = () => {
             <ul>
               {carritoItems.map((item) => (
                 <li key={item.idLibro} className="carrito-item">
-                  <img src={item.urlImagen} alt={`Portada de ${item.nombre}`} className="imagenProducto" />
+                  <img
+                    src={item.urlImagen}
+                    alt={`Portada de ${item.nombre}`}
+                    className="imagenProducto"
+                  />
                   <p>{item.nombre}</p>
                   <p>Precio: {(item.precio / 100).toFixed(2)} €</p>
                   <p>Cantidad: {item.cantidad}</p>

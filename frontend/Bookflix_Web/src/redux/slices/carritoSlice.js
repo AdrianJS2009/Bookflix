@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-// Async thunk to fetch cart from backend for authenticated user
 export const cargarCarrito = createAsyncThunk(
   "carrito/cargarCarrito",
   async (userId, { getState }) => {
@@ -18,7 +17,6 @@ export const cargarCarrito = createAsyncThunk(
   }
 );
 
-// Async thunk to add an item to the backend cart for authenticated user
 export const agregarAlCarritoBackend = createAsyncThunk(
   "carrito/agregarAlCarritoBackend",
   async ({ userId, item }, { getState }) => {
@@ -39,7 +37,6 @@ export const agregarAlCarritoBackend = createAsyncThunk(
   }
 );
 
-// Async thunk to remove an item from the backend cart for authenticated user
 export const eliminarDelCarritoBackend = createAsyncThunk(
   "carrito/eliminarDelCarritoBackend",
   async ({ userId, libroId }, { getState }) => {
