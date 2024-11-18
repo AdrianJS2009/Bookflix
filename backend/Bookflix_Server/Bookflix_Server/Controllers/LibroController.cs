@@ -44,6 +44,9 @@ namespace Bookflix_Server.Controllers
                 Descripcion = libro.Descripcion,
                 Precio = libro.Precio,
                 UrlImagen = libro.UrlImagen,
+                Genero = libro.Genero,
+                Autor = libro.Autor,
+                ISBN = libro.ISBN,
                 Reseñas = libro.Reseñas.Select(r => new
                 {
                     r.IdReseña,

@@ -32,12 +32,14 @@ const ProductoDetalle = () => {
           throw new Error("Error al cargar los detalles del producto");
         }
         const data = await response.json();
-        setProducto(data.libro || {}); // Asegura que data.libro sea un objeto
-        setReseñas(data.libro?.reseñas || []); // Asegura que reseñas sea un array
+        console.log(data);  // Verifica la respuesta
+        setProducto(data);
+        setReseñas(data.reseñas || []);
       } catch (error) {
         setError(error.message);
       }
     };
+    
 
     const checkPurchaseStatus = async () => {
       if (usuario && token) {
@@ -174,7 +176,7 @@ const ProductoDetalle = () => {
             <p className="isbn texto-pequeño">ISBN: {producto.isbn || "N/A"}</p>
           </div>
           <div className="detalles texto-mediano">
-            <p className="precio">Precio: €{producto.precio?.toFixed(2) || "0.00"}</p>
+            <p className="precio">Precio: {(producto.precio / 100).toFixed(2)} €</p>
             <p className="stock">
               {producto.stock > 0 ? (
                 <span>
