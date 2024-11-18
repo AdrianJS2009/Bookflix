@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace Bookflix_Server.Models;
 public class CarritoItem
 {
     [Key]

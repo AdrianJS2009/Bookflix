@@ -1,5 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
+// Selectores
+export const selectCarritoItems = (state) => state.carrito.items;
+
+// Acciones
 export const cargarCarrito = createAsyncThunk(
   "carrito/cargarCarrito",
   async (userId, { getState }) => {
@@ -17,44 +21,6 @@ export const cargarCarrito = createAsyncThunk(
   }
 );
 
-export const agregarAlCarritoBackend = createAsyncThunk(
-  "carrito/agregarAlCarritoBackend",
-  async ({ userId, item }, { getState }) => {
-    const { auth } = getState();
-    const response = await fetch(
-      `https://localhost:7182/api/Carrito/${userId}/agregar`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${auth.token}`,
-        },
-        body: JSON.stringify(item),
-      }
-    );
-    if (!response.ok) throw new Error("Failed to add item to cart");
-    return item;
-  }
-);
-
-export const eliminarDelCarritoBackend = createAsyncThunk(
-  "carrito/eliminarDelCarritoBackend",
-  async ({ userId, libroId }, { getState }) => {
-    const { auth } = getState();
-    const response = await fetch(
-      `https://localhost:7182/api/Carrito/${userId}/eliminar/${libroId}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${auth.token}`,
-        },
-      }
-    );
-    if (!response.ok) throw new Error("Failed to remove item from cart");
-    return libroId;
-  }
-);
-
 const initialState = {
   items: [],
 };
@@ -65,11 +31,13 @@ const carritoSlice = createSlice({
   reducers: {
     agregarAlCarritoLocal: (state, action) => {
       const item = action.payload;
-      const existingItem = state.items.find((i) => i.idLibro === item.idLibro);
+      const existingItem = state.items.find(
+        (i) => i.idLibro === item.productoId
+      );
       if (existingItem) {
         existingItem.cantidad += item.cantidad;
       } else {
-        state.items.push(item);
+        state.items.push({ ...item, idLibro: item.productoId });
       }
       localStorage.setItem("carrito", JSON.stringify(state.items));
     },
@@ -85,25 +53,9 @@ const carritoSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(cargarCarrito.fulfilled, (state, action) => {
-        state.items = action.payload;
-      })
-      .addCase(agregarAlCarritoBackend.fulfilled, (state, action) => {
-        const item = action.payload;
-        const existingItem = state.items.find(
-          (i) => i.idLibro === item.idLibro
-        );
-        if (existingItem) {
-          existingItem.cantidad += item.cantidad;
-        } else {
-          state.items.push(item);
-        }
-      })
-      .addCase(eliminarDelCarritoBackend.fulfilled, (state, action) => {
-        const libroId = action.payload;
-        state.items = state.items.filter((item) => item.idLibro !== libroId);
-      });
+    builder.addCase(cargarCarrito.fulfilled, (state, action) => {
+      state.items = action.payload;
+    });
   },
 });
 

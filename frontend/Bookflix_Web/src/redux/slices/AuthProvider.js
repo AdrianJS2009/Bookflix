@@ -12,7 +12,9 @@ const AuthProvider = ({ children }) => {
   const usuario = useSelector((state) => state.auth.usuario);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const tokenObj = JSON.parse(localStorage.getItem("token"));
+    const token = tokenObj?.token || null;
+
     if (token) {
       try {
         const payloadBase64 = token.split(".")[1];
@@ -39,11 +41,6 @@ const AuthProvider = ({ children }) => {
           ],
         };
 
-        if (!usuario.id) {
-          console.warn("El token no contiene un usuario válido.");
-          return;
-        }
-
         dispatch(iniciarSesion({ usuario, token }));
       } catch (error) {
         console.error("Error al restaurar sesión:", error);
@@ -62,13 +59,38 @@ const AuthProvider = ({ children }) => {
         },
         body: JSON.stringify(credentials),
       });
+
+      if (!response.ok) {
+        throw new Error("Credenciales incorrectas");
+      }
+
       const data = await response.json();
-      if (data.token) {
-        dispatch(iniciarSesion({ usuario: data.usuario, token: data.token }));
-        dispatch(cargarCarrito(data.usuario.id));
+      if (data.Token) {
+        const token = data.Token;
+
+        // Decodificar el token
+        const payloadBase64 = token.split(".")[1];
+        const payload = JSON.parse(atob(payloadBase64));
+        const usuario = {
+          id: payload[
+            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+          ],
+          nombre:
+            payload[
+              "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+            ],
+          rol: payload[
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+          ],
+        };
+
+        localStorage.setItem("token", JSON.stringify({ token }));
+        dispatch(iniciarSesion({ usuario, token }));
+        dispatch(cargarCarrito(usuario.id));
       }
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Error al iniciar sesión:", error.message);
+      alert("Error al iniciar sesión. Verifica tus credenciales.");
     }
   };
 

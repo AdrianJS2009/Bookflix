@@ -14,27 +14,15 @@ const ProductoDetalle = () => {
   const dispatch = useDispatch();
   const usuario = useSelector(selectUsuario);
   const token = useSelector(selectToken);
+
   const [producto, setProducto] = useState(null);
   const [error, setError] = useState(null);
   const [cantidad, setCantidad] = useState(1);
   const [textoReseña, setTextoReseña] = useState("");
   const [reseñas, setReseñas] = useState([]);
   const [hasPurchased, setHasPurchased] = useState(false);
-  const [loadingCompra, setLoadingCompra] = useState(false);
-  console.log("Estado de usuario en Redux:", usuario);
-  if (!usuario || !usuario.id) {
-    console.warn("El usuario no está autenticado.");
-    alert("Debes iniciar sesión para acceder a esta página.");
-    navigate("/login");
-    return null;
-  }
 
   useEffect(() => {
-    if (!usuario || !token) {
-      console.warn("El usuario no está autenticado.");
-      return;
-    }
-
     const fetchProducto = async () => {
       try {
         const response = await fetch(
@@ -52,21 +40,23 @@ const ProductoDetalle = () => {
     };
 
     const checkPurchaseStatus = async () => {
-      try {
-        const response = await fetch(
-          `https://localhost:7182/api/Carrito/${usuario.id}/checkPurchase/${productoId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+      if (usuario && token) {
+        try {
+          const response = await fetch(
+            `https://localhost:7182/api/Carrito/${usuario.id}/checkPurchase/${productoId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          if (response.ok) {
+            const result = await response.json();
+            setHasPurchased(result.hasPurchased);
           }
-        );
-        if (response.ok) {
-          const result = await response.json();
-          setHasPurchased(result.hasPurchased);
+        } catch (error) {
+          console.error("Error al verificar el estado de compra:", error);
         }
-      } catch (error) {
-        console.error("Error al verificar el estado de compra:", error);
       }
     };
 
@@ -88,6 +78,9 @@ const ProductoDetalle = () => {
         agregarAlCarritoLocal({
           productoId: producto.idLibro,
           cantidad,
+          nombre: producto.nombre,
+          precio: producto.precio,
+          urlImagen: producto.urlImagen,
         })
       );
       alert("Producto añadido al carrito");
@@ -95,57 +88,35 @@ const ProductoDetalle = () => {
   };
 
   const registrarCompra = async () => {
-    if (!usuario || !usuario.id) {
-      alert("Debes iniciar sesión para realizar una compra.");
+    if (!usuario || !token) {
+      alert("Debes iniciar sesión para realizar esta acción.");
       navigate("/login");
       return;
     }
 
-    setLoadingCompra(true);
     try {
       const response = await fetch(
         `https://localhost:7182/api/Carrito/${usuario.id}/comprar`,
         {
           method: "POST",
           headers: {
+            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         }
       );
 
       if (!response.ok) {
-        throw new Error("Error al registrar la compra");
+        const errorData = await response.json();
+        alert(`Error al registrar la compra: ${errorData.error}`);
+        return;
       }
 
-      alert("Compra registrada correctamente");
-      setHasPurchased(true);
-
-      // Re-verificar el estado de compra
-      const verifyResponse = await fetch(
-        `https://localhost:7182/api/Carrito/${usuario.id}/checkPurchase/${productoId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (verifyResponse.ok) {
-        const result = await verifyResponse.json();
-        setHasPurchased(result.hasPurchased);
-      } else {
-        throw new Error("Error al verificar el estado de la compra");
-      }
+      alert("Compra registrada con éxito.");
     } catch (error) {
-      console.error("Error al registrar la compra:", error);
-      alert("Hubo un problema al registrar la compra.");
-    } finally {
-      setLoadingCompra(false);
+      console.error("Error al registrar la compra:", error.message);
+      alert("Error al registrar la compra. Intenta nuevamente.");
     }
-  };
-
-  const handleChange = (e) => {
-    setTextoReseña(e.target.value);
   };
 
   const handleCrearReseña = async () => {
@@ -165,7 +136,7 @@ const ProductoDetalle = () => {
         };
 
         const response = await fetch(
-          `https://localhost:7182/api/Libro/clasificarReseña`,
+          `https://localhost:7182/api/Libro/publicarReseña`,
           {
             method: "POST",
             headers: {
@@ -268,7 +239,6 @@ const ProductoDetalle = () => {
               label="Comprar"
               styleType="btnComprar"
               onClick={registrarCompra}
-              disabled={loadingCompra || hasPurchased}
             />
             <Button
               label="Añadir a la cesta"
@@ -284,7 +254,7 @@ const ProductoDetalle = () => {
             <textarea
               className="textoReseñaNueva"
               value={textoReseña}
-              onChange={handleChange}
+              onChange={(e) => setTextoReseña(e.target.value)}
               placeholder="Escribe tu reseña aquí..."
             />
             <Button

@@ -10,12 +10,15 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     iniciarSesion: (state, action) => {
+      console.log("Acción iniciarSesion ejecutada:", action.payload);
       const { usuario, token } = action.payload;
       state.usuario = usuario;
       state.token = token;
-      localStorage.setItem("token", token);
+      localStorage.setItem("token", JSON.stringify({ token }));
     },
+
     cerrarSesion: (state) => {
+      console.log("Acción cerrarSesion ejecutada");
       state.usuario = null;
       state.token = null;
       localStorage.removeItem("token");

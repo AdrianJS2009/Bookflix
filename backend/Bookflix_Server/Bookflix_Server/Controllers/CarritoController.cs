@@ -97,26 +97,43 @@ namespace Bookflix_Server.Controllers
             return Ok(new { hasPurchased });
         }
 
+
         [HttpPost("{userId}/comprar")]
         [Authorize]
         public async Task<IActionResult> RegistrarCompra(int userId)
         {
             var carrito = await _carritoRepository.GetCarritoByUserIdAsync(userId);
 
-            if (carrito == null || carrito.Items.Count == 0)
+            if (carrito == null || !carrito.Items.Any())
             {
                 return BadRequest(new { error = "No hay artículos en el carrito para comprar." });
             }
 
             foreach (var item in carrito.Items)
             {
-                item.Comprado = true; // Marcamos como comprado
+                item.Comprado = true;
+            }
+
+            foreach (var item in carrito.Items)
+            {
+                var producto = await _productoRepository.GetByIdAsync(item.LibroId);
+                if (producto != null)
+                {
+                    if (producto.Stock < item.Cantidad)
+                    {
+                        return BadRequest(new { error = $"Stock insuficiente para el producto con ID {item.LibroId}" });
+                    }
+
+                    producto.Stock -= item.Cantidad;
+                }
             }
 
             await _carritoRepository.SaveChangesAsync();
-
             return Ok(new { success = true, message = "Compra registrada correctamente." });
         }
+
+
+
 
     }
 }

@@ -17,10 +17,11 @@ namespace Bookflix_Server.Repositories
         public async Task<Carrito> GetCarritoByUserIdAsync(int userId)
         {
             return await _context.Carritos
-                .Include(c => c.Items)          // Incluir los items del carrito
-                .ThenInclude(i => i.Libro)       // Incluir los datos del libro en cada item
+                .Include(c => c.Items)
+                .ThenInclude(item => item.Libro)
                 .FirstOrDefaultAsync(c => c.UserId == userId);
         }
+
 
         public async Task<Carrito> GetOrCreateCarritoByUserIdAsync(int userId)
         {
