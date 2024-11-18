@@ -2,12 +2,9 @@
 using Bookflix_Server.Models;
 using Bookflix_Server.Repositories;
 using Bookflix_Server.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace Bookflix_Server.Controllers
 {
     [ApiController]
@@ -16,8 +13,8 @@ namespace Bookflix_Server.Controllers
     {
         private readonly MyDbContext _context;
         private readonly SmartSearchService _smartSearchService;
-        private readonly IAService _iaService; 
-        private readonly ICarritoRepository _icarritoRepository; 
+        private readonly IAService _iaService;
+        private readonly ICarritoRepository _icarritoRepository;
         private const int TamañoPagina = 10;
 
         public LibroController(MyDbContext context, SmartSearchService smartSearchService, IAService iaService, ICarritoRepository carritoRepository)
@@ -26,11 +23,10 @@ namespace Bookflix_Server.Controllers
             _smartSearchService = smartSearchService ?? throw new ArgumentNullException(nameof(smartSearchService));
             _iaService = iaService ?? throw new ArgumentNullException(nameof(iaService));
             _icarritoRepository = carritoRepository ?? throw new ArgumentNullException(nameof(ICarritoRepository));
-
         }
 
-        // Filtros y paginación
         [HttpGet("ListarLibros")]
+        [AllowAnonymous] // Público
         public async Task<IActionResult> GetLibros(
             string textoBuscado = null,
             double? precioMin = null,
@@ -107,8 +103,8 @@ namespace Bookflix_Server.Controllers
             }
         }
 
-        // Clasificación de una reseña usando IA
         [HttpPost("clasificarReseña")]
+        [Authorize] // Protegido
         public IActionResult ClasificarReseña([FromBody] string textoReseña)
         {
             if (string.IsNullOrEmpty(textoReseña))
@@ -118,117 +114,39 @@ namespace Bookflix_Server.Controllers
             return Ok(new { categoria = resultado.PredictedLabel });
         }
 
-        // Obtener detalles de un libro y sus reseñas
-        [HttpGet("Detalle/{id}")]
-        public async Task<ActionResult> GetLibroById(int id)
+        [HttpPost("publicarReseña")]
+        [Authorize] // Protegido
+        public async Task<IActionResult> PublicarReseña([FromBody] ReseñaDTO reseñaDto)
         {
-            var libro = await _context.Libros
-                .Include(l => l.Reseñas)
-                .FirstOrDefaultAsync(l => l.IdLibro == id);
+            if (reseñaDto == null || string.IsNullOrWhiteSpace(reseñaDto.Texto))
+                return BadRequest("La reseña no puede estar vacía.");
+
+            if (!int.TryParse(reseñaDto.ProductoId.ToString(), out var productoId))
+                return BadRequest("ProductoId no es válido.");
+
+            var usuarioId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+
+            if (!int.TryParse(usuarioId, out var userId))
+                return Unauthorized("Usuario no autenticado o ID inválido.");
+
+            var libro = await _context.Libros.FindAsync(productoId);
 
             if (libro == null)
-            {
                 return NotFound("Libro no encontrado.");
-            }
 
-            var promedioEstrellas = libro.Reseñas.Any() ? libro.Reseñas.Average(r => r.Estrellas) : 0;
-            var totalReseñas = libro.Reseñas.Count;
-
-            var libroDto = new LibroDTO
+            var reseña = new Reseña
             {
-                IdLibro = libro.IdLibro,
-                Nombre = libro.Nombre,
-                Precio = libro.Precio,
-                UrlImagen = libro.UrlImagen,
-                Genero = libro.Genero,
-                Descripcion = libro.Descripcion,
-                Autor = libro.Autor,
-                ISBN = libro.ISBN,
-                Stock = libro.Stock
+                UsuarioId = userId,
+                ProductoId = productoId,
+                Texto = reseñaDto.Texto,
+                Categoria = _iaService.Predict(reseñaDto.Texto).PredictedLabel.ToString(),
+                FechaPublicacion = DateTime.UtcNow
             };
 
-            var reseñasDto = libro.Reseñas
-                .OrderByDescending(r => r.FechaPublicacion)
-                .Select(r => new ReseñaDetalleDTO
-                {
-                    IdReseña = r.IdReseña,
-                    Autor = r.Autor,
-                    Texto = r.Texto,
-                    Estrellas = r.Estrellas,
-                    Categoria = r.Categoria,
-                    FechaPublicacion = r.FechaPublicacion
-                })
-                .ToList();
+            _context.Reseñas.Add(reseña);
+            await _context.SaveChangesAsync();
 
-            return Ok(new
-            {
-                libro = libroDto,
-                promedioEstrellas = promedioEstrellas,
-                totalReseñas = totalReseñas,
-                reseñas = reseñasDto
-            });
-        }
-
-        // Paginación dinámica
-        [HttpGet("Catalogo")]
-        public async Task<IActionResult> GetCatalogo([FromQuery] int page = 1)
-        {
-            if (page <= 0) return BadRequest("El número de página debe ser mayor que cero.");
-
-            var totalLibros = await _context.Libros.CountAsync();
-            var totalPaginas = (int)Math.Ceiling(totalLibros / (double)TamañoPagina);
-
-            var libros = await _context.Libros
-                .Skip((page - 1) * TamañoPagina)
-                .Take(TamañoPagina)
-                .Select(l => new LibroDTO
-                {
-                    IdLibro = l.IdLibro,
-                    Nombre = l.Nombre,
-                    Precio = l.Precio,
-                    UrlImagen = l.UrlImagen,
-                    Genero = l.Genero,
-                    Descripcion = l.Descripcion
-                })
-                .ToListAsync();
-
-            return Ok(new
-            {
-                TotalLibros = totalLibros,
-                TotalPaginas = totalPaginas,
-                Libros = libros
-            });
-        }
-
-        // Verificar stock antes de añadir al carrito
-        [HttpPost("CheckStock/{id}")]
-        public async Task<IActionResult> CheckStock(int id, [FromBody] int quantity)
-        {
-            var libro = await _context.Libros.FindAsync(id);
-
-            if (libro == null)
-                return NotFound("Libro no encontrado.");
-
-            if (libro.Stock >= quantity)
-                return Ok(new { stockDisponible = true });
-
-            return BadRequest(new { stockDisponible = false, mensaje = "No hay suficiente stock." });
-        }
-
-        [HttpGet("{userId}/checkPurchase/{libroId}")]
-        public async Task<IActionResult> CheckPurchaseStatus(int userId, int libroId)
-        {
-            var carrito = await _icarritoRepository.GetCarritoByUserIdAsync(userId);
-
-            if (carrito == null)
-            {
-                return NotFound(new { error = "Carrito no encontrado" });
-            }
-
-            // Verificar si el producto está en el carrito del usuario y ha sido comprado
-            bool hasPurchased = carrito.Items.Any(item => item.LibroId == libroId && item.Comprado);
-
-            return Ok(new { hasPurchased });
+            return Ok(new { mensaje = "Reseña publicada con éxito." });
         }
     }
 }
