@@ -68,5 +68,12 @@ namespace Bookflix_Server.Repositories
         {
             await _context.SaveChangesAsync();
         }
+
+        public async Task<bool> HasUserPurchasedProductAsync(int userId, int productoId)
+        {
+            return await _context.Carritos
+                .Include(c => c.Items)
+                .AnyAsync(c => c.UserId == userId && c.Items.Any(item => item.LibroId == productoId && item.Comprado));
+        }
     }
 }

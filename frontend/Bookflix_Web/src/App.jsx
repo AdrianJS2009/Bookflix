@@ -27,8 +27,7 @@ function App() {
               <Route
                 path="producto/:productoId"
                 element={<ProductoDetalle />}
-              />{" "}
-              {/* Direct product route */}
+              />
               <Route path="sobre-nosotros" element={<SobreNosotros />} />
               <Route path="carrito" element={<Carrito />} />
             </Route>

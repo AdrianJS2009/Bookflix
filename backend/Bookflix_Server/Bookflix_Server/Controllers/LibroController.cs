@@ -47,6 +47,7 @@ namespace Bookflix_Server.Controllers
                 Genero = libro.Genero,
                 Autor = libro.Autor,
                 ISBN = libro.ISBN,
+                Stock = libro.Stock,
                 Reseñas = libro.Reseñas.Select(r => new
                 {
                     r.IdReseña,
@@ -165,6 +166,14 @@ namespace Bookflix_Server.Controllers
             if (!int.TryParse(usuarioId, out var userId))
                 return Unauthorized("Usuario no autenticado o ID inválido.");
 
+            // Verificar si el usuario ha comprado el producto antes de permitir la reseña
+            var hasPurchased = await _context.Carritos
+                .Include(c => c.Items)
+                .AnyAsync(c => c.UserId == userId && c.Items.Any(item => item.LibroId == productoId && item.Comprado));
+
+            if (!hasPurchased)
+                return Unauthorized("Debe comprar el producto antes de agregar una reseña.");
+
             var libro = await _context.Libros.FindAsync(productoId);
 
             if (libro == null)
@@ -184,5 +193,6 @@ namespace Bookflix_Server.Controllers
 
             return Ok(new { mensaje = "Reseña publicada con éxito." });
         }
+
     }
 }

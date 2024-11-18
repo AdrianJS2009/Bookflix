@@ -1,6 +1,7 @@
 ﻿using Bookflix_Server.DTOs;
 using Bookflix_Server.Models;
 using Bookflix_Server.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -86,20 +87,36 @@ namespace Bookflix_Server.Controllers
             return Ok(new { success = true, message = "Carrito limpiado correctamente" });
         }
 
-        [HttpGet("{userId}/checkPurchase/{libroId}")]
-        public async Task<IActionResult> CheckPurchaseStatus(int userId, int libroId)
+        [HttpGet("{userId}/checkPurchase/{productoId}")]
+        [Authorize]
+        public async Task<IActionResult> CheckPurchaseStatus(int userId, int productoId)
         {
-            var carrito = await _carritoRepository.GetCarritoByUserIdAsync(userId);
-
-            if (carrito == null)
-            {
-                return NotFound(new { error = "Carrito no encontrado" });
-            }
-
-            // Verificar si el producto está en el carrito del usuario y ha sido comprado
-            bool hasPurchased = carrito.Items.Any(item => item.LibroId == libroId && item.Comprado);
+            // comprobamos si está comprao
+            var hasPurchased = await _carritoRepository.HasUserPurchasedProductAsync(userId, productoId);
 
             return Ok(new { hasPurchased });
         }
+
+        [HttpPost("{userId}/comprar")]
+        [Authorize]
+        public async Task<IActionResult> RegistrarCompra(int userId)
+        {
+            var carrito = await _carritoRepository.GetCarritoByUserIdAsync(userId);
+
+            if (carrito == null || carrito.Items.Count == 0)
+            {
+                return BadRequest(new { error = "No hay artículos en el carrito para comprar." });
+            }
+
+            foreach (var item in carrito.Items)
+            {
+                item.Comprado = true; // Marcamos como comprado
+            }
+
+            await _carritoRepository.SaveChangesAsync();
+
+            return Ok(new { success = true, message = "Compra registrada correctamente." });
+        }
+
     }
 }

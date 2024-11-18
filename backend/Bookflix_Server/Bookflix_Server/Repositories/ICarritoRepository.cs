@@ -11,5 +11,7 @@ namespace Bookflix_Server.Repositories
         Task<bool> EliminarItemDelCarritoAsync(Carrito carrito, int libroId);
         Task LimpiarCarritoAsync(Carrito carrito);
         Task SaveChangesAsync();
+
+        Task<bool> HasUserPurchasedProductAsync(int userId, int productoId);
     }
 }

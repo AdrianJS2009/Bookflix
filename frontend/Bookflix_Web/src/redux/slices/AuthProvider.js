@@ -15,11 +15,40 @@ const AuthProvider = ({ children }) => {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        const usuario = JSON.parse(atob(token.split(".")[1]));
+        const payloadBase64 = token.split(".")[1];
+        const payload = JSON.parse(atob(payloadBase64));
+
+        const ahora = Math.floor(Date.now() / 1000);
+        if (payload.exp < ahora) {
+          console.warn("El token ha expirado.");
+          localStorage.removeItem("token");
+          dispatch(cerrarSesion());
+          return;
+        }
+
+        const usuario = {
+          id: payload[
+            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+          ],
+          nombre:
+            payload[
+              "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+            ],
+          rol: payload[
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+          ],
+        };
+
+        if (!usuario.id) {
+          console.warn("El token no contiene un usuario válido.");
+          return;
+        }
+
         dispatch(iniciarSesion({ usuario, token }));
-        dispatch(cargarCarrito(usuario.id));
       } catch (error) {
         console.error("Error al restaurar sesión:", error);
+        localStorage.removeItem("token");
+        dispatch(cerrarSesion());
       }
     }
   }, [dispatch]);

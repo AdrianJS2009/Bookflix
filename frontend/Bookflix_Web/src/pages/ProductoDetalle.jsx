@@ -14,15 +14,27 @@ const ProductoDetalle = () => {
   const dispatch = useDispatch();
   const usuario = useSelector(selectUsuario);
   const token = useSelector(selectToken);
-
   const [producto, setProducto] = useState(null);
   const [error, setError] = useState(null);
   const [cantidad, setCantidad] = useState(1);
   const [textoReseña, setTextoReseña] = useState("");
   const [reseñas, setReseñas] = useState([]);
   const [hasPurchased, setHasPurchased] = useState(false);
+  const [loadingCompra, setLoadingCompra] = useState(false);
+  console.log("Estado de usuario en Redux:", usuario);
+  if (!usuario || !usuario.id) {
+    console.warn("El usuario no está autenticado.");
+    alert("Debes iniciar sesión para acceder a esta página.");
+    navigate("/login");
+    return null;
+  }
 
   useEffect(() => {
+    if (!usuario || !token) {
+      console.warn("El usuario no está autenticado.");
+      return;
+    }
+
     const fetchProducto = async () => {
       try {
         const response = await fetch(
@@ -32,33 +44,29 @@ const ProductoDetalle = () => {
           throw new Error("Error al cargar los detalles del producto");
         }
         const data = await response.json();
-        console.log(data);  // Verifica la respuesta
         setProducto(data);
         setReseñas(data.reseñas || []);
       } catch (error) {
         setError(error.message);
       }
     };
-    
 
     const checkPurchaseStatus = async () => {
-      if (usuario && token) {
-        try {
-          const response = await fetch(
-            `https://localhost:7182/api/Libro/CheckPurchase/${usuario.id}/${productoId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          if (response.ok) {
-            const result = await response.json();
-            setHasPurchased(result.hasPurchased);
+      try {
+        const response = await fetch(
+          `https://localhost:7182/api/Carrito/${usuario.id}/checkPurchase/${productoId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        } catch (error) {
-          console.error("Error al verificar el estado de compra:", error);
+        );
+        if (response.ok) {
+          const result = await response.json();
+          setHasPurchased(result.hasPurchased);
         }
+      } catch (error) {
+        console.error("Error al verificar el estado de compra:", error);
       }
     };
 
@@ -83,6 +91,56 @@ const ProductoDetalle = () => {
         })
       );
       alert("Producto añadido al carrito");
+    }
+  };
+
+  const registrarCompra = async () => {
+    if (!usuario || !usuario.id) {
+      alert("Debes iniciar sesión para realizar una compra.");
+      navigate("/login");
+      return;
+    }
+
+    setLoadingCompra(true);
+    try {
+      const response = await fetch(
+        `https://localhost:7182/api/Carrito/${usuario.id}/comprar`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error al registrar la compra");
+      }
+
+      alert("Compra registrada correctamente");
+      setHasPurchased(true);
+
+      // Re-verificar el estado de compra
+      const verifyResponse = await fetch(
+        `https://localhost:7182/api/Carrito/${usuario.id}/checkPurchase/${productoId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (verifyResponse.ok) {
+        const result = await verifyResponse.json();
+        setHasPurchased(result.hasPurchased);
+      } else {
+        throw new Error("Error al verificar el estado de la compra");
+      }
+    } catch (error) {
+      console.error("Error al registrar la compra:", error);
+      alert("Hubo un problema al registrar la compra.");
+    } finally {
+      setLoadingCompra(false);
     }
   };
 
@@ -176,7 +234,9 @@ const ProductoDetalle = () => {
             <p className="isbn texto-pequeño">ISBN: {producto.isbn || "N/A"}</p>
           </div>
           <div className="detalles texto-mediano">
-            <p className="precio">Precio: {(producto.precio / 100).toFixed(2)} €</p>
+            <p className="precio">
+              Precio: {(producto.precio / 100).toFixed(2)} €
+            </p>
             <p className="stock">
               {producto.stock > 0 ? (
                 <span>
@@ -207,7 +267,8 @@ const ProductoDetalle = () => {
             <Button
               label="Comprar"
               styleType="btnComprar"
-              onClick={() => alert("Compra realizada")}
+              onClick={registrarCompra}
+              disabled={loadingCompra || hasPurchased}
             />
             <Button
               label="Añadir a la cesta"
