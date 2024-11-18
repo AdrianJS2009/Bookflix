@@ -25,6 +25,39 @@ namespace Bookflix_Server.Controllers
             _icarritoRepository = carritoRepository ?? throw new ArgumentNullException(nameof(ICarritoRepository));
         }
 
+        [HttpGet("Detalle/{id}")]
+        public async Task<ActionResult> GetLibroById(int id)
+        {
+            var libro = await _context.Libros
+                .Include(l => l.Reseñas) // Incluir las reseñas asociadas
+                .FirstOrDefaultAsync(l => l.IdLibro == id);
+
+            if (libro == null)
+            {
+                return NotFound("Libro no encontrado.");
+            }
+
+            var libroDto = new
+            {
+                IdLibro = libro.IdLibro,
+                Nombre = libro.Nombre,
+                Descripcion = libro.Descripcion,
+                Precio = libro.Precio,
+                UrlImagen = libro.UrlImagen,
+                Reseñas = libro.Reseñas.Select(r => new
+                {
+                    r.IdReseña,
+                    r.Texto,
+                    r.Estrellas,
+                    r.Categoria,
+                    r.FechaPublicacion
+                })
+            };
+
+            return Ok(libroDto);
+        }
+
+
         [HttpGet("ListarLibros")]
         [AllowAnonymous] // Público
         public async Task<IActionResult> GetLibros(

@@ -1,4 +1,4 @@
-.productoDetalle {
+.detalle-contenido {
   margin-top: 20px;
   display: block;
   max-width: 90%;
@@ -107,12 +107,12 @@ div.cantidad button.menosCantidad {
   justify-content: center;
   margin-top: 20px;
   padding: 20px;
-  border-bottom: 4px solid #007bff; 
+  border-bottom: 4px solid #007bff;
   border-radius: 8px;
   background-color: #ffffff;
-  max-width: 330px; 
+  max-width: 330px;
   margin: auto;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .crearReseña h2 {
@@ -135,9 +135,9 @@ div.cantidad button.menosCantidad {
 
 .crearReseña textarea::placeholder {
   color: #999;
-  font-style: italic; 
-  font-size: 14px; 
-  opacity: 1; 
+  font-style: italic;
+  font-size: 14px;
+  opacity: 1;
 }
 
 .crearReseña button {
@@ -160,5 +160,3 @@ div.cantidad button.menosCantidad {
   color: #777;
   margin-top: 15px;
 }
-
-
