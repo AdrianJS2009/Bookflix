@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Button from "../components/Button";
@@ -38,7 +38,6 @@ const ProductoDetalle = () => {
       }
     };
 
-    // Check if the user has purchased this product
     const checkPurchaseStatus = async () => {
       if (usuario && token) {
         try {
@@ -51,7 +50,7 @@ const ProductoDetalle = () => {
             }
           );
           const result = await response.json();
-          setHasPurchased(result.hasPurchased); // Backend should return { hasPurchased: true/false }
+          setHasPurchased(result.hasPurchased);
         } catch (error) {
           console.error("Error al verificar el estado de compra:", error);
         }
@@ -59,7 +58,7 @@ const ProductoDetalle = () => {
     };
 
     fetchProducto();
-    checkPurchaseStatus(); // Check purchase status on load
+    checkPurchaseStatus();
   }, [productoId, usuario, token]);
 
   const cambiarCantidad = (accion) => {
@@ -176,7 +175,7 @@ const ProductoDetalle = () => {
             <p className="stock">
               {producto.stock > 0 ? (
                 <span>
-                  <span className="existencias">⬤</span> En stock <br/>
+                  <span className="existencias">⬤</span> En stock <br />
                   <span>Actualmente quedan {producto.stock}</span>
                 </span>
               ) : (

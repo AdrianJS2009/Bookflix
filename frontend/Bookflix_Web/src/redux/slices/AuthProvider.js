@@ -1,12 +1,28 @@
-
-import React from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { iniciarSesion, cerrarSesion } from "../redux/slices/authSlice";
-import { cargarCarrito, limpiarCarrito, cargarCarritoDesdeLocalStorage } from "../redux/slices/carritoSlice";
+import { cerrarSesion, iniciarSesion } from "../redux/slices/authSlice";
+import {
+  cargarCarrito,
+  cargarCarritoDesdeLocalStorage,
+  limpiarCarrito,
+} from "../redux/slices/carritoSlice";
 
 const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
   const usuario = useSelector((state) => state.auth.usuario);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const usuario = JSON.parse(atob(token.split(".")[1]));
+        dispatch(iniciarSesion({ usuario, token }));
+        dispatch(cargarCarrito(usuario.id));
+      } catch (error) {
+        console.error("Error al restaurar sesión:", error);
+      }
+    }
+  }, [dispatch]);
 
   const handleLogin = async (credentials) => {
     try {
@@ -20,7 +36,7 @@ const AuthProvider = ({ children }) => {
       const data = await response.json();
       if (data.token) {
         dispatch(iniciarSesion({ usuario: data.usuario, token: data.token }));
-        dispatch(cargarCarrito(data.usuario.id));  // Load cart from backend
+        dispatch(cargarCarrito(data.usuario.id));
       }
     } catch (error) {
       console.error("Login failed:", error);
@@ -29,8 +45,8 @@ const AuthProvider = ({ children }) => {
 
   const handleLogout = () => {
     dispatch(cerrarSesion());
-    dispatch(limpiarCarrito());  // Clear Redux cart
-    dispatch(cargarCarritoDesdeLocalStorage());  // Reset to localStorage cart
+    dispatch(limpiarCarrito());
+    dispatch(cargarCarritoDesdeLocalStorage());
   };
 
   return (
