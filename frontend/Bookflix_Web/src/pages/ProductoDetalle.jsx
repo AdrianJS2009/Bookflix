@@ -235,15 +235,17 @@ const ProductoDetalle = () => {
                 +
               </button>
             </div>
-            <Button
+            {/* <Button
               label="Comprar"
               styleType="btnComprar"
               onClick={registrarCompra}
-            />
+              data-id={producto.idLibro}
+            /> */}
             <Button
               label="Añadir a la cesta"
               styleType="btnAñadir"
               onClick={handleAddToCart}
+              data-id={producto.idLibro}
             />
           </div>
         </div>
