@@ -5,6 +5,7 @@ using Bookflix_Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 namespace Bookflix_Server.Controllers
 {
     [ApiController]
@@ -29,7 +30,7 @@ namespace Bookflix_Server.Controllers
         public async Task<ActionResult> GetLibroById(int id)
         {
             var libro = await _context.Libros
-                .Include(l => l.Reseñas) // Incluir las reseñas asociadas
+                .Include(l => l.Reseñas)
                 .FirstOrDefaultAsync(l => l.IdLibro == id);
 
             if (libro == null)
@@ -61,9 +62,8 @@ namespace Bookflix_Server.Controllers
             return Ok(libroDto);
         }
 
-
         [HttpGet("ListarLibros")]
-        [AllowAnonymous] // Público
+        [AllowAnonymous]
         public async Task<IActionResult> GetLibros(
             string textoBuscado = null,
             double? precioMin = null,
@@ -141,7 +141,7 @@ namespace Bookflix_Server.Controllers
         }
 
         [HttpPost("clasificarReseña")]
-        [Authorize] // Protegido
+        [Authorize]
         public IActionResult ClasificarReseña([FromBody] string textoReseña)
         {
             if (string.IsNullOrEmpty(textoReseña))
@@ -151,48 +151,78 @@ namespace Bookflix_Server.Controllers
             return Ok(new { categoria = resultado.PredictedLabel });
         }
 
-        [HttpPost("publicarReseña")]
-        [Authorize] // Protegido
-        public async Task<IActionResult> PublicarReseña([FromBody] ReseñaDTO reseñaDto)
+        [HttpPost("publicarResena")]
+        [AllowAnonymous] // Temporal para pruebas
+        public async Task<IActionResult> PublicarResena([FromBody] ReseñaDTO reseñaDto)
         {
-            if (reseñaDto == null || string.IsNullOrWhiteSpace(reseñaDto.Texto))
-                return BadRequest("La reseña no puede estar vacía.");
-
-            if (!int.TryParse(reseñaDto.ProductoId.ToString(), out var productoId))
-                return BadRequest("ProductoId no es válido.");
-
-            var usuarioId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
-
-            if (!int.TryParse(usuarioId, out var userId))
-                return Unauthorized("Usuario no autenticado o ID inválido.");
-
-            // Verificar si el usuario ha comprado el producto antes de permitir la reseña
-            var hasPurchased = await _context.Carritos
-                .Include(c => c.Items)
-                .AnyAsync(c => c.UserId == userId && c.Items.Any(item => item.LibroId == productoId && item.Comprado));
-
-            if (!hasPurchased)
-                return Unauthorized("Debe comprar el producto antes de agregar una reseña.");
-
-            var libro = await _context.Libros.FindAsync(productoId);
-
-            if (libro == null)
-                return NotFound("Libro no encontrado.");
-
-            var reseña = new Reseña
+            try
             {
-                UsuarioId = userId,
-                ProductoId = productoId,
-                Texto = reseñaDto.Texto,
-                Categoria = _iaService.Predict(reseñaDto.Texto).PredictedLabel.ToString(),
-                FechaPublicacion = DateTime.UtcNow
-            };
+                if (reseñaDto == null || string.IsNullOrWhiteSpace(reseñaDto.Texto))
+                    return BadRequest("La reseña no puede estar vacía.");
 
-            _context.Reseñas.Add(reseña);
-            await _context.SaveChangesAsync();
+                if (!int.TryParse(reseñaDto.ProductoId.ToString(), out var productoId))
+                    return BadRequest("ProductoId no es válido.");
 
-            return Ok(new { mensaje = "Reseña publicada con éxito." });
+                // Si el usuario no está autenticado, usar "Usuario Anónimo"
+                var usuarioId = User?.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+                string autor = "Usuario Anónimo"; // Valor predeterminado
+                int? userId = null;
+
+                if (usuarioId != null && int.TryParse(usuarioId, out var parsedUserId))
+                {
+                    userId = parsedUserId;
+
+                    var usuario = await _context.Users.FindAsync(userId);
+                    if (usuario != null)
+                    {
+                        autor = usuario.Nombre; // Usar el nombre del usuario autenticado
+                    }
+
+                    // Verificar si el usuario ha comprado el producto antes de permitir la reseña
+                    var hasPurchased = await _context.Carritos
+                        .Include(c => c.Items)
+                        .AnyAsync(c => c.UserId == userId.Value && c.Items.Any(item => item.LibroId == productoId && item.Comprado));
+
+                    if (!hasPurchased)
+                        return Unauthorized("Debe comprar el producto antes de agregar una reseña.");
+                }
+
+                var libro = await _context.Libros.FindAsync(productoId);
+                if (libro == null)
+                    return NotFound("Libro no encontrado.");
+
+                // Clasificar la categoría de la reseña usando la IA
+                var prediccion = _iaService.Predict(reseñaDto.Texto);
+                var categoria = prediccion != null ? prediccion.PredictedLabel.ToString() : "Sin Clasificar";
+
+                var reseña = new Reseña
+                {
+                    UsuarioId = userId ?? 0, // Si userId es null, usar un valor predeterminado (e.g., 0)
+                    ProductoId = productoId,
+                    Texto = reseñaDto.Texto,
+                    Categoria = categoria,
+                    FechaPublicacion = DateTime.UtcNow,
+                    Autor = autor, // Asegurarse de que Autor siempre tenga un valor
+                    Estrellas = reseñaDto.Estrellas
+                };
+
+                _context.Reseñas.Add(reseña);
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    mensaje = "Reseña publicada con éxito.",
+                    categoria = categoria
+                });
+            }
+            catch (Exception ex)
+            {
+                // Loggear el error para depuración
+                Console.WriteLine($"Error: {ex.Message}");
+                return StatusCode(500, "Error interno del servidor.");
+            }
         }
+
 
     }
 }

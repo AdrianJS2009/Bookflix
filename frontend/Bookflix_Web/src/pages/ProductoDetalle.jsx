@@ -1,26 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { Link, useParams } from "react-router-dom";
 import Button from "../components/Button";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import { selectToken, selectUsuario } from "../redux/slices/authSlice";
-import { agregarAlCarritoLocal } from "../redux/slices/carritoSlice";
+import { selectUsuario } from "../redux/slices/authSlice";
 import "../styles/ProductoDetalle.css";
 
 const ProductoDetalle = () => {
   const { productoId } = useParams();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
   const usuario = useSelector(selectUsuario);
-  const token = useSelector(selectToken);
 
   const [producto, setProducto] = useState(null);
   const [error, setError] = useState(null);
-  const [cantidad, setCantidad] = useState(1);
   const [textoReseña, setTextoReseña] = useState("");
   const [reseñas, setReseñas] = useState([]);
-  const [hasPurchased, setHasPurchased] = useState(false);
+  const [comprados, setComprados] = useState([]);
 
   useEffect(() => {
     const fetchProducto = async () => {
@@ -39,109 +34,61 @@ const ProductoDetalle = () => {
       }
     };
 
-    const checkPurchaseStatus = async () => {
-      if (usuario && token) {
-        try {
-          const response = await fetch(
-            `https://localhost:7182/api/Carrito/${usuario.id}/checkPurchase/${productoId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          if (response.ok) {
-            const result = await response.json();
-            setHasPurchased(result.hasPurchased);
-          }
-        } catch (error) {
-          console.error("Error al verificar el estado de compra:", error);
-        }
-      }
+    const cargarComprados = () => {
+      const productosComprados =
+        JSON.parse(localStorage.getItem("comprados")) || [];
+      setComprados(productosComprados);
     };
 
     fetchProducto();
-    checkPurchaseStatus();
-  }, [productoId, usuario, token]);
+    cargarComprados();
+  }, [productoId]);
 
-  const cambiarCantidad = (accion) => {
-    setCantidad((prevCantidad) =>
-      accion === "incrementar"
-        ? prevCantidad + 1
-        : Math.max(prevCantidad - 1, 1)
-    );
-  };
-
-  const handleAddToCart = () => {
-    if (producto && cantidad > 0) {
-      dispatch(
-        agregarAlCarritoLocal({
-          productoId: producto.idLibro,
-          cantidad,
-          nombre: producto.nombre,
-          precio: producto.precio,
-          urlImagen: producto.urlImagen,
-        })
-      );
-      alert("Producto añadido al carrito");
-    }
-  };
-
-  const registrarCompra = async () => {
-    if (!usuario || !token) {
-      alert("Debes iniciar sesión para realizar esta acción.");
-      navigate("/login");
+  const handleComprar = () => {
+    if (!usuario) {
+      alert("Debes iniciar sesión para comprar este producto.");
       return;
     }
 
-    try {
-      const response = await fetch(
-        `https://localhost:7182/api/Carrito/${usuario.id}/comprar`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        alert(`Error al registrar la compra: ${errorData.error}`);
-        return;
-      }
-
-      alert("Compra registrada con éxito.");
-    } catch (error) {
-      console.error("Error al registrar la compra:", error.message);
-      alert("Error al registrar la compra. Intenta nuevamente.");
-    }
+    const nuevosComprados = [
+      ...comprados,
+      { idLibro: parseInt(productoId), userId: usuario.id },
+    ];
+    localStorage.setItem("comprados", JSON.stringify(nuevosComprados));
+    setComprados(nuevosComprados);
+    alert("Producto marcado como comprado.");
   };
 
   const handleCrearReseña = async () => {
-    if (!usuario || !hasPurchased) {
-      alert(
-        "Debes haber iniciado sesión y comprado el producto para dejar una reseña."
-      );
-      navigate("/login");
+    if (!usuario) {
+      alert("Debes iniciar sesión para dejar una reseña.");
+      return;
+    }
+
+    const haComprado = comprados.some(
+      (compra) =>
+        compra.idLibro === parseInt(productoId) && compra.userId === usuario.id
+    );
+
+    if (!haComprado) {
+      alert("Debes comprar este producto antes de dejar una reseña.");
       return;
     }
 
     if (textoReseña.trim()) {
       try {
         const nuevaReseña = {
-          texto: textoReseña,
-          libroId: productoId,
+          texto: textoReseña, // Asegúrate de que coincida con el nombre en el DTO del backend
+          productoId: parseInt(productoId, 10),
         };
 
         const response = await fetch(
-          `https://localhost:7182/api/Libro/publicarReseña`,
+          `https://localhost:7182/api/Libro/publicarResena`,
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${usuario.token}`,
             },
             body: JSON.stringify(nuevaReseña),
           }
@@ -151,17 +98,19 @@ const ProductoDetalle = () => {
           throw new Error("Error al enviar la reseña");
         }
 
-        const data = await response.json();
+        const data = await response.json(); // Aquí la IA asigna la categoría
         setReseñas([
           { texto: textoReseña, categoria: data.categoria },
           ...reseñas,
         ]);
         setTextoReseña("");
+        alert("Reseña creada con éxito y categorizada por IA.");
       } catch (error) {
-        console.error("Error al crear la reseña:", error);
+        console.error("Error al crear la reseña:", error.message);
+        alert("Error al enviar la reseña.");
       }
     } else {
-      alert("Escribe una reseña antes de enviar");
+      alert("Escribe una reseña antes de enviar.");
     }
   };
 
@@ -208,42 +157,10 @@ const ProductoDetalle = () => {
             <p className="precio">
               Precio: {(producto.precio / 100).toFixed(2)} €
             </p>
-            <p className="stock">
-              {producto.stock > 0 ? (
-                <span>
-                  <span className="existencias">⬤</span> En stock <br />
-                  <span>Actualmente quedan {producto.stock}</span>
-                </span>
-              ) : (
-                <span>
-                  <span className="agotado">⬤</span> Agotado
-                </span>
-              )}
-            </p>
-            <div className="cantidad">
-              <button
-                className="masCantidad"
-                onClick={() => cambiarCantidad("decrementar")}
-              >
-                -
-              </button>
-              <input type="number" value={cantidad} readOnly />
-              <button
-                className="menosCantidad"
-                onClick={() => cambiarCantidad("incrementar")}
-              >
-                +
-              </button>
-            </div>
             <Button
               label="Comprar"
               styleType="btnComprar"
-              onClick={registrarCompra}
-            />
-            <Button
-              label="Añadir a la cesta"
-              styleType="btnAñadir"
-              onClick={handleAddToCart}
+              onClick={handleComprar}
             />
           </div>
         </div>

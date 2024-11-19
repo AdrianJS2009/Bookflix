@@ -22,7 +22,6 @@ const AuthProvider = ({ children }) => {
 
         const ahora = Math.floor(Date.now() / 1000);
         if (payload.exp < ahora) {
-          console.warn("El token ha expirado.");
           localStorage.removeItem("token");
           dispatch(cerrarSesion());
           return;
@@ -42,6 +41,7 @@ const AuthProvider = ({ children }) => {
         };
 
         dispatch(iniciarSesion({ usuario, token }));
+        dispatch(cargarCarrito(usuario.id));
       } catch (error) {
         console.error("Error al restaurar sesión:", error);
         localStorage.removeItem("token");

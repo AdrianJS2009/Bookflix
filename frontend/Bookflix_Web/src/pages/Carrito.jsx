@@ -1,69 +1,160 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import Button from "../components/Button";
-import { selectToken, selectUsuario } from "../redux/slices/authSlice";
-import {
-  cargarCarrito,
-  limpiarCarrito,
-  selectCarritoItems,
-} from "../redux/slices/carritoSlice";
-import "../styles/Carrito.css";
+import { selectUsuario } from "../redux/slices/authSlice";
+import "../styles/ProductoDetalle.css";
 
-const Carrito = () => {
-  const dispatch = useDispatch();
-  const items = useSelector(selectCarritoItems);
+const ProductoDetalle = () => {
+  const { productoId } = useParams();
   const usuario = useSelector(selectUsuario);
-  const token = useSelector(selectToken);
+  const [producto, setProducto] = useState(null);
+  const [textoReseña, setTextoReseña] = useState("");
+  const [reseñas, setReseñas] = useState([]);
+  const [comprados, setComprados] = useState([]);
 
   useEffect(() => {
-    if (usuario && token) {
-      dispatch(cargarCarrito(usuario.id));
-    }
-  }, [usuario, token, dispatch]);
+    // Cargar datos del producto
+    const fetchProducto = async () => {
+      try {
+        const response = await fetch(
+          `https://localhost:7182/api/Libro/Detalle/${productoId}`
+        );
+        if (!response.ok) {
+          throw new Error("Error al cargar los detalles del producto");
+        }
+        const data = await response.json();
+        setProducto(data);
+        setReseñas(data.reseñas || []);
+      } catch (error) {
+        console.error("Error al cargar el producto:", error.message);
+      }
+    };
 
-  const handleClearCart = () => {
-    dispatch(limpiarCarrito());
-    alert("El carrito ha sido vaciado.");
+    // Cargar productos comprados desde localStorage
+    const productosComprados =
+      JSON.parse(localStorage.getItem("comprados")) || [];
+    setComprados(productosComprados);
+
+    fetchProducto();
+  }, [productoId]);
+
+  const handleComprar = () => {
+    if (!usuario) {
+      alert("Debes iniciar sesión para comprar este producto.");
+      return;
+    }
+
+    const nuevosComprados = [
+      ...comprados,
+      { idLibro: parseInt(productoId), userId: usuario.id },
+    ];
+    localStorage.setItem("comprados", JSON.stringify(nuevosComprados));
+    setComprados(nuevosComprados);
+
+    alert("Producto marcado como comprado.");
   };
 
+  const handleCrearReseña = async () => {
+    if (!usuario) {
+      alert("Debes iniciar sesión para dejar una reseña.");
+      return;
+    }
+
+    const haComprado = comprados.some(
+      (compra) =>
+        compra.idLibro === parseInt(productoId) && compra.userId === usuario.id
+    );
+
+    if (!haComprado) {
+      alert("Debes comprar este producto antes de dejar una reseña.");
+      return;
+    }
+
+    if (textoReseña.trim()) {
+      try {
+        const nuevaReseña = {
+          texto: textoReseña,
+          libroId: productoId,
+        };
+
+        const response = await fetch(
+          `https://localhost:7182/api/Libro/publicarReseña`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${usuario.token}`, // Asegúrate de que el token esté disponible
+            },
+            body: JSON.stringify(nuevaReseña),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Error al enviar la reseña");
+        }
+
+        const data = await response.json();
+        setReseñas([
+          { texto: textoReseña, categoria: data.categoria },
+          ...reseñas,
+        ]);
+        setTextoReseña("");
+        alert("Reseña creada con éxito.");
+      } catch (error) {
+        console.error("Error al crear la reseña:", error.message);
+        alert("Error al enviar la reseña.");
+      }
+    } else {
+      alert("Escribe una reseña antes de enviar.");
+    }
+  };
+
+  if (!producto) {
+    return <p>Cargando...</p>;
+  }
+
   return (
-    <div className="carrito-contenedor">
-      <h1>Carrito de Compras</h1>
-      {items.length === 0 ? (
-        <p>No hay artículos en el carrito.</p>
-      ) : (
-        <div className="carrito-items">
-          {items.map((item, index) => (
-            <div key={index} className="carrito-item">
-              <img
-                src={item.urlImagen || "placeholder.jpg"}
-                alt={`Portada de ${item.nombre || "undefined"}`}
-                className="carrito-imagen"
-              />
-              <div className="carrito-info">
-                <p>
-                  <strong>{item.nombre || "Producto sin nombre"}</strong>
-                </p>
-                <p>
-                  Precio:{" "}
-                  {(item.precio / 100 || 0).toLocaleString("es-ES", {
-                    style: "currency",
-                    currency: "EUR",
-                  })}
-                </p>
-                <p>Cantidad: {item.cantidad}</p>
-              </div>
-            </div>
-          ))}
+    <div className="producto-detalle">
+      <h1>{producto.nombre || "Sin título"}</h1>
+      <p>{producto.descripcion || "Descripción no disponible."}</p>
+      <p>
+        Precio:{" "}
+        {(producto.precio / 100).toLocaleString("es-ES", {
+          style: "currency",
+          currency: "EUR",
+        })}
+      </p>
+      <Button label="Comprar" onClick={handleComprar} />
+      <div className="reseñas">
+        <h2>Reseñas</h2>
+        <div>
+          <textarea
+            value={textoReseña}
+            onChange={(e) => setTextoReseña(e.target.value)}
+            placeholder="Escribe tu reseña aquí..."
+          />
+          <Button label="Enviar Reseña" onClick={handleCrearReseña} />
         </div>
-      )}
-      <Button
-        label="Vaciar Carrito"
-        styleType="btnDefault"
-        onClick={handleClearCart}
-      />
+        <div>
+          {reseñas.length > 0 ? (
+            reseñas.map((reseña, index) => (
+              <div key={index}>
+                <p>
+                  <strong>Texto:</strong> {reseña.texto}
+                </p>
+                <p>
+                  <strong>Categoría:</strong> {reseña.categoria}
+                </p>
+              </div>
+            ))
+          ) : (
+            <p>No hay reseñas para este producto.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
 
-export default Carrito;
+export default ProductoDetalle;

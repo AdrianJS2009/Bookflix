@@ -7,7 +7,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-
 namespace Bookflix_Server.Controllers
 {
     [ApiController]
@@ -23,45 +22,40 @@ namespace Bookflix_Server.Controllers
             _config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
-        [HttpPost("login")]
-        public async Task<ActionResult<string>> Login([FromBody] LoginDto model)
+        [HttpPost("iniciar-sesion")]
+        public async Task<ActionResult<string>> IniciarSesion([FromBody] LoginDto modelo)
         {
-           
             if (!ModelState.IsValid)
-                return BadRequest("Datos de inicio de sesión no válidos.");
+                return BadRequest("Los datos proporcionados no son válidos.");
 
-            
-            var user = await _unitOfWork.Users.GetByEmailAsync(model.Email);
+            var usuario = await _unitOfWork.Users.GetByEmailAsync(modelo.Email);
 
-          
-            if (user == null || user.Password != model.Password)
-                return Unauthorized("Credenciales incorrectas.");
+            if (usuario == null || usuario.Password != modelo.Password)
+                return Unauthorized("Las credenciales son incorrectas.");
 
-           
-            var token = GenerateToken(user);
+            var token = GenerarToken(usuario);
             return Ok(new { Token = token });
         }
 
-       
-        private string GenerateToken(User user)
+        private string GenerarToken(User usuario)
         {
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.IdUser.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, usuario.IdUser.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Name, user.Nombre),
-                new Claim(ClaimTypes.Role, user.Rol)
+                new Claim(ClaimTypes.Name, usuario.Nombre),
+                new Claim(ClaimTypes.Role, usuario.Rol)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var credenciales = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
                 claims: claims,
                 expires: DateTime.Now.AddHours(1),
-                signingCredentials: creds);
+                signingCredentials: credenciales);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

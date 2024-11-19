@@ -1,16 +1,14 @@
 ﻿using Bookflix_Server.Data;
+using Bookflix_Server.Models.IA;
 using Bookflix_Server.Models.Seeder;
 using Bookflix_Server.Repositories;
 using Bookflix_Server.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.ML;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using Bookflix_Server.Models.IA;
-using Microsoft.Extensions.ML;
-
-namespace Bookflix_Server;
 
 public class Program
 {
@@ -67,9 +65,6 @@ public class Program
         builder.Services.AddPredictionEnginePool<ModelInput, ModelOutput>()
             .FromFile("PruebaIADAW.mlnet");
 
-
-
-
         // Configuración de la base de datos
         builder.Services.AddDbContext<MyDbContext>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -82,21 +77,17 @@ public class Program
         builder.Services.AddScoped<SmartSearchService>();
         builder.Services.AddScoped<ICarritoRepository, CarritoRepository>();
         builder.Services.AddScoped<IAService>();
-        builder.Services.AddScoped<ICarritoRepository, CarritoRepository>();
 
         // Configuración de CORS solo para el entorno de desarrollo
-        if (builder.Environment.IsDevelopment())
+        builder.Services.AddCors(options =>
         {
-            builder.Services.AddCors(options =>
+            options.AddPolicy("AllowFrontend", policy =>
             {
-                options.AddPolicy("AllowFrontend", policy =>
-                {
-                    policy.WithOrigins("http://localhost:5173")
-                          .AllowAnyHeader()
-                          .AllowAnyMethod();
-                });
+                policy.WithOrigins("http://localhost:5173")
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
             });
-        }
+        });
 
         // Configuración de autenticación JWT
         ConfigureJwtAuthentication(builder);
@@ -155,10 +146,10 @@ public class Program
         }
 
         // Configuración de CORS
-        app.UseCors(policy =>
-            policy.WithOrigins("http://localhost:5173")
-                  .AllowAnyHeader()
-                  .AllowAnyMethod());
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseCors("AllowFrontend");
+        }
 
         app.UseAuthentication();
         app.UseAuthorization();
