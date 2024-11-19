@@ -2,22 +2,22 @@
 {
     public interface IUserRepository
     {
-        // Obtiene un usuario por su ID
-        Task<User> GetByIdAsync(int id);
 
-        // Obtiene un usuario por su correo electrónico
-        Task<User> GetByEmailAsync(string email);
+        Task<User> ObtenerPorIdAsync(int id);
 
-        // Agrega un nuevo usuario
-        Task AddUserAsync(User user);
 
-        // Actualiza un usuario existente
-        Task UpdateUserAsync(User user);
+        Task<User> ObtenerPorCorreoAsync(string correo);
 
-        // Elimina un usuario por su ID
-        Task DeleteUserAsync(int id);
 
-        // Verifica si un usuario con un correo electrónico específico ya existe
-        Task<bool> UserExistsAsync(string email);
+        Task AgregarUsuarioAsync(User usuario);
+
+
+        Task ActualizarUsuarioAsync(User usuario);
+
+
+        Task EliminarUsuarioAsync(int id);
+
+
+        Task<bool> ExisteUsuarioPorCorreoAsync(string correo);
     }
 }

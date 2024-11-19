@@ -13,16 +13,15 @@ namespace Bookflix_Server.Controllers
     public class LibroController : ControllerBase
     {
         private readonly MyDbContext _context;
-        private readonly SmartSearchService _smartSearchService;
-        private readonly IAService _iaService;
+        private readonly ServicioBusquedaInteligente _smartSearchService;
         private readonly ICarritoRepository _icarritoRepository;
         private const int TamañoPagina = 10;
 
-        public LibroController(MyDbContext context, SmartSearchService smartSearchService, IAService iaService, ICarritoRepository carritoRepository)
+        public LibroController(MyDbContext context, ServicioBusquedaInteligente smartSearchService, ICarritoRepository carritoRepository)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _smartSearchService = smartSearchService ?? throw new ArgumentNullException(nameof(smartSearchService));
-            _iaService = iaService ?? throw new ArgumentNullException(nameof(iaService));
+   
             _icarritoRepository = carritoRepository ?? throw new ArgumentNullException(nameof(carritoRepository));
         }
 
@@ -82,7 +81,7 @@ namespace Bookflix_Server.Controllers
 
                 if (!string.IsNullOrWhiteSpace(textoBusqueda))
                 {
-                    var resultadoBusqueda = _smartSearchService.Search(textoBusqueda);
+                    var resultadoBusqueda = _smartSearchService.Buscar(textoBusqueda);
                     librosQuery = _context.Libros.Where(l => resultadoBusqueda.Contains(l.Nombre) ||
                                                              resultadoBusqueda.Contains(l.Autor) ||
                                                              resultadoBusqueda.Contains(l.Genero) ||

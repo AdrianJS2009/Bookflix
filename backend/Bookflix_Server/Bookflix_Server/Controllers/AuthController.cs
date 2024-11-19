@@ -28,7 +28,7 @@ namespace Bookflix_Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest("Los datos proporcionados no son válidos.");
 
-            var usuario = await _unitOfWork.Users.GetByEmailAsync(modelo.Email);
+            var usuario = await _unitOfWork.Users.ObtenerPorCorreoAsync(modelo.Email);
 
             if (usuario == null || usuario.Password != modelo.Password)
                 return Unauthorized("Las credenciales son incorrectas.");
