@@ -28,6 +28,33 @@ const Carrito = () => {
     alert("El carrito ha sido vaciado.");
   };
 
+  const eliminarItemCarrito = async (e, itemId) => {
+    if (e.target) {
+      try {
+        const response = await fetch(
+          `https://localhost:7182/api/Carrito/${usuario.id}/eliminar/${itemId}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        const data = await response.json();
+        if (response.ok) {
+          console.log("Item eliminado del carrito", data);
+        } else {
+          console.error("Error eliminando el artículo", data.error || data.message);
+        }
+      } catch (error) {
+        console.error("Error al hacer la solicitud", error);
+      }
+    }
+  };
+  
+  
   const registrarCompra = async () => {
     if (!usuario || !token) {
       alert("Debes iniciar sesión para realizar esta acción.");
@@ -90,6 +117,7 @@ const Carrito = () => {
               </p>
               <p>Cantidad: {item.cantidad}</p>
               
+              <button className="botonEliminar" onClick={(e) => eliminarItemCarrito(e, item.id)}>x</button>
             </div>
           ))}
         </div>

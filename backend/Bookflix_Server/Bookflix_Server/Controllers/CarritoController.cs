@@ -55,22 +55,35 @@ namespace Bookflix_Server.Controllers
         [HttpDelete("{userId}/eliminar/{libroId}")]
         public async Task<IActionResult> EliminarItem(int userId, int libroId)
         {
-            var carrito = await _carritoRepository.GetCarritoByUserIdAsync(userId);
-            if (carrito == null)
+            try
             {
-                return NotFound(new { error = "Carrito no encontrado" });
-            }
+                // Log the inputs to confirm they're correct
+                Console.WriteLine($"Attempting to delete item with libroId: {libroId} for userId: {userId}");
 
-            bool itemEliminado = await _carritoRepository.EliminarItemDelCarritoAsync(carrito, libroId);
-            if (!itemEliminado)
+                var carrito = await _carritoRepository.GetCarritoByUserIdAsync(userId);
+                if (carrito == null)
+                {
+                    return NotFound(new { error = "Carrito no encontrado" });
+                }
+
+                bool itemEliminado = await _carritoRepository.EliminarItemDelCarritoAsync(carrito, libroId);
+                if (!itemEliminado)
+                {
+                    return NotFound(new { error = "El artículo no está en el carrito" });
+                }
+
+                await _carritoRepository.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Artículo eliminado del carrito correctamente" });
+            }
+            catch (Exception ex)
             {
-                return NotFound(new { error = "El artículo no está en el carrito" });
+                // Log the exception if something goes wrong
+                Console.WriteLine($"Error: {ex.Message}");
+                return StatusCode(500, new { error = "Error interno del servidor" });
             }
-
-            await _carritoRepository.SaveChangesAsync();
-
-            return Ok(new { success = true, message = "Artículo eliminado del carrito correctamente" });
         }
+
 
         [HttpDelete("{userId}/limpiar")]
         public async Task<IActionResult> LimpiarCarrito(int userId)
