@@ -79,8 +79,11 @@ input[type="range"] {
 }
 
 div.catalogo-container {
-  justify-items: center;
-  margin-top: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   min-height: calc(100vh - 80px);
 }
 
@@ -113,7 +116,6 @@ div.catalogoBuscador {
 div.catalogoBuscador button {
   border: 0px solid;
   background-color: var(--azul-normal);
-  width: 15%;
   padding: 8px 15px;
   border-radius: 20px;
   position: absolute;
@@ -136,11 +138,12 @@ div.catalogoFiltros select {
 }
 
 .paginacion {
-  margin-bottom: 25px;
   display: flex;
-  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
   align-items: center;
-  font-family: "Arial", sans-serif;
+  gap: 5px;
 }
 
 .pagination {
@@ -198,4 +201,19 @@ div.catalogoFiltros select {
 .pagination .break {
   padding: 8px 12px;
   color: #777;
+}
+
+ul.pagination li.disabled a {
+  color: var(--difuminado);
+  background-color: var(--difuminado);
+  cursor: default;
+}
+
+ul.pagination li.disabled a:hover {
+  color: var(--difuminado);
+  background-color: var(--difuminado);
+}
+
+.pagination a {
+  cursor: pointer;
 }

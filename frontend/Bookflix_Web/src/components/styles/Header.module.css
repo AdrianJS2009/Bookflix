@@ -1,61 +1,78 @@
-/* Header.module.css */
-
 header.header {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  z-index: 1000;
 }
 
 div.navLogo {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 30px;
 }
 
 .userCart {
-    display: flex;
-    align-items: center;
-    margin-left: auto;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
 }
 
 .userCart a {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    color: var(--blanco);
-    margin-left: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--blanco);
+  margin-left: 15px;
 }
 
 nav.navPrincipal {
-    display: flex;
-    justify-content: center;
-    background-color: var(--verde-normal);
-    padding: 5px 0;
+  display: flex;
+  justify-content: center;
+  background-color: var(--verde-normal);
+  padding: 5px 0;
 }
 
 img.logoNavbar {
-    max-height: 75px;
+  max-height: 75px;
 }
 
 nav.navPrincipal ul {
-    display: flex;
-    padding: 0;
+  display: flex;
+  padding: 0;
 }
 
 nav.navPrincipal ul a {
-    text-decoration: none;
-    color: var(--negro);
-    padding: 0px 15px;
+  text-decoration: none;
+  color: var(--negro);
+  padding: 0px 15px;
 }
 
 nav.navPrincipal li {
-    list-style: none;
-    margin: 0 10px;
+  list-style: none;
+  margin: 0 10px;
 }
 
 img.iconos {
-    width: 40px;
+  width: 40px;
+  position: relative;
 }
+
+.cartCount {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  background-color: tomato;
+  padding: 0; /* Elimina el padding extra para mantener el círculo pequeño */
+  border-radius: 50%; /* Hace que el elemento sea un círculo */
+  width: 18px; /* Diámetro del círculo */
+  height: 18px; /* Asegura que la altura sea igual al ancho */
+  display: flex;
+  justify-content: center; /* Centra el contenido horizontalmente */
+  align-items: center; /* Centra el contenido verticalmente */
+  color: white; /* Color del texto (generalmente el número) */
+  font-size: 10px; /* Ajusta el tamaño del texto */
+  font-weight: bold; /* Hace que el número sea más visible */
+}
+

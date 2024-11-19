@@ -1,69 +1,68 @@
 .generosContainer {
-  max-width: 80%; 
-  margin: 0 auto; 
+  max-width: 80%;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(5, 1fr); 
-  gap: 20px; 
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
 }
 
 .genero {
-  width: 100%; 
-  height: 150px; 
-  background-size: cover; 
-  border-radius: 20px; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  color: white; 
-  font-weight: bold; 
-  text-decoration: none; 
+  width: 100%;
+  height: 150px;
+  background-size: cover;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--blanco);
+  font-weight: bold;
+  text-decoration: none;
 }
 
 .genero p {
-  margin: 0; 
+  margin: 0;
 }
 
-
 .generosContainer a {
-  display: block; 
+  display: block;
 }
 
 .cienciaFiccion {
-  background-image: url('/assets/generos/CienciaFiccion.png');
+  background-image: url("/assets/generos/CienciaFiccion.png");
 }
 
 .fantasia {
-  background-image: url('/assets/generos/Fantasia.png');
+  background-image: url("/assets/generos/Fantasia.png");
 }
 
 .terror {
-  background-image: url('/assets/generos/Terror.png');
+  background-image: url("/assets/generos/Terror.png");
 }
 
 .misterio {
-  background-image: url('/assets/generos/Misterio.png');
+  background-image: url("/assets/generos/Misterio.png");
 }
 
 .thriller {
-  background-image: url('/assets/generos/Thriller.png');
+  background-image: url("/assets/generos/Thriller.png");
 }
 
 .romance {
-  background-image: url('/assets/generos/Romance.png');
+  background-image: url("/assets/generos/Romance.png");
 }
 
 .biografia {
-  background-image: url('/assets/generos/Biografia.png');
+  background-image: url("/assets/generos/Biografia.png");
 }
 
 .historicos {
-  background-image: url('/assets/generos/Historicos.png');
+  background-image: url("/assets/generos/Historicos.png");
 }
 
 .cinefilos {
-  background-image: url('/assets/generos/Cinefilos.png');
+  background-image: url("/assets/generos/Cinefilos.png");
 }
 
 .novelas {
-  background-image: url('/assets/generos/Novelas.png');
+  background-image: url("/assets/generos/Novelas.png");
 }

@@ -1,14 +1,14 @@
 footer.footer {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centra horizontalmente */
+  align-items: center;
   width: 100%;
   z-index: 1000;
-  padding: 20px 0; /* Espaciado interno */
+  padding: 20px 0;
 }
 
 footer.footer > div {
-  margin-bottom: 10px; /* Espacio entre el logo y los enlaces */
+  margin-bottom: 10px;
 }
 
 div.containerImg img.logoFooter {
@@ -21,15 +21,15 @@ div.containerImg img.logoFooter {
 }
 
 footer.footer ul {
-  display: flex; /* Coloca los enlaces en fila */
-  list-style: none; /* Elimina los puntos de la lista */
-  padding: 0; /* Elimina el padding por defecto */
+  display: flex;
+  list-style: none;
+  padding: 0;
 }
 
 footer.footer ul li {
-  margin: 0 15px; /* Espacio entre los enlaces */
+  margin: 0 15px;
 }
 
 footer.footer p {
-  margin-top: 15px; /* Espacio entre los enlaces y el copyright */
+  margin-top: 15px;
 }

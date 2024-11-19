@@ -6,9 +6,9 @@ body {
 
 .home-bookflix {
   margin: 0 auto;
-  display: grid; /* Cambiado a grid */
-  grid-template-columns: 1fr; /* Una columna principal */
-  gap: 100px; /* Espacio entre secciones */
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 100px;
 }
 
 /* ********** */
@@ -17,14 +17,13 @@ body {
 
 .box-banner {
   display: flex;
-  justify-content: center; /* Centra el banner */
+  justify-content: center;
   margin: 75px 0 50px 0;
 }
 
 /* ********** */
 /*   GÉNEROS  */
 /* ********** */
-
 
 /* ********** */
 /* TOP VENTAS */
@@ -72,24 +71,21 @@ body {
   position: relative;
   max-width: 70%;
   margin: 0 auto;
-  overflow: hidden; /* Oculta los elementos que salen del área visible */
+  overflow: hidden;
 }
 
-/* Estilos del carrusel */
 .carrusel {
   display: flex;
   transition: transform 0.5s ease;
-  gap: 15px; /* Ajusta el espacio entre los elementos del carrusel */
+  gap: 15px;
 }
 
-/* Estilos de cada item en el carrusel */
 .carrusel-item {
-  min-width: calc(100% / 3); /* Cambia a un valor mayor para ver más libros a la vez */
+  min-width: calc(100% / 3);
   box-sizing: border-box;
   padding: 5px;
   text-align: center;
 }
-
 
 .btn-comprar {
   padding: 5px;
@@ -100,10 +96,10 @@ body {
 }
 
 .btn-container {
-  display: flex;      /* Alinea los botones horizontalmente */
-  gap: 8px;           /* Ajusta el espacio entre los botones */
-  justify-content: center; /* Centra los botones dentro del contenedor */
-  margin-top: 15px;   /* Añade un margen superior para separarlo del texto */
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 15px;
   margin-bottom: 15px;
 }
 

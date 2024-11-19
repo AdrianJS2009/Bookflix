@@ -1,5 +1,7 @@
 ﻿using Bookflix_Server.Models;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 public class Libro
 {
@@ -23,4 +25,10 @@ public class Libro
 
     // Inicializa las reseñas para que no estén a null
     public ICollection<Reseña> Reseñas { get; set; } = new List<Reseña>();
+
+    [NotMapped]
+    public double PromedioEstrellas => Reseñas.Any() ? Reseñas.Average(r => r.Estrellas) : 0;
+
+    [NotMapped]
+    public int NumeroReseñas => Reseñas.Count;
 }

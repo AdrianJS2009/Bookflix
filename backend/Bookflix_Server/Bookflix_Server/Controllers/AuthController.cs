@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
+
 namespace Bookflix_Server.Controllers
 {
     [ApiController]
@@ -25,33 +26,32 @@ namespace Bookflix_Server.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login([FromBody] LoginDto model)
         {
-            // Comprobación de los inputs de entrada
+           
             if (!ModelState.IsValid)
                 return BadRequest("Datos de inicio de sesión no válidos.");
 
-            // Busqueda del usuario por correo
+            
             var user = await _unitOfWork.Users.GetByEmailAsync(model.Email);
 
-            // Comprobación de si el usuario existe y su contraseña coincide
+          
             if (user == null || user.Password != model.Password)
                 return Unauthorized("Credenciales incorrectas.");
 
-            // Generar token para el usuario
+           
             var token = GenerateToken(user);
             return Ok(new { Token = token });
         }
 
-        // Token JWT en base al correo
+       
         private string GenerateToken(User user)
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.IdUser.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Name, user.Nombre),
                 new Claim(ClaimTypes.Role, user.Rol)
             };
-            
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

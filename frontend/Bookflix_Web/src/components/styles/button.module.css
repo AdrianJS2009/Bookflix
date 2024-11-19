@@ -9,23 +9,23 @@
 }
 
 .btnComprar {
-  background-color: #007bff; /* Azul estándar */
-  color: #ffffff;
+  background-color: var(--azul-normal);
+  color: var(--blanco);
 }
 
 .btnComprar:hover {
-  background-color: #0056b3; /* Azul más oscuro */
+  background-color: var(--azul-oscuro);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .btnAñadir {
-  background-color: #228b22; /* Verde estándar */
-  color: #ffffff;
+  background-color: var(--verde-normal);
+  color: var(--blanco);
 }
 
 .btnAñadir:hover {
-  background-color: #006400; /* Verde más oscuro */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: var(--verde-oscuro);
+  box-shadow: 0 4px 8px var(--difuminado);
 }
 
 .btnDefault {

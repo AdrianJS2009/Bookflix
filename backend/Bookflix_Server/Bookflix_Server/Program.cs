@@ -1,18 +1,16 @@
 ﻿using Bookflix_Server.Data;
 using Bookflix_Server.Models.Seeder;
 using Bookflix_Server.Repositories;
+using Bookflix_Server.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Bookflix_Server.Models.IA;
+using Microsoft.Extensions.ML;
 
 namespace Bookflix_Server;
-
 
 public class Program
 {
@@ -20,17 +18,13 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-
         builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-
 
         ConfigureServices(builder);
 
         var app = builder.Build();
 
-
         await InitializeDatabaseAsync(app);
-
 
         ConfigureMiddleware(app);
 
@@ -69,7 +63,14 @@ public class Program
             });
         });
 
-        // Configuración de la bbdd
+        // Inyección del modelo de IA
+        builder.Services.AddPredictionEnginePool<ModelInput, ModelOutput>()
+            .FromFile("PruebaIADAW.mlnet");
+
+
+
+
+        // Configuración de la base de datos
         builder.Services.AddDbContext<MyDbContext>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -78,6 +79,10 @@ public class Program
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
         builder.Services.AddScoped<IReseñasRepository, ReseñasRepository>();
+        builder.Services.AddScoped<SmartSearchService>();
+        builder.Services.AddScoped<ICarritoRepository, CarritoRepository>();
+        builder.Services.AddScoped<IAService>();
+        builder.Services.AddScoped<ICarritoRepository, CarritoRepository>();
 
         // Configuración de CORS solo para el entorno de desarrollo
         if (builder.Environment.IsDevelopment())
@@ -111,8 +116,12 @@ public class Program
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
                 };
             });
@@ -128,8 +137,6 @@ public class Program
                 throw new Exception("MyDbContext no está registrado correctamente.");
             }
 
-
-
             if (dbContext.Database.EnsureCreated())
             {
                 var seeder = new SeederLibros(dbContext);
@@ -144,11 +151,7 @@ public class Program
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bookflix API V1");
-                c.RoutePrefix = string.Empty;
-            });
+            app.UseSwaggerUI();
         }
 
         // Configuración de CORS
@@ -156,7 +159,6 @@ public class Program
             policy.WithOrigins("http://localhost:5173")
                   .AllowAnyHeader()
                   .AllowAnyMethod());
-
 
         app.UseAuthentication();
         app.UseAuthorization();

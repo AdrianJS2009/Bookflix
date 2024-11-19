@@ -1,4 +1,7 @@
-﻿namespace Bookflix_Server.Repositories
+﻿using Bookflix_Server.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace Bookflix_Server.Repositories
 {
     public interface IProductoRepository
     {
@@ -8,15 +11,19 @@
 
         Task<IEnumerable<Libro>> GetAllAsync();
 
+        Task<bool> CheckStockAsync(int productId, int quantity);
+
+        Task<decimal> GetAverageRatingAsync(int productId);
+
+        Task<int> GetReviewCountAsync(int productId);
+
+        Task<IEnumerable<Reseña>> GetReseñasByProductoIdAsync(int productId);
 
         Task<Libro> GetByIdAsync(int id);
 
-
         Task AddAsync(Libro libro);
 
-
         Task UpdateAsync(Libro libro);
-
 
         Task DeleteAsync(int id);
 
@@ -41,5 +48,7 @@
 
 
         Task<Libro> GetByISBNAsync(string isbn);
+
+        public Task<List<string>> GetAllNombres();
     }
 }
