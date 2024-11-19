@@ -74,8 +74,6 @@ const Carrito = () => {
         }
       );
 
-      console.log(items.id);
-
       if (!response.ok) {
         const errorData = await response.json();
         alert(`Error al registrar la compra: ${errorData.error}`);
@@ -121,7 +119,7 @@ const Carrito = () => {
               </p>
               <p>Cantidad: {item.cantidad}</p>
               
-              <button className="botonEliminar" onClick={(e) => eliminarItemCarrito(e, item.id)}>x</button>
+              <button className="botonEliminar" onClick={(e) => eliminarItemCarrito(e, item.idLibro)}>x</button>
             </div>
           ))}
         </div>
