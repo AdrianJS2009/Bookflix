@@ -1,32 +1,40 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import Button from "../components/Button";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import { selectToken, selectUsuario } from "../redux/slices/authSlice";
-import {
-  cargarCarrito,
-  limpiarCarrito,
-  selectCarritoItems,
-} from "../redux/slices/carritoSlice";
-import "../styles/Carrito.css";
+import { selectUsuario } from "../redux/slices/authSlice";
+import "../styles/ProductoDetalle.css";
 
 const Carrito = () => {
-  const dispatch = useDispatch();
-  const items = useSelector(selectCarritoItems);
+  const { productoId } = useParams();
   const usuario = useSelector(selectUsuario);
-  const token = useSelector(selectToken);
+  const [producto, setProducto] = useState(null);
+  const [textoReseña, setTextoReseña] = useState("");
+  const [reseñas, setReseñas] = useState([]);
+  const [comprados, setComprados] = useState([]);
 
   useEffect(() => {
-    if (usuario && token) {
-      dispatch(cargarCarrito(usuario.id));
-    }
-  }, [usuario, token, dispatch]);
+    // Cargar datos del producto
+    const fetchProducto = async () => {
+      try {
+        const response = await fetch(
+          `https://localhost:7182/api/Libro/Detalle/${productoId}`
+        );
+        if (!response.ok) {
+          throw new Error("Error al cargar los detalles del producto");
+        }
+        const data = await response.json();
+        setProducto(data);
+        setReseñas(data.reseñas || []);
+      } catch (error) {
+        console.error("Error al cargar el producto:", error.message);
+      }
+    };
 
-  const handleClearCart = () => {
-    dispatch(limpiarCarrito());
-    alert("El carrito ha sido vaciado.");
-  };
+    // Cargar productos comprados desde localStorage
+    const productosComprados =
+      JSON.parse(localStorage.getItem("comprados")) || [];
+    setComprados(productosComprados);
 
   const eliminarItemCarrito = async (e, itemId) => {
     if (e.target) {
@@ -62,35 +70,79 @@ const Carrito = () => {
       return;
     }
 
-    try {
-      const response = await fetch(
-        `https://localhost:7182/api/Carrito/${usuario.id}/comprar`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+    const nuevosComprados = [
+      ...comprados,
+      { idLibro: parseInt(productoId), userId: usuario.id },
+    ];
+    localStorage.setItem("comprados", JSON.stringify(nuevosComprados));
+    setComprados(nuevosComprados);
+
+    alert("Producto marcado como comprado.");
+  };
+
+  const handleCrearReseña = async () => {
+    if (!usuario) {
+      alert("Debes iniciar sesión para dejar una reseña.");
+      return;
+    }
+
+    const haComprado = comprados.some(
+      (compra) =>
+        compra.idLibro === parseInt(productoId) && compra.userId === usuario.id
+    );
+
+    if (!haComprado) {
+      alert("Debes comprar este producto antes de dejar una reseña.");
+      return;
+    }
+
+    if (textoReseña.trim()) {
+      try {
+        const nuevaReseña = {
+          texto: textoReseña,
+          libroId: productoId,
+        };
+
+        const response = await fetch(
+          `https://localhost:7182/api/Libro/publicarReseña`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${usuario.token}`, // Asegúrate de que el token esté disponible
+            },
+            body: JSON.stringify(nuevaReseña),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Error al enviar la reseña");
         }
-      );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        alert(`Error al registrar la compra: ${errorData.error}`);
-        return;
+        const data = await response.json();
+        setReseñas([
+          { texto: textoReseña, categoria: data.categoria },
+          ...reseñas,
+        ]);
+        setTextoReseña("");
+        alert("Reseña creada con éxito.");
+      } catch (error) {
+        console.error("Error al crear la reseña:", error.message);
+        alert("Error al enviar la reseña.");
       }
-
-      alert("Compra registrada con éxito.");
-    } catch (error) {
-      console.error("Error al registrar la compra:", error.message);
-      alert("Error al registrar la compra. Intenta nuevamente.");
+    } else {
+      alert("Escribe una reseña antes de enviar.");
     }
   };
+
+  if (!producto) {
+    return <p>Cargando...</p>;
+  }
 
   return (
     <>
     
-    
+
     <Header />
     <div className="carrito-container texto-pequeño">
     <h1 className="texto-grande">Carrito de Compras</h1>
@@ -121,21 +173,12 @@ const Carrito = () => {
             </div>
           ))}
         </div>
-      )}
-      <Button
-        label="Vaciar Carrito"
-        styleType="btnDefault"
-        onClick={handleClearCart}
-      />
-      {"  "}
-      <Button
-        label="Comprar"
-        styleType="btnComprar"
-        onClick={registrarCompra}
-      />
-    </div>
-    <Footer />
-    </>
+        
+      </div>
+    
+    
+  );
+  </>
   );
 };
 
