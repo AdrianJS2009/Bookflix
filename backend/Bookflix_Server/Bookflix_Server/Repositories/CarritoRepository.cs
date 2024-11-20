@@ -45,13 +45,16 @@ namespace Bookflix_Server.Repositories
             var item = carrito.Items.FirstOrDefault(i => i.LibroId == idProducto);
             if (item == null)
             {
-                carrito.Items.Add(new CarritoItem { LibroId = idProducto, Cantidad = cantidad });
+                var nuevoItem = new CarritoItem { LibroId = idProducto, Cantidad = cantidad, CarritoId = carrito.CarritoId };
+                _context.CarritoItems.Attach(nuevoItem); 
+                carrito.Items.Add(nuevoItem);
             }
             else
             {
                 item.Cantidad += cantidad;
             }
             await GuardarCambiosAsync();
+
         }
 
         // Elimina un producto del carrito

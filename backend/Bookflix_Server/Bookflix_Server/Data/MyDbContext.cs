@@ -9,8 +9,8 @@ namespace Bookflix_Server.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Libro> Libros { get; set; }
         public DbSet<Reseña> Reseñas { get; set; }
-        public DbSet<CarritoItem> ItemsCarrito { get; set; }
         public DbSet<Carrito> Carritos { get; set; }
+        public DbSet<CarritoItem> CarritoItems { get; set; }
 
         // Constructor del contexto
         public MyDbContext(DbContextOptions<MyDbContext> options) : base(options) { }
@@ -51,10 +51,13 @@ namespace Bookflix_Server.Data
 
             // Relación Carrito (1) -> ItemsCarrito (N)
             modelBuilder.Entity<Carrito>()
-                .HasMany(c => c.Items)
-                .WithOne()
-                .HasForeignKey(ci => ci.Id)
-                .OnDelete(DeleteBehavior.Cascade);
+              .HasMany(c => c.Items)
+              .WithOne()
+              .HasForeignKey(ci => ci.CarritoId)
+              .OnDelete(DeleteBehavior.Cascade);
+
+            base.OnModelCreating(modelBuilder);
+
         }
     }
 }

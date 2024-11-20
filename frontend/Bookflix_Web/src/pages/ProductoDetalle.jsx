@@ -4,6 +4,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import Button from "../components/Button";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+
+
 import { selectToken, selectUsuario } from "../redux/slices/authSlice";
 import { agregarAlCarritoLocal } from "../redux/slices/carritoSlice";
 import "../styles/ProductoDetalle.css";
@@ -20,7 +22,6 @@ const ProductoDetalle = () => {
   const [cantidad, setCantidad] = useState(1);
   const [textoReseña, setTextoReseña] = useState("");
   const [reseñas, setReseñas] = useState([]);
-  const [hasPurchased, setHasPurchased] = useState(false);
 
   useEffect(() => {
     const fetchProducto = async () => {
@@ -28,7 +29,8 @@ const ProductoDetalle = () => {
         const response = await fetch(
           `https://localhost:7182/api/Libro/Detalle/${productoId}`
         );
-        if (!response.ok) throw new Error("Error al cargar los detalles del producto");
+        if (!response.ok)
+          throw new Error("Error al cargar los detalles del producto");
         const data = await response.json();
         setProducto(data);
         setReseñas(data.reseñas || []);
@@ -47,7 +49,7 @@ const ProductoDetalle = () => {
   };
 
   const manejarBlur = () => {
-    const cantidadInt = parseInt(cantidad, 10);
+    const cantidadInt = parseInt(cantidad, 1);
     // Validar la cantidad cuando el campo pierde el foco
     if (!isNaN(cantidadInt)) {
       if (cantidadInt < 1) {
@@ -57,8 +59,6 @@ const ProductoDetalle = () => {
       } else {
         setCantidad(cantidadInt);
       }
-    } else {
-      setCantidad(1);
     }
   };
 
@@ -92,41 +92,11 @@ const ProductoDetalle = () => {
     }
   };
 
-  const registrarCompra = async () => {
-    if (!usuario || !token) {
-      alert("Debes iniciar sesión para realizar esta acción.");
-      navigate("/login");
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `https://localhost:7182/api/Carrito/${usuario.id}/comprar`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        alert(`Error al registrar la compra: ${errorData.error}`);
-        return;
-      }
-
-      alert("Compra registrada con éxito.");
-    } catch (error) {
-      console.error("Error al registrar la compra:", error.message);
-      alert("Error al registrar la compra. Intenta nuevamente.");
-    }
-  };
-
   const handleCrearReseña = async () => {
     if (!usuario || !hasPurchased) {
-      alert("Debes haber iniciado sesión y comprado el producto para dejar una reseña.");
+      alert(
+        "Debes haber iniciado sesión y comprado el producto para dejar una reseña."
+      );
       navigate("/login");
       return;
     }
@@ -153,7 +123,10 @@ const ProductoDetalle = () => {
         if (!response.ok) throw new Error("Error al enviar la reseña");
 
         const data = await response.json();
-        setReseñas([{ texto: textoReseña, categoria: data.categoria }, ...reseñas]);
+        setReseñas([
+          { texto: textoReseña, categoria: data.categoria },
+          ...reseñas,
+        ]);
         setTextoReseña("");
       } catch (error) {
         console.error("Error al crear la reseña:", error);
@@ -184,36 +157,61 @@ const ProductoDetalle = () => {
           <div className="info texto-mediano">
             <h1 className="texto-grande">{producto.nombre || "Sin nombre"}</h1>
             <p className="autor">Autor: {producto.autor || "Desconocido"}</p>
-            <p className="descripcion">Descripción: <br /> {producto.descripcion || "No disponible"}</p>
+            <p className="descripcion">
+              Descripción: <br /> {producto.descripcion || "No disponible"}
+            </p>
             <p className="generoLibro">
               Género:{" "}
               <Link to={`/catalogo?genero=${producto.genero}`}>
-                <span className="genero">{producto.genero || "Sin género"}</span>
+                <span className="genero">
+                  {producto.genero || "Sin género"}
+                </span>
               </Link>
             </p>
             <p className="isbn texto-pequeño">ISBN: {producto.isbn || "N/A"}</p>
           </div>
           <div className="detalles texto-mediano">
-            <p className="precio">Precio: {(producto.precio / 100).toFixed(2)} €</p>
+            <p className="precio">
+              Precio: {(producto.precio / 100).toFixed(2)} €
+            </p>
             <p className="stock">
               {producto.stock > 0 ? (
-                <span><span className="existencias">⬤</span> En stock <br />
-                  <span>Actualmente quedan {producto.stock}</span></span>
+                <span>
+                  <span className="existencias">⬤</span> En stock <br />
+                  <span>Actualmente quedan {producto.stock}</span>
+                </span>
               ) : (
-                <span><span className="agotado">⬤</span> Agotado</span>
+                <span>
+                  <span className="agotado">⬤</span> Agotado
+                </span>
               )}
             </p>
             <div className="cantidad">
-              <button className="masCantidad" onClick={() => cambiarCantidad("decrementar")}>-</button>
+              <button
+                className="masCantidad"
+                onClick={() => cambiarCantidad("decrementar")}
+              >
+                -
+              </button>
               <input
                 type="text"
                 value={cantidad}
-                onChange={manejarCambio} // Permite cambiar la cantidad escribiendo
-                onBlur={manejarBlur} // Validar al perder el foco
+                onChange={manejarCambio} 
+                onBlur={manejarBlur}
               />
-              <button className="menosCantidad" onClick={() => cambiarCantidad("incrementar")}>+</button>
+              <button
+                className="menosCantidad"
+                onClick={() => cambiarCantidad("incrementar")}
+              >
+                +
+              </button>
             </div>
-            <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={handleAddToCart} />
+            <Button
+              label="Añadir a la cesta"
+              styleType="btnAñadir"
+              onClick={handleAddToCart}
+              data-id={producto.idLibro}
+            />
           </div>
         </div>
         <hr />
@@ -226,12 +224,18 @@ const ProductoDetalle = () => {
               onChange={(e) => setTextoReseña(e.target.value)}
               placeholder="Escribe tu reseña aquí..."
             />
-            <Button label="Crear" styleType="btnCrearReseña" onClick={handleCrearReseña} />
+            <Button
+              label="Crear"
+              styleType="btnCrearReseña"
+              onClick={handleCrearReseña}
+            />
           </div>
           {reseñas.length > 0 ? (
             reseñas.map((reseña, index) => (
               <div key={index} className="reseña">
-                <p>Texto: {reseña.texto} - Categoría: {reseña.categoria}</p>
+                <p>
+                  Texto: {reseña.texto} - Categoría: {reseña.categoria}
+                </p>
               </div>
             ))
           ) : (
