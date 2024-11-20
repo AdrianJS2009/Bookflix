@@ -4,7 +4,7 @@ import Button from "../components/Button";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { useAuth } from "../utils/AuthContext"; // Importa el hook del contexto
-
+import { jwtDecode } from "jwt-decode";
 import "../styles/default.css";
 import "../styles/form.css";
 
@@ -21,6 +21,14 @@ export default function Login() {
     navigate("/"); // Redirige al inicio después de iniciar sesión
   };
 
+  const manejarToken = () => {
+    const datosDecodificados = jwtDecode(sessionStorage.getItem("token"));
+    const fechaExpiracion = new Date((datosDecodificados.exp * 1000));
+    console.log("El token expira en: ", fechaExpiracion);
+  };
+
+  manejarToken();
+  
   return (
     <>
       <Header />
