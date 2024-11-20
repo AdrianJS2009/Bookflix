@@ -160,3 +160,8 @@ div.cantidad button.menosCantidad {
   color: #777;
   margin-top: 15px;
 }
+
+p.sin-reviews {
+  justify-self: center;
+  margin: 20px 0;
+}
