@@ -28,9 +28,7 @@ const ProductoDetalle = () => {
         const response = await fetch(
           `https://localhost:7182/api/Libro/Detalle/${productoId}`
         );
-        if (!response.ok) {
-          throw new Error("Error al cargar los detalles del producto");
-        }
+        if (!response.ok) throw new Error("Error al cargar los detalles del producto");
         const data = await response.json();
         setProducto(data);
         setReseñas(data.reseñas || []);
@@ -39,50 +37,66 @@ const ProductoDetalle = () => {
       }
     };
 
-    const checkPurchaseStatus = async () => {
-      if (usuario && token) {
-        try {
-          const response = await fetch(
-            `https://localhost:7182/api/Carrito/${usuario.id}/checkPurchase/${productoId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          if (response.ok) {
-            const result = await response.json();
-            setHasPurchased(result.hasPurchased);
-          }
-        } catch (error) {
-          console.error("Error al verificar el estado de compra:", error);
-        }
-      }
-    };
-
+  //   const checkPurchaseStatus = async () => {
+  //     if (usuario && token) {
+  //       try {
+  //         const response = await fetch(
+  //           `https://localhost:7182/api/Carrito/${usuario.id}/checkPurchase/${productoId}`,
+  //           { headers: { Authorization: `Bearer ${token}` } }
+  //         );
+  //         if (response.ok) {
+  //           const result = await response.json();
+  //           setHasPurchased(result.hasPurchased);
+  //         }
+  //       } catch (error) {
+  //         console.error("Error al verificar el estado de compra:", error);
+  //       }
+  //     }
+  //   };
+  //   checkPurchaseStatus();
     fetchProducto();
-    checkPurchaseStatus();
   }, [productoId, usuario, token]);
 
+  const manejarCambio = (e) => {
+    const nuevoValor = parseInt(e.target.value, 10);
+    
+    if (!isNaN(nuevoValor) && nuevoValor >= 1) {
+      if (nuevoValor > producto.stock) {
+        setCantidad(producto.stock);
+      } else {
+        setCantidad(nuevoValor);
+      }
+    } else {
+      setCantidad(1);
+    }
+  };
+  
   const cambiarCantidad = (accion) => {
-    setCantidad((prevCantidad) =>
-      accion === "incrementar"
-        ? prevCantidad + 1
-        : Math.max(prevCantidad - 1, 1)
-    );
+    setCantidad((prevCantidad) => {
+      if (accion === "incrementar") {
+        if (prevCantidad < producto.stock) {
+          return prevCantidad + 1;
+        } else {
+          return prevCantidad;
+        }
+      } else if (accion === "decrementar") {
+        if (prevCantidad > 1) {
+          return prevCantidad - 1;
+        }
+      }
+      return prevCantidad;
+    });
   };
 
   const handleAddToCart = () => {
-    if (producto && cantidad > 0) {
-      dispatch(
-        agregarAlCarritoLocal({
-          productoId: producto.idLibro,
-          cantidad,
-          nombre: producto.nombre,
-          precio: producto.precio,
-          urlImagen: producto.urlImagen,
-        })
-      );
+    if (producto && (cantidad > 0 && cantidad <= producto.sto1)) {
+      dispatch(agregarAlCarritoLocal({
+        productoId: producto.idLibro,
+        cantidad,
+        nombre: producto.nombre,
+        precio: producto.precio,
+        urlImagen: producto.urlImagen,
+      }));
       alert("Producto añadido al carrito");
     }
   };
@@ -121,9 +135,7 @@ const ProductoDetalle = () => {
 
   const handleCrearReseña = async () => {
     if (!usuario || !hasPurchased) {
-      alert(
-        "Debes haber iniciado sesión y comprado el producto para dejar una reseña."
-      );
+      alert("Debes haber iniciado sesión y comprado el producto para dejar una reseña.");
       navigate("/login");
       return;
     }
@@ -147,15 +159,10 @@ const ProductoDetalle = () => {
           }
         );
 
-        if (!response.ok) {
-          throw new Error("Error al enviar la reseña");
-        }
+        if (!response.ok) throw new Error("Error al enviar la reseña");
 
         const data = await response.json();
-        setReseñas([
-          { texto: textoReseña, categoria: data.categoria },
-          ...reseñas,
-        ]);
+        setReseñas([{ texto: textoReseña, categoria: data.categoria }, ...reseñas]);
         setTextoReseña("");
       } catch (error) {
         console.error("Error al crear la reseña:", error);
@@ -165,13 +172,8 @@ const ProductoDetalle = () => {
     }
   };
 
-  if (error) {
-    return <p>{error}</p>;
-  }
-
-  if (!producto) {
-    return <p>Cargando...</p>;
-  }
+  if (error) return <p>{error}</p>;
+  if (!producto) return <p>Cargando...</p>;
 
   return (
     <>
@@ -191,62 +193,35 @@ const ProductoDetalle = () => {
           <div className="info texto-mediano">
             <h1 className="texto-grande">{producto.nombre || "Sin nombre"}</h1>
             <p className="autor">Autor: {producto.autor || "Desconocido"}</p>
-            <p className="descripcion">
-              Descripción: <br /> {producto.descripcion || "No disponible"}
-            </p>
+            <p className="descripcion">Descripción: <br /> {producto.descripcion || "No disponible"}</p>
             <p className="generoLibro">
               Género:{" "}
               <Link to={`/catalogo?genero=${producto.genero}`}>
-                <span className="genero">
-                  {producto.genero || "Sin género"}
-                </span>
+                <span className="genero">{producto.genero || "Sin género"}</span>
               </Link>
             </p>
             <p className="isbn texto-pequeño">ISBN: {producto.isbn || "N/A"}</p>
           </div>
           <div className="detalles texto-mediano">
-            <p className="precio">
-              Precio: {(producto.precio / 100).toFixed(2)} €
-            </p>
+            <p className="precio">Precio: {(producto.precio / 100).toFixed(2)} €</p>
             <p className="stock">
               {producto.stock > 0 ? (
-                <span>
-                  <span className="existencias">⬤</span> En stock <br />
-                  <span>Actualmente quedan {producto.stock}</span>
-                </span>
+                <span><span className="existencias">⬤</span> En stock <br />
+                  <span>Actualmente quedan {producto.stock}</span></span>
               ) : (
-                <span>
-                  <span className="agotado">⬤</span> Agotado
-                </span>
+                <span><span className="agotado">⬤</span> Agotado</span>
               )}
             </p>
             <div className="cantidad">
-              <button
-                className="masCantidad"
-                onClick={() => cambiarCantidad("decrementar")}
-              >
-                -
-              </button>
-              <input type="number" value={cantidad} readOnly />
-              <button
-                className="menosCantidad"
-                onClick={() => cambiarCantidad("incrementar")}
-              >
-                +
-              </button>
-            </div>
-            {/* <Button
-              label="Comprar"
-              styleType="btnComprar"
-              onClick={registrarCompra}
-              data-id={producto.idLibro}
-            /> */}
-            <Button
-              label="Añadir a la cesta"
-              styleType="btnAñadir"
-              onClick={handleAddToCart}
-              data-id={producto.idLibro}
+            <button className="masCantidad" onClick={() => cambiarCantidad("decrementar")}>-</button>
+            <input 
+              type="text" 
+              value={cantidad} 
+              onChange={manejarCambio} // Permite cambiar la cantidad escribiendo
             />
+            <button className="menosCantidad" onClick={() => cambiarCantidad("incrementar")}>+</button>
+            </div>
+            <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={handleAddToCart} data-id={producto.idLibro} />
           </div>
         </div>
         <hr />
@@ -259,22 +234,16 @@ const ProductoDetalle = () => {
               onChange={(e) => setTextoReseña(e.target.value)}
               placeholder="Escribe tu reseña aquí..."
             />
-            <Button
-              label="Crear"
-              styleType="btnCrearReseña"
-              onClick={handleCrearReseña}
-            />
+            <Button label="Crear" styleType="btnCrearReseña" onClick={handleCrearReseña} />
           </div>
           {reseñas.length > 0 ? (
             reseñas.map((reseña, index) => (
               <div key={index} className="reseña">
-                <p>
-                  Texto: {reseña.texto} - Categoría: {reseña.categoria}
-                </p>
+                <p>Texto: {reseña.texto} - Categoría: {reseña.categoria}</p>
               </div>
             ))
           ) : (
-            <p>No hay reseñas para este producto.</p>
+            <p className="sin-reviews">No hay reseñas para este producto.</p>
           )}
         </div>
       </div>
