@@ -110,48 +110,50 @@ namespace Bookflix_Server.Controllers
         }
 
         // Verificar estado de compra
-        [HttpGet("{idUsuario}/verificar-compra/{idProducto}")]
-        [Authorize]
-        public async Task<IActionResult> VerificarEstadoDeCompra(int idUsuario, int idProducto)
-        {
-            var haComprado = await _carritoRepository.UsuarioHaCompradoProductoAsync(idUsuario, idProducto);
-            return Ok(new { haComprado });
-        }
+        //        [HttpGet("{idUsuario}/verificar-compra/{idProducto}")]
+        //        [Authorize]
+        //        public async Task<IActionResult> VerificarEstadoDeCompra(int idUsuario, int idProducto)
+        //        {
+        //            var haComprado = await _carritoRepository.UsuarioHaCompradoProductoAsync(idUsuario, idProducto);
+        //            return Ok(new { haComprado });
+        //        }
 
-        // Confirmar compra
-        [HttpPost("{idUsuario}/confirmar-compra")]
-        [Authorize]
-        public async Task<IActionResult> ConfirmarCompra(int idUsuario)
-        {
-            var carritoUsuario = await _carritoRepository.ObtenerCarritoPorUsuarioIdAsync(idUsuario);
+        //        // Confirmar compra
+        //        [HttpPost("{idUsuario}/confirmar-compra")]
+        //        [Authorize]
+        //        public async Task<IActionResult> ConfirmarCompra(int idUsuario)
+        //        {
+        //            var carritoUsuario = await _carritoRepository.ObtenerCarritoPorUsuarioIdAsync(idUsuario);
 
-            if (carritoUsuario == null || !carritoUsuario.Items.Any())
-            {
-                return BadRequest(new { error = "No hay productos en el carrito para realizar la compra." });
-            }
+        //            if (carritoUsuario == null || !carritoUsuario.Items.Any())
+        //            {
+        //                return BadRequest(new { error = "No hay productos en el carrito para realizar la compra." });
+        //            }
 
-            foreach (var productoCarrito in carritoUsuario.Items)
-            {
-                productoCarrito.Comprado = true;
-            }
+        //            foreach (var productoCarrito in carritoUsuario.Items)
+        //            {
+        //                productoCarrito.Comprado = true;
+        //            }
 
-            foreach (var productoCarrito in carritoUsuario.Items)
-            {
-                var producto = await _productoRepository.ObtenerPorIdAsync(productoCarrito.LibroId);
-                if (producto != null)
-                {
-                    if (producto.Stock < productoCarrito.Cantidad)
-                    {
-                        return BadRequest(new { error = $"Stock insuficiente para el producto con ID {productoCarrito.LibroId}." });
-                    }
+        //            foreach (var productoCarrito in carritoUsuario.Items)
+        //            {
+        //                var producto = await _productoRepository.ObtenerPorIdAsync(productoCarrito.LibroId);
+        //                if (producto != null)
+        //                {
+        //                    if (producto.Stock < productoCarrito.Cantidad)
+        //                    {
+        //                        return BadRequest(new { error = $"Stock insuficiente para el producto con ID {productoCarrito.LibroId}." });
+        //                    }
 
-                    producto.Stock -= productoCarrito.Cantidad;
-                }
-            }
+        //                    producto.Stock -= productoCarrito.Cantidad;
+        //                }
+        //            }
 
-            await _carritoRepository.GuardarCambiosAsync();
+        //            await _carritoRepository.GuardarCambiosAsync();
 
-            return Ok(new { success = true, message = "La compra se ha confirmado exitosamente y el carrito ha sido actualizado." });
-        }
+        //            return Ok(new { success = true, message = "La compra se ha confirmado exitosamente y el carrito ha sido actualizado." });
+        //        }
+        //    }
+        //}
     }
 }
