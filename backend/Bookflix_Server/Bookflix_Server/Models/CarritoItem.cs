@@ -1,10 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Bookflix_Server.Models;
 
 public class CarritoItem
 {
     [Key]
     public int Id { get; set; }
+
+    [Required]
+    public int CarritoId { get; set; }
+
+    [ForeignKey("CarritoId")]
+    public Carrito Carrito { get; set; }
 
     [Required]
     public int LibroId { get; set; }
@@ -17,7 +24,7 @@ public class CarritoItem
     public int Cantidad { get; set; }
 
     [NotMapped]
-    public int Subtotal => Libro?.Precio * Cantidad ?? 0;
+    public int Subtotal => (Libro?.Precio ?? 0) * Cantidad;
 
     public bool Comprado { get; set; }
 }

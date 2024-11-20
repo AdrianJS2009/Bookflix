@@ -1,9 +1,7 @@
 ﻿using Bookflix_Server.DTOs;
-using Bookflix_Server.Models;
 using Bookflix_Server.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace Bookflix_Server.Controllers
 {
@@ -21,13 +19,30 @@ namespace Bookflix_Server.Controllers
         }
 
         // Obtener carrito
-        [HttpGet("{idUsuario}")]
+        [HttpGet("{idUsuario}/ListarCarrito")]
         public async Task<IActionResult> ObtenerCarrito(int idUsuario)
         {
-            var carritoUsuario = await _carritoRepository.ObtenerCarritoPorUsuarioIdAsync(idUsuario);
-            return carritoUsuario == null
-                ? NotFound(new { error = "No existe un carrito asociado al usuario." })
-                : Ok(carritoUsuario);
+            var carrito = await _carritoRepository.ObtenerCarritoPorUsuarioIdAsync(idUsuario);
+            if (carrito == null)
+            {
+                return NotFound(new { error = "No existe un carrito asociado al usuario." });
+            }
+
+            var carritoDto = new CarritoDTO
+            {
+                CarritoId = carrito.CarritoId,
+                UserId = carrito.UserId,
+                Items = carrito.Items.Select(item => new CarritoItemDTO
+                {
+                    LibroId = item.LibroId,
+                    NombreLibro = item.Libro?.Nombre,
+                    Cantidad = item.Cantidad,
+                    Subtotal = item.Subtotal
+                }).ToList(),
+                Total = carrito.Total
+            };
+
+            return Ok(carritoDto);
         }
 
         // Agregar producto al carrito
@@ -46,8 +61,12 @@ namespace Bookflix_Server.Controllers
             }
 
             var carritoUsuario = await _carritoRepository.ObtenerOCrearCarritoPorUsuarioIdAsync(idUsuario);
-            await _carritoRepository.AgregarProductoAlCarritoAsync(carritoUsuario, itemDto.LibroId, itemDto.Cantidad);
+            if (carritoUsuario == null)
+            {
+                return BadRequest(new { error = "Error al crear o recuperar el carrito del usuario." });
+            }
 
+            await _carritoRepository.AgregarProductoAlCarritoAsync(carritoUsuario, itemDto.LibroId, itemDto.Cantidad);
             await _carritoRepository.GuardarCambiosAsync();
 
             return Ok(new { success = true, message = "El producto se ha añadido al carrito exitosamente." });
