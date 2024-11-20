@@ -12,7 +12,7 @@ namespace Bookflix_Server.Controllers
     public class CarritoController : ControllerBase
     {
         private readonly ICarritoRepository _carritoRepository;
-        private readonly IProductoRepository _productoRepository; // Usando IProductoRepository
+        private readonly IProductoRepository _productoRepository;
 
         public CarritoController(ICarritoRepository carritoRepository, IProductoRepository productoRepository)
         {
@@ -20,133 +20,119 @@ namespace Bookflix_Server.Controllers
             _productoRepository = productoRepository;
         }
 
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> GetCarrito(int userId)
+        // Obtener carrito
+        [HttpGet("{idUsuario}")]
+        public async Task<IActionResult> ObtenerCarrito(int idUsuario)
         {
-            var carrito = await _carritoRepository.GetCarritoByUserIdAsync(userId);
-            return carrito == null ? NotFound() : Ok(carrito);
+            var carritoUsuario = await _carritoRepository.ObtenerCarritoPorUsuarioIdAsync(idUsuario);
+            return carritoUsuario == null
+                ? NotFound(new { error = "No existe un carrito asociado al usuario." })
+                : Ok(carritoUsuario);
         }
 
-        [HttpPost("{userId}/agregar")]
-        public async Task<IActionResult> AgregarItem(int userId, [FromBody] CarritoItemAgregarDto itemDto)
+        // Agregar producto al carrito
+        [HttpPost("{idUsuario}/agregar")]
+        public async Task<IActionResult> AgregarProductoAlCarrito(int idUsuario, [FromBody] CarritoItemAgregarDto itemDto)
         {
-            // Verificar si el producto existe y chequear stock
-            var producto = await _productoRepository.GetByIdAsync(itemDto.LibroId);
+            var producto = await _productoRepository.ObtenerPorIdAsync(itemDto.LibroId);
             if (producto == null)
             {
-                return NotFound(new { error = "Producto no encontrado" });
+                return NotFound(new { error = "El producto especificado no se encuentra disponible." });
             }
 
             if (producto.Stock < itemDto.Cantidad)
             {
-                return BadRequest(new { error = "Stock insuficiente", stockDisponible = producto.Stock });
+                return BadRequest(new { error = "No hay suficiente stock para completar la acción.", stockDisponible = producto.Stock });
             }
 
-            // Añadir el artículo al carrito si el stock es suficiente
-            var carrito = await _carritoRepository.GetOrCreateCarritoByUserIdAsync(userId);
-            await _carritoRepository.AgregarItemAlCarritoAsync(carrito, itemDto.LibroId, itemDto.Cantidad);
+            var carritoUsuario = await _carritoRepository.ObtenerOCrearCarritoPorUsuarioIdAsync(idUsuario);
+            await _carritoRepository.AgregarProductoAlCarritoAsync(carritoUsuario, itemDto.LibroId, itemDto.Cantidad);
 
-            // Guardar cambios
-            await _carritoRepository.SaveChangesAsync();
+            await _carritoRepository.GuardarCambiosAsync();
 
-            return Ok(new { success = true, message = "Producto añadido al carrito correctamente" });
+            return Ok(new { success = true, message = "El producto se ha añadido al carrito exitosamente." });
         }
 
-        [HttpDelete("{userId}/eliminar/{libroId}")]
-        public async Task<IActionResult> EliminarItem(int userId, int libroId)
+        // Eliminar producto del carrito
+        [HttpDelete("{idUsuario}/eliminar/{idProducto}")]
+        public async Task<IActionResult> EliminarProductoDelCarrito(int idUsuario, int idProducto)
         {
-            try
+            var carritoUsuario = await _carritoRepository.ObtenerCarritoPorUsuarioIdAsync(idUsuario);
+            if (carritoUsuario == null)
             {
-                // Log the inputs to confirm they're correct
-                Console.WriteLine($"Attempting to delete item with libroId: {libroId} for userId: {userId}");
-
-                var carrito = await _carritoRepository.GetCarritoByUserIdAsync(userId);
-                if (carrito == null)
-                {
-                    return NotFound(new { error = "Carrito no encontrado" });
-                }
-
-                bool itemEliminado = await _carritoRepository.EliminarItemDelCarritoAsync(carrito, libroId);
-                if (!itemEliminado)
-                {
-                    return NotFound(new { error = "El artículo no está en el carrito" });
-                }
-
-                await _carritoRepository.SaveChangesAsync();
-
-                return Ok(new { success = true, message = "Artículo eliminado del carrito correctamente" });
+                return NotFound(new { error = "No existe un carrito asociado al usuario." });
             }
-            catch (Exception ex)
+
+            bool productoEliminado = await _carritoRepository.EliminarProductoDelCarritoAsync(carritoUsuario, idProducto);
+            if (!productoEliminado)
             {
-                // Log the exception if something goes wrong
-                Console.WriteLine($"Error: {ex.Message}");
-                return StatusCode(500, new { error = "Error interno del servidor" });
+                return NotFound(new { error = "El producto no se encuentra en el carrito." });
             }
+
+            await _carritoRepository.GuardarCambiosAsync();
+
+            return Ok(new { success = true, message = "El producto se ha eliminado del carrito exitosamente." });
         }
 
-
-        [HttpDelete("{userId}/limpiar")]
-        public async Task<IActionResult> LimpiarCarrito(int userId)
+        // Vaciar carrito
+        [HttpDelete("{idUsuario}/vaciar")]
+        public async Task<IActionResult> VaciarCarrito(int idUsuario)
         {
-            var carrito = await _carritoRepository.GetCarritoByUserIdAsync(userId);
-            if (carrito == null)
+            var carritoUsuario = await _carritoRepository.ObtenerCarritoPorUsuarioIdAsync(idUsuario);
+            if (carritoUsuario == null)
             {
-                return NotFound(new { error = "Carrito no encontrado" });
+                return NotFound(new { error = "No existe un carrito asociado al usuario." });
             }
 
-            await _carritoRepository.LimpiarCarritoAsync(carrito);
-            await _carritoRepository.SaveChangesAsync();
+            await _carritoRepository.VaciarCarritoAsync(carritoUsuario);
+            await _carritoRepository.GuardarCambiosAsync();
 
-            return Ok(new { success = true, message = "Carrito limpiado correctamente" });
+            return Ok(new { success = true, message = "El carrito se ha vaciado correctamente." });
         }
 
-        [HttpGet("{userId}/checkPurchase/{productoId}")]
+        // Verificar estado de compra
+        [HttpGet("{idUsuario}/verificar-compra/{idProducto}")]
         [Authorize]
-        public async Task<IActionResult> CheckPurchaseStatus(int userId, int productoId)
+        public async Task<IActionResult> VerificarEstadoDeCompra(int idUsuario, int idProducto)
         {
-            // comprobamos si está comprao
-            var hasPurchased = await _carritoRepository.HasUserPurchasedProductAsync(userId, productoId);
-
-            return Ok(new { hasPurchased });
+            var haComprado = await _carritoRepository.UsuarioHaCompradoProductoAsync(idUsuario, idProducto);
+            return Ok(new { haComprado });
         }
 
-
-        [HttpPost("{userId}/comprar")]
+        // Confirmar compra
+        [HttpPost("{idUsuario}/confirmar-compra")]
         [Authorize]
-        public async Task<IActionResult> RegistrarCompra(int userId)
+        public async Task<IActionResult> ConfirmarCompra(int idUsuario)
         {
-            var carrito = await _carritoRepository.GetCarritoByUserIdAsync(userId);
+            var carritoUsuario = await _carritoRepository.ObtenerCarritoPorUsuarioIdAsync(idUsuario);
 
-            if (carrito == null || !carrito.Items.Any())
+            if (carritoUsuario == null || !carritoUsuario.Items.Any())
             {
-                return BadRequest(new { error = "No hay artículos en el carrito para comprar." });
+                return BadRequest(new { error = "No hay productos en el carrito para realizar la compra." });
             }
 
-            foreach (var item in carrito.Items)
+            foreach (var productoCarrito in carritoUsuario.Items)
             {
-                item.Comprado = true;
+                productoCarrito.Comprado = true;
             }
 
-            foreach (var item in carrito.Items)
+            foreach (var productoCarrito in carritoUsuario.Items)
             {
-                var producto = await _productoRepository.GetByIdAsync(item.LibroId);
+                var producto = await _productoRepository.ObtenerPorIdAsync(productoCarrito.LibroId);
                 if (producto != null)
                 {
-                    if (producto.Stock < item.Cantidad)
+                    if (producto.Stock < productoCarrito.Cantidad)
                     {
-                        return BadRequest(new { error = $"Stock insuficiente para el producto con ID {item.LibroId}" });
+                        return BadRequest(new { error = $"Stock insuficiente para el producto con ID {productoCarrito.LibroId}." });
                     }
 
-                    producto.Stock -= item.Cantidad;
+                    producto.Stock -= productoCarrito.Cantidad;
                 }
             }
 
-            await _carritoRepository.SaveChangesAsync();
-            return Ok(new { success = true, message = "Compra registrada correctamente." });
+            await _carritoRepository.GuardarCambiosAsync();
+
+            return Ok(new { success = true, message = "La compra se ha confirmado exitosamente y el carrito ha sido actualizado." });
         }
-
-
-
-
     }
 }

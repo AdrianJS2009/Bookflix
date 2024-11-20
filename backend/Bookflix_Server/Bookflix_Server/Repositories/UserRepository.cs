@@ -12,47 +12,54 @@ namespace Bookflix_Server.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<User> GetByIdAsync(int id)
+
+        public async Task<User> ObtenerPorIdAsync(int id)
         {
-            // Busca un usuario por su ID
             return await _context.Users.FirstOrDefaultAsync(u => u.IdUser == id);
         }
 
-        public async Task<User> GetByEmailAsync(string email)
+
+        public async Task<User> ObtenerPorCorreoAsync(string correo)
         {
-            // Busca un usuario por su correo electrónico
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == correo);
         }
 
-        public async Task AddUserAsync(User user)
+        public async Task AgregarUsuarioAsync(User usuario)
         {
-            // Agrega un nuevo usuario al contexto
-            await _context.Users.AddAsync(user);
+            if (usuario == null)
+                throw new ArgumentNullException(nameof(usuario));
+
+            await _context.Users.AddAsync(usuario);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateUserAsync(User user)
+
+        public async Task ActualizarUsuarioAsync(User usuario)
         {
-            // Actualiza los datos de un usuario existente
-            _context.Users.Update(user);
+            if (usuario == null)
+                throw new ArgumentNullException(nameof(usuario));
+
+            _context.Users.Update(usuario);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteUserAsync(int id)
+
+        public async Task EliminarUsuarioAsync(int id)
         {
-            // Elimina un usuario por su ID
-            var user = await GetByIdAsync(id);
-            if (user != null)
-            {
-                _context.Users.Remove(user);
-                await _context.SaveChangesAsync();
-            }
+            var usuario = await ObtenerPorIdAsync(id);
+            if (usuario == null)
+                throw new InvalidOperationException("El usuario especificado no existe.");
+
+            _context.Users.Remove(usuario);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> UserExistsAsync(string email)
+        public async Task<bool> ExisteUsuarioPorCorreoAsync(string correo)
         {
-            // Verifica si un usuario con el correo especificado ya existe
-            return await _context.Users.AnyAsync(u => u.Email == email);
+            if (string.IsNullOrEmpty(correo))
+                throw new ArgumentException("El correo no puede ser nulo o vacío.", nameof(correo));
+
+            return await _context.Users.AnyAsync(u => u.Email == correo);
         }
     }
 }

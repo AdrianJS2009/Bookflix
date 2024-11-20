@@ -5,13 +5,25 @@ namespace Bookflix_Server.Repositories
 {
     public interface ICarritoRepository
     {
-        Task<Carrito> GetCarritoByUserIdAsync(int userId);
-        Task<Carrito> GetOrCreateCarritoByUserIdAsync(int userId);
-        Task AgregarItemAlCarritoAsync(Carrito carrito, int libroId, int cantidad);
-        Task<bool> EliminarItemDelCarritoAsync(Carrito carrito, int libroId);
-        Task LimpiarCarritoAsync(Carrito carrito);
-        Task SaveChangesAsync();
+        // Obtiene el carrito de un usuario por su ID
+        Task<Carrito> ObtenerCarritoPorUsuarioIdAsync(int idUsuario);
 
-        Task<bool> HasUserPurchasedProductAsync(int userId, int productoId);
+        // Obtiene o crea un carrito para un usuario
+        Task<Carrito> ObtenerOCrearCarritoPorUsuarioIdAsync(int idUsuario);
+
+        // Agrega un producto al carrito
+        Task AgregarProductoAlCarritoAsync(Carrito carrito, int idProducto, int cantidad);
+
+        // Elimina un producto del carrito
+        Task<bool> EliminarProductoDelCarritoAsync(Carrito carrito, int idProducto);
+
+        // Vacía el carrito
+        Task VaciarCarritoAsync(Carrito carrito);
+
+        // Guarda los cambios en el contexto
+        Task GuardarCambiosAsync();
+
+        // Verifica si un usuario ha comprado un producto
+        Task<bool> UsuarioHaCompradoProductoAsync(int idUsuario, int idProducto);
     }
 }

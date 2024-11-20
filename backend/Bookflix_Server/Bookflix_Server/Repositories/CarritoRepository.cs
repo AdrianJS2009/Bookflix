@@ -11,70 +11,85 @@ namespace Bookflix_Server.Repositories
 
         public CarritoRepository(MyDbContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<Carrito> GetCarritoByUserIdAsync(int userId)
+        // Obtiene el carrito de un usuario por su ID
+        public async Task<Carrito> ObtenerCarritoPorUsuarioIdAsync(int idUsuario)
         {
             return await _context.Carritos
                 .Include(c => c.Items)
                 .ThenInclude(item => item.Libro)
-                .FirstOrDefaultAsync(c => c.UserId == userId);
+                .FirstOrDefaultAsync(c => c.UserId == idUsuario);
         }
 
-
-        public async Task<Carrito> GetOrCreateCarritoByUserIdAsync(int userId)
+        // Obtiene o crea un carrito para un usuario
+        public async Task<Carrito> ObtenerOCrearCarritoPorUsuarioIdAsync(int idUsuario)
         {
-            var carrito = await GetCarritoByUserIdAsync(userId);
+            var carrito = await ObtenerCarritoPorUsuarioIdAsync(idUsuario);
             if (carrito == null)
             {
-                carrito = new Carrito { UserId = userId };
+                carrito = new Carrito { UserId = idUsuario };
                 _context.Carritos.Add(carrito);
-                await _context.SaveChangesAsync();
+                await GuardarCambiosAsync();
             }
             return carrito;
         }
 
-        public async Task AgregarItemAlCarritoAsync(Carrito carrito, int libroId, int cantidad)
+        // Agrega un producto al carrito
+        public async Task AgregarProductoAlCarritoAsync(Carrito carrito, int idProducto, int cantidad)
         {
-            var item = carrito.Items.FirstOrDefault(i => i.LibroId == libroId);
+            if (carrito == null || cantidad <= 0)
+                throw new ArgumentException("El carrito es nulo o la cantidad no es válida.");
+
+            var item = carrito.Items.FirstOrDefault(i => i.LibroId == idProducto);
             if (item == null)
             {
-                carrito.Items.Add(new CarritoItem { LibroId = libroId, Cantidad = cantidad });
+                carrito.Items.Add(new CarritoItem { LibroId = idProducto, Cantidad = cantidad });
             }
             else
             {
                 item.Cantidad += cantidad;
             }
-            await SaveChangesAsync();
+            await GuardarCambiosAsync();
         }
 
-        public async Task<bool> EliminarItemDelCarritoAsync(Carrito carrito, int libroId)
+        // Elimina un producto del carrito
+        public async Task<bool> EliminarProductoDelCarritoAsync(Carrito carrito, int idProducto)
         {
-            var item = carrito.Items.FirstOrDefault(i => i.LibroId == libroId);
+            if (carrito == null)
+                throw new ArgumentNullException(nameof(carrito));
+
+            var item = carrito.Items.FirstOrDefault(i => i.LibroId == idProducto);
             if (item == null) return false;
 
             carrito.Items.Remove(item);
-            await SaveChangesAsync();
+            await GuardarCambiosAsync();
             return true;
         }
 
-        public async Task LimpiarCarritoAsync(Carrito carrito)
+        // Vacía el carrito
+        public async Task VaciarCarritoAsync(Carrito carrito)
         {
+            if (carrito == null)
+                throw new ArgumentNullException(nameof(carrito));
+
             carrito.Items.Clear();
-            await SaveChangesAsync();
+            await GuardarCambiosAsync();
         }
 
-        public async Task SaveChangesAsync()
+        // Guarda los cambios en el contexto
+        public async Task GuardarCambiosAsync()
         {
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> HasUserPurchasedProductAsync(int userId, int productoId)
+        // Verifica si un usuario ha comprado un producto
+        public async Task<bool> UsuarioHaCompradoProductoAsync(int idUsuario, int idProducto)
         {
             return await _context.Carritos
                 .Include(c => c.Items)
-                .AnyAsync(c => c.UserId == userId && c.Items.Any(item => item.LibroId == productoId && item.Comprado));
+                .AnyAsync(c => c.UserId == idUsuario && c.Items.Any(item => item.LibroId == idProducto && item.Comprado));
         }
     }
 }

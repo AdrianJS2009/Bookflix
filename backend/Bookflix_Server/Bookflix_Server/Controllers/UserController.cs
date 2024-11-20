@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-
 namespace Bookflix_Server.Controllers
 {
     [ApiController]
@@ -18,64 +17,73 @@ namespace Bookflix_Server.Controllers
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        [HttpGet("ListarUsuarios")]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        // Listar todos los usuarios
+        [HttpGet("listar")]
+        public async Task<ActionResult<IEnumerable<User>>> ListarUsuarios()
         {
-            return Ok(await _context.Users.ToListAsync());
+            var usuarios = await _context.Users.ToListAsync();
+            return Ok(usuarios);
         }
 
-        [HttpGet("Detalle/{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        // Obtener un usuario por ID
+        [HttpGet("detalle/{idUsuario}")]
+        public async Task<ActionResult<User>> ObtenerUsuarioPorId(int idUsuario)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+            var usuario = await _context.Users.FindAsync(idUsuario);
+            if (usuario == null)
             {
-                return NotFound("Usuario no encontrado.");
+                return NotFound(new { error = "El usuario especificado no fue encontrado." });
             }
 
-            return Ok(user);
+            return Ok(usuario);
         }
 
-        [HttpPost("Crear")]
-        public async Task<ActionResult<User>> PostUser(UserDTO userDto)
+        // Crear un nuevo usuario
+        [HttpPost("crear")]
+        public async Task<ActionResult<User>> CrearUsuario([FromBody] UserDTO datosUsuario)
         {
             if (!ModelState.IsValid)
-                return BadRequest("Datos del usuario no válidos.");
+                return BadRequest(new { error = "Los datos proporcionados para el usuario no son válidos." });
 
-            var user = new User
+            var usuario = new User
             {
-                Nombre = userDto.Nombre,
-                Apellidos = userDto.Apellidos,
-                Email = userDto.Email,
-                Direccion = userDto.Direccion,
-                Rol = userDto.Rol,
-                Password = userDto.Password
+                Nombre = datosUsuario.Nombre,
+                Apellidos = datosUsuario.Apellidos,
+                Email = datosUsuario.Email,
+                Direccion = datosUsuario.Direccion,
+                Rol = datosUsuario.Rol,
+                Password = datosUsuario.Password
             };
 
-            _context.Users.Add(user);
+            _context.Users.Add(usuario);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetUser), new { id = user.IdUser }, user);
+            return CreatedAtAction(nameof(ObtenerUsuarioPorId), new { idUsuario = usuario.IdUser }, usuario);
         }
 
-        [HttpPut("Actualizar/{id}")]
-        public async Task<IActionResult> PutUser(int id, UserDTO userDto)
+        // Actualizar un usuario existente
+        [HttpPut("actualizar/{idUsuario}")]
+        public async Task<IActionResult> ActualizarUsuario(int idUsuario, [FromBody] UserDTO datosUsuario)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-                return NotFound("Usuario no encontrado.");
+            var usuario = await _context.Users.FindAsync(idUsuario);
+            if (usuario == null)
+            {
+                return NotFound(new { error = "El usuario especificado no fue encontrado." });
+            }
 
             if (!ModelState.IsValid)
-                return BadRequest("Datos de usuario no válidos.");
+            {
+                return BadRequest(new { error = "Los datos proporcionados para el usuario no son válidos." });
+            }
 
-            user.Nombre = userDto.Nombre;
-            user.Apellidos = userDto.Apellidos;
-            user.Email = userDto.Email;
-            user.Direccion = userDto.Direccion;
-            user.Rol = userDto.Rol;
-            user.Password = userDto.Password;
+            usuario.Nombre = datosUsuario.Nombre;
+            usuario.Apellidos = datosUsuario.Apellidos;
+            usuario.Email = datosUsuario.Email;
+            usuario.Direccion = datosUsuario.Direccion;
+            usuario.Rol = datosUsuario.Rol;
+            usuario.Password = datosUsuario.Password;
 
-            _context.Entry(user).State = EntityState.Modified;
+            _context.Entry(usuario).State = EntityState.Modified;
 
             try
             {
@@ -83,85 +91,101 @@ namespace Bookflix_Server.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
-                    return NotFound("Usuario no encontrado.");
+                if (!UsuarioExiste(idUsuario))
+                {
+                    return NotFound(new { error = "El usuario especificado no fue encontrado." });
+                }
                 else
+                {
                     throw;
+                }
             }
 
             return NoContent();
         }
 
-        [HttpDelete("Eliminar/{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        // Eliminar un usuario
+        [HttpDelete("eliminar/{idUsuario}")]
+        public async Task<IActionResult> EliminarUsuario(int idUsuario)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-                return NotFound("Usuario no encontrado.");
+            var usuario = await _context.Users.FindAsync(idUsuario);
+            if (usuario == null)
+            {
+                return NotFound(new { error = "El usuario especificado no fue encontrado." });
+            }
 
-            _context.Users.Remove(user);
+            _context.Users.Remove(usuario);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new { message = "El usuario ha sido eliminado exitosamente." });
         }
 
         // Publicar una reseña
-        [HttpPost("AgregarReseña")]
-        public async Task<IActionResult> AgregarReseña([FromBody] ReseñaDTO reseñaDto)
+        [HttpPost("publicar-resena")]
+        public async Task<IActionResult> PublicarResena([FromBody] ReseñaDTO datosResena)
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var idUsuario = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
-            var user = await _context.Users.Include(u => u.Reseñas).FirstOrDefaultAsync(u => u.IdUser == userId);
-            if (user == null)
-                return Unauthorized("Usuario no autenticado.");
-
-            var producto = await _context.Libros.FindAsync(reseñaDto.ProductoId);
-            if (producto == null)
-                return NotFound("Producto no encontrado.");
-
-            var existingReseña = user.Reseñas.FirstOrDefault(r => r.ProductoId == reseñaDto.ProductoId);
-            if (existingReseña != null)
-                return BadRequest("Ya has publicado una reseña para este producto.");
-
-            var reseña = new Reseña
+            var usuario = await _context.Users.Include(u => u.Reseñas).FirstOrDefaultAsync(u => u.IdUser == idUsuario);
+            if (usuario == null)
             {
-                UsuarioId = userId,
-                Autor = user.Nombre,
-                ProductoId = reseñaDto.ProductoId,
-                Texto = reseñaDto.Texto,
-                Estrellas = reseñaDto.Estrellas,
-                FechaPublicacion = DateTime.Now
+                return Unauthorized(new { error = "Usuario no autenticado." });
+            }
+
+            var producto = await _context.Libros.FindAsync(datosResena.ProductoId);
+            if (producto == null)
+            {
+                return NotFound(new { error = "El producto especificado no fue encontrado." });
+            }
+
+            var resenaExistente = usuario.Reseñas.FirstOrDefault(r => r.ProductoId == datosResena.ProductoId);
+            if (resenaExistente != null)
+            {
+                return BadRequest(new { error = "Ya has publicado una reseña para este producto." });
+            }
+
+            var resena = new Reseña
+            {
+                UsuarioId = idUsuario,
+                Autor = usuario.Nombre,
+                ProductoId = datosResena.ProductoId,
+                Texto = datosResena.Texto,
+                Estrellas = datosResena.Estrellas,
+                FechaPublicacion = DateTime.UtcNow
             };
 
-            _context.Reseñas.Add(reseña);
+            _context.Reseñas.Add(resena);
             await _context.SaveChangesAsync();
 
-            return Ok("Reseña publicada con éxito.");
+            return Ok(new { message = "La reseña ha sido publicada exitosamente." });
         }
 
-        // Actualizar una reseña
-        [HttpPut("ActualizarReseña/{id}")]
-        public async Task<IActionResult> ActualizarReseña(int id, [FromBody] ReseñaDTO reseñaDto)
+        // Modificar una reseña existente
+        [HttpPut("modificar-resena/{idResena}")]
+        public async Task<IActionResult> ModificarResena(int idResena, [FromBody] ReseñaDTO datosResena)
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var idUsuario = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
-            var reseña = await _context.Reseñas.FirstOrDefaultAsync(r => r.IdReseña == id && r.UsuarioId == userId);
-            if (reseña == null)
-                return NotFound("Reseña no encontrada o el usuario no tiene permiso para editarla.");
+            var resena = await _context.Reseñas.FirstOrDefaultAsync(r => r.IdReseña == idResena && r.UsuarioId == idUsuario);
+            if (resena == null)
+            {
+                return NotFound(new { error = "La reseña no existe o el usuario no tiene permiso para modificarla." });
+            }
 
-            reseña.Texto = reseñaDto.Texto;
-            reseña.Estrellas = reseñaDto.Estrellas;
-            reseña.FechaPublicacion = DateTime.Now;
+            resena.Texto = datosResena.Texto;
+            resena.Estrellas = datosResena.Estrellas;
+            resena.FechaPublicacion = DateTime.UtcNow;
 
-            _context.Entry(reseña).State = EntityState.Modified;
+            _context.Entry(resena).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
-            return Ok("Reseña actualizada con éxito.");
+            return Ok(new { message = "La reseña ha sido modificada exitosamente." });
         }
 
-        private bool UserExists(int id)
+        // Verificar existencia de un usuario
+        private bool UsuarioExiste(int idUsuario)
         {
-            return _context.Users.Any(e => e.IdUser == id);
+            return _context.Users.Any(e => e.IdUser == idUsuario);
         }
     }
 }

@@ -5,6 +5,7 @@ using Bookflix_Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 namespace Bookflix_Server.Controllers
 {
     [ApiController]
@@ -12,29 +13,28 @@ namespace Bookflix_Server.Controllers
     public class LibroController : ControllerBase
     {
         private readonly MyDbContext _context;
-        private readonly SmartSearchService _smartSearchService;
-        private readonly IAService _iaService;
+        private readonly ServicioBusquedaInteligente _smartSearchService;
         private readonly ICarritoRepository _icarritoRepository;
         private const int TamañoPagina = 10;
 
-        public LibroController(MyDbContext context, SmartSearchService smartSearchService, IAService iaService, ICarritoRepository carritoRepository)
+        public LibroController(MyDbContext context, ServicioBusquedaInteligente smartSearchService, ICarritoRepository carritoRepository)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _smartSearchService = smartSearchService ?? throw new ArgumentNullException(nameof(smartSearchService));
-            _iaService = iaService ?? throw new ArgumentNullException(nameof(iaService));
-            _icarritoRepository = carritoRepository ?? throw new ArgumentNullException(nameof(ICarritoRepository));
+   
+            _icarritoRepository = carritoRepository ?? throw new ArgumentNullException(nameof(carritoRepository));
         }
 
-        [HttpGet("Detalle/{id}")]
-        public async Task<ActionResult> GetLibroById(int id)
+        [HttpGet("Detalle/{idLibro}")]
+        public async Task<ActionResult> ObtenerLibroPorId(int idLibro)
         {
             var libro = await _context.Libros
-                .Include(l => l.Reseñas) // Incluir las reseñas asociadas
-                .FirstOrDefaultAsync(l => l.IdLibro == id);
+                .Include(l => l.Reseñas)
+                .FirstOrDefaultAsync(l => l.IdLibro == idLibro);
 
             if (libro == null)
             {
-                return NotFound("Libro no encontrado.");
+                return NotFound("El libro especificado no fue encontrado.");
             }
 
             var libroDto = new
@@ -61,18 +61,17 @@ namespace Bookflix_Server.Controllers
             return Ok(libroDto);
         }
 
-
         [HttpGet("ListarLibros")]
-        [AllowAnonymous] // Público
-        public async Task<IActionResult> GetLibros(
-            string textoBuscado = null,
+        [AllowAnonymous]
+        public async Task<IActionResult> ListarLibros(
+            string textoBusqueda = null,
             double? precioMin = null,
             double? precioMax = null,
             string genero = null,
-            string ordenPor = null,
+            string ordenarPor = null,
             bool ascendente = true,
             int pagina = 1,
-            int tamanoPagina = TamañoPagina)
+            int tamañoPagina = TamañoPagina)
         {
             try
             {
@@ -80,9 +79,9 @@ namespace Bookflix_Server.Controllers
 
                 IQueryable<Libro> librosQuery;
 
-                if (!string.IsNullOrWhiteSpace(textoBuscado))
+                if (!string.IsNullOrWhiteSpace(textoBusqueda))
                 {
-                    var resultadoBusqueda = _smartSearchService.Search(textoBuscado);
+                    var resultadoBusqueda = _smartSearchService.Buscar(textoBusqueda);
                     librosQuery = _context.Libros.Where(l => resultadoBusqueda.Contains(l.Nombre) ||
                                                              resultadoBusqueda.Contains(l.Autor) ||
                                                              resultadoBusqueda.Contains(l.Genero) ||
@@ -101,7 +100,7 @@ namespace Bookflix_Server.Controllers
                     librosQuery = librosQuery.Where(l => l.Genero.ToLower() == genero.ToLower());
                 }
 
-                librosQuery = ordenPor switch
+                librosQuery = ordenarPor switch
                 {
                     "precio" => ascendente ? librosQuery.OrderBy(l => l.Precio) : librosQuery.OrderByDescending(l => l.Precio),
                     "nombre" => ascendente ? librosQuery.OrderBy(l => l.Nombre) : librosQuery.OrderByDescending(l => l.Nombre),
@@ -109,11 +108,11 @@ namespace Bookflix_Server.Controllers
                 };
 
                 var totalLibros = await librosQuery.CountAsync();
-                var totalPaginas = (int)Math.Ceiling(totalLibros / (double)tamanoPagina);
+                var totalPaginas = (int)Math.Ceiling(totalLibros / (double)tamañoPagina);
 
                 var libros = await librosQuery
-                    .Skip((pagina - 1) * tamanoPagina)
-                    .Take(tamanoPagina)
+                    .Skip((pagina - 1) * tamañoPagina)
+                    .Take(tamañoPagina)
                     .Select(l => new LibroDTO
                     {
                         IdLibro = l.IdLibro,
@@ -140,59 +139,9 @@ namespace Bookflix_Server.Controllers
             }
         }
 
-        [HttpPost("clasificarReseña")]
-        [Authorize] // Protegido
-        public IActionResult ClasificarReseña([FromBody] string textoReseña)
-        {
-            if (string.IsNullOrEmpty(textoReseña))
-                return BadRequest("El texto de la reseña no puede estar vacío.");
 
-            var resultado = _iaService.Predict(textoReseña);
-            return Ok(new { categoria = resultado.PredictedLabel });
-        }
 
-        [HttpPost("publicarReseña")]
-        [Authorize] // Protegido
-        public async Task<IActionResult> PublicarReseña([FromBody] ReseñaDTO reseñaDto)
-        {
-            if (reseñaDto == null || string.IsNullOrWhiteSpace(reseñaDto.Texto))
-                return BadRequest("La reseña no puede estar vacía.");
-
-            if (!int.TryParse(reseñaDto.ProductoId.ToString(), out var productoId))
-                return BadRequest("ProductoId no es válido.");
-
-            var usuarioId = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
-
-            if (!int.TryParse(usuarioId, out var userId))
-                return Unauthorized("Usuario no autenticado o ID inválido.");
-
-            // Verificar si el usuario ha comprado el producto antes de permitir la reseña
-            var hasPurchased = await _context.Carritos
-                .Include(c => c.Items)
-                .AnyAsync(c => c.UserId == userId && c.Items.Any(item => item.LibroId == productoId && item.Comprado));
-
-            if (!hasPurchased)
-                return Unauthorized("Debe comprar el producto antes de agregar una reseña.");
-
-            var libro = await _context.Libros.FindAsync(productoId);
-
-            if (libro == null)
-                return NotFound("Libro no encontrado.");
-
-            var reseña = new Reseña
-            {
-                UsuarioId = userId,
-                ProductoId = productoId,
-                Texto = reseñaDto.Texto,
-                Categoria = _iaService.Predict(reseñaDto.Texto).PredictedLabel.ToString(),
-                FechaPublicacion = DateTime.UtcNow
-            };
-
-            _context.Reseñas.Add(reseña);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { mensaje = "Reseña publicada con éxito." });
-        }
 
     }
 }
+
