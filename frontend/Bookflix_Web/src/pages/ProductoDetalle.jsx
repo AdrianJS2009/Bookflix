@@ -22,6 +22,7 @@ const ProductoDetalle = () => {
   const [cantidad, setCantidad] = useState(1);
   const [textoReseña, setTextoReseña] = useState("");
   const [reseñas, setReseñas] = useState([]);
+  const [hasPurchased, setHasPurchased] = useState(false);
 
   useEffect(() => {
     const fetchProducto = async () => {
@@ -49,7 +50,7 @@ const ProductoDetalle = () => {
   };
 
   const manejarBlur = () => {
-    const cantidadInt = parseInt(cantidad, 1);
+    const cantidadInt = parseInt(cantidad, 10);
     // Validar la cantidad cuando el campo pierde el foco
     if (!isNaN(cantidadInt)) {
       if (cantidadInt < 1) {
@@ -89,6 +90,38 @@ const ProductoDetalle = () => {
         urlImagen: producto.urlImagen,
       }));
       alert("Producto añadido al carrito");
+    }
+  };
+
+  const registrarCompra = async () => {
+    if (!usuario || !token) {
+      alert("Debes iniciar sesión para realizar esta acción.");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `https://localhost:7182/api/Carrito/${usuario.id}/comprar`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        alert(`Error al registrar la compra: ${errorData.error}`);
+        return;
+      }
+
+      alert("Compra registrada con éxito.");
+    } catch (error) {
+      console.error("Error al registrar la compra:", error.message);
+      alert("Error al registrar la compra. Intenta nuevamente.");
     }
   };
 
@@ -187,31 +220,16 @@ const ProductoDetalle = () => {
               )}
             </p>
             <div className="cantidad">
-              <button
-                className="masCantidad"
-                onClick={() => cambiarCantidad("decrementar")}
-              >
-                -
-              </button>
+              <button className="masCantidad" onClick={() => cambiarCantidad("decrementar")}>-</button>
               <input
                 type="text"
                 value={cantidad}
-                onChange={manejarCambio} 
-                onBlur={manejarBlur}
+                onChange={manejarCambio} // Permite cambiar la cantidad escribiendo
+                onBlur={manejarBlur} // Validar al perder el foco
               />
-              <button
-                className="menosCantidad"
-                onClick={() => cambiarCantidad("incrementar")}
-              >
-                +
-              </button>
+              <button className="menosCantidad" onClick={() => cambiarCantidad("incrementar")}>+</button>
             </div>
-            <Button
-              label="Añadir a la cesta"
-              styleType="btnAñadir"
-              onClick={handleAddToCart}
-              data-id={producto.idLibro}
-            />
+            <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={handleAddToCart} />
           </div>
         </div>
         <hr />
