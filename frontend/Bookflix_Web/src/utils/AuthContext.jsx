@@ -33,14 +33,14 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch("https://localhost:7182/api/Auth/iniciar-sesion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
       if (response.ok) {
         const { token, userData } = await response.json();
-        localStorage.setItem("token", token);
+        sessionStorage.setItem("token", token);
         setUser(userData);
         navigate("/");
       } else {

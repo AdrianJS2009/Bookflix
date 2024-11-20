@@ -12,7 +12,7 @@ const AuthProvider = ({ children }) => {
   const usuario = useSelector((state) => state.auth.usuario);
 
   useEffect(() => {
-    const tokenObj = JSON.parse(localStorage.getItem("token"));
+    const tokenObj = JSON.parse(sessionStorage.getItem("token"));
     const token = tokenObj?.token || null;
 
     if (token) {
@@ -23,7 +23,7 @@ const AuthProvider = ({ children }) => {
         const ahora = Math.floor(Date.now() / 1000);
         if (payload.exp < ahora) {
           console.warn("El token ha expirado.");
-          localStorage.removeItem("token");
+          sessionStorage.removeItem("token");
           dispatch(cerrarSesion());
           return;
         }
@@ -44,7 +44,7 @@ const AuthProvider = ({ children }) => {
         dispatch(iniciarSesion({ usuario, token }));
       } catch (error) {
         console.error("Error al restaurar sesión:", error);
-        localStorage.removeItem("token");
+        sessionStorage.removeItem("token");
         dispatch(cerrarSesion());
       }
     }
@@ -52,7 +52,7 @@ const AuthProvider = ({ children }) => {
 
   const handleLogin = async (credentials) => {
     try {
-      const response = await fetch("https://localhost:7182/api/Auth/login", {
+      const response = await fetch("https://localhost:7182/api/Auth/iniciar-sesion", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -84,7 +84,7 @@ const AuthProvider = ({ children }) => {
           ],
         };
 
-        localStorage.setItem("token", JSON.stringify({ token }));
+        sessionStorage.setItem("token", JSON.stringify({ token }));
         dispatch(iniciarSesion({ usuario, token }));
         dispatch(cargarCarrito(usuario.id));
       }
