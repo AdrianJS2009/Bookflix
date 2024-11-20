@@ -2,27 +2,46 @@
 using Bookflix_Server.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Bookflix_Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CarritoController : ControllerBase
     {
         private readonly ICarritoRepository _carritoRepository;
         private readonly IProductoRepository _productoRepository;
+        private readonly IUserRepository _userRepository;
 
-        public CarritoController(ICarritoRepository carritoRepository, IProductoRepository productoRepository)
+        public CarritoController(
+            ICarritoRepository carritoRepository,
+            IProductoRepository productoRepository,
+            IUserRepository userRepository)
         {
             _carritoRepository = carritoRepository;
             _productoRepository = productoRepository;
+            _userRepository = userRepository;
         }
 
-        // Obtener carrito
-        [HttpGet("{idUsuario}/ListarCarrito")]
-        public async Task<IActionResult> ObtenerCarrito(int idUsuario)
+        private string ObtenerCorreoUsuario()
         {
-            var carrito = await _carritoRepository.ObtenerCarritoPorUsuarioIdAsync(idUsuario);
+            return User.FindFirst(ClaimTypes.Name)?.Value; // Extraer el correo del token
+        }
+
+        // Obtener carrito asociado al usuario autenticado o a un correo específico
+        [HttpGet("ListarCarrito")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ObtenerCarrito(string correo = null)
+        {
+            string correoUsuario = correo ?? ObtenerCorreoUsuario();
+            var usuario = await _userRepository.ObtenerPorCorreoAsync(correoUsuario);
+
+            if (usuario == null)
+                return NotFound(new { error = "Usuario no encontrado." });
+
+            var carrito = await _carritoRepository.ObtenerCarritoPorUsuarioIdAsync(usuario.IdUser);
             if (carrito == null)
             {
                 return NotFound(new { error = "No existe un carrito asociado al usuario." });
@@ -46,9 +65,15 @@ namespace Bookflix_Server.Controllers
         }
 
         // Agregar producto al carrito
-        [HttpPost("{idUsuario}/agregar")]
-        public async Task<IActionResult> AgregarProductoAlCarrito(int idUsuario, [FromBody] CarritoItemAgregarDto itemDto)
+        [HttpPost("agregar")]
+        public async Task<IActionResult> AgregarProductoAlCarrito([FromBody] CarritoItemAgregarDto itemDto)
         {
+            string correoUsuario = ObtenerCorreoUsuario();
+            var usuario = await _userRepository.ObtenerPorCorreoAsync(correoUsuario);
+
+            if (usuario == null)
+                return NotFound(new { error = "Usuario no encontrado." });
+
             var producto = await _productoRepository.ObtenerPorIdAsync(itemDto.LibroId);
             if (producto == null)
             {
@@ -60,7 +85,7 @@ namespace Bookflix_Server.Controllers
                 return BadRequest(new { error = "No hay suficiente stock para completar la acción.", stockDisponible = producto.Stock });
             }
 
-            var carritoUsuario = await _carritoRepository.ObtenerOCrearCarritoPorUsuarioIdAsync(idUsuario);
+            var carritoUsuario = await _carritoRepository.ObtenerOCrearCarritoPorUsuarioIdAsync(usuario.IdUser);
             if (carritoUsuario == null)
             {
                 return BadRequest(new { error = "Error al crear o recuperar el carrito del usuario." });
@@ -73,10 +98,16 @@ namespace Bookflix_Server.Controllers
         }
 
         // Eliminar producto del carrito
-        [HttpDelete("{idUsuario}/eliminar/{idProducto}")]
-        public async Task<IActionResult> EliminarProductoDelCarrito(int idUsuario, int idProducto)
+        [HttpDelete("eliminar/{idProducto}")]
+        public async Task<IActionResult> EliminarProductoDelCarrito(int idProducto, string correo = null)
         {
-            var carritoUsuario = await _carritoRepository.ObtenerCarritoPorUsuarioIdAsync(idUsuario);
+            string correoUsuario = correo ?? ObtenerCorreoUsuario();
+            var usuario = await _userRepository.ObtenerPorCorreoAsync(correoUsuario);
+
+            if (usuario == null)
+                return NotFound(new { error = "Usuario no encontrado." });
+
+            var carritoUsuario = await _carritoRepository.ObtenerCarritoPorUsuarioIdAsync(usuario.IdUser);
             if (carritoUsuario == null)
             {
                 return NotFound(new { error = "No existe un carrito asociado al usuario." });
@@ -94,10 +125,17 @@ namespace Bookflix_Server.Controllers
         }
 
         // Vaciar carrito
-        [HttpDelete("{idUsuario}/vaciar")]
-        public async Task<IActionResult> VaciarCarrito(int idUsuario)
+        [HttpDelete("vaciar")]
+        [AllowAnonymous]
+        public async Task<IActionResult> VaciarCarrito(string correo = null)
         {
-            var carritoUsuario = await _carritoRepository.ObtenerCarritoPorUsuarioIdAsync(idUsuario);
+            string correoUsuario = correo ?? ObtenerCorreoUsuario();
+            var usuario = await _userRepository.ObtenerPorCorreoAsync(correoUsuario);
+
+            if (usuario == null)
+                return NotFound(new { error = "Usuario no encontrado." });
+
+            var carritoUsuario = await _carritoRepository.ObtenerCarritoPorUsuarioIdAsync(usuario.IdUser);
             if (carritoUsuario == null)
             {
                 return NotFound(new { error = "No existe un carrito asociado al usuario." });
@@ -108,52 +146,5 @@ namespace Bookflix_Server.Controllers
 
             return Ok(new { success = true, message = "El carrito se ha vaciado correctamente." });
         }
-
-        // Verificar estado de compra
-        //        [HttpGet("{idUsuario}/verificar-compra/{idProducto}")]
-        //        [Authorize]
-        //        public async Task<IActionResult> VerificarEstadoDeCompra(int idUsuario, int idProducto)
-        //        {
-        //            var haComprado = await _carritoRepository.UsuarioHaCompradoProductoAsync(idUsuario, idProducto);
-        //            return Ok(new { haComprado });
-        //        }
-
-        //        // Confirmar compra
-        //        [HttpPost("{idUsuario}/confirmar-compra")]
-        //        [Authorize]
-        //        public async Task<IActionResult> ConfirmarCompra(int idUsuario)
-        //        {
-        //            var carritoUsuario = await _carritoRepository.ObtenerCarritoPorUsuarioIdAsync(idUsuario);
-
-        //            if (carritoUsuario == null || !carritoUsuario.Items.Any())
-        //            {
-        //                return BadRequest(new { error = "No hay productos en el carrito para realizar la compra." });
-        //            }
-
-        //            foreach (var productoCarrito in carritoUsuario.Items)
-        //            {
-        //                productoCarrito.Comprado = true;
-        //            }
-
-        //            foreach (var productoCarrito in carritoUsuario.Items)
-        //            {
-        //                var producto = await _productoRepository.ObtenerPorIdAsync(productoCarrito.LibroId);
-        //                if (producto != null)
-        //                {
-        //                    if (producto.Stock < productoCarrito.Cantidad)
-        //                    {
-        //                        return BadRequest(new { error = $"Stock insuficiente para el producto con ID {productoCarrito.LibroId}." });
-        //                    }
-
-        //                    producto.Stock -= productoCarrito.Cantidad;
-        //                }
-        //            }
-
-        //            await _carritoRepository.GuardarCambiosAsync();
-
-        //            return Ok(new { success = true, message = "La compra se ha confirmado exitosamente y el carrito ha sido actualizado." });
-        //        }
-        //    }
-        //}
     }
 }

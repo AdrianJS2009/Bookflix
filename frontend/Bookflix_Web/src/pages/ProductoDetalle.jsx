@@ -5,7 +5,6 @@ import Button from "../components/Button";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 
-
 import { selectToken, selectUsuario } from "../redux/slices/authSlice";
 import { agregarAlCarritoLocal } from "../redux/slices/carritoSlice";
 import "../styles/ProductoDetalle.css";
@@ -81,14 +80,16 @@ const ProductoDetalle = () => {
   };
 
   const handleAddToCart = () => {
-    if (producto && (cantidad > 0 && cantidad <= producto.stock)) {
-      dispatch(agregarAlCarritoLocal({
-        productoId: producto.idLibro,
-        cantidad,
-        nombre: producto.nombre,
-        precio: producto.precio,
-        urlImagen: producto.urlImagen,
-      }));
+    if (producto && cantidad > 0 && cantidad <= producto.stock) {
+      dispatch(
+        agregarAlCarritoLocal({
+          productoId: producto.idLibro,
+          cantidad,
+          nombre: producto.nombre,
+          precio: producto.precio,
+          urlImagen: producto.urlImagen,
+        })
+      );
       alert("Producto añadido al carrito");
     }
   };
@@ -220,16 +221,30 @@ const ProductoDetalle = () => {
               )}
             </p>
             <div className="cantidad">
-              <button className="masCantidad" onClick={() => cambiarCantidad("decrementar")}>-</button>
+              <button
+                className="masCantidad"
+                onClick={() => cambiarCantidad("decrementar")}
+              >
+                -
+              </button>
               <input
                 type="text"
                 value={cantidad}
                 onChange={manejarCambio} // Permite cambiar la cantidad escribiendo
                 onBlur={manejarBlur} // Validar al perder el foco
               />
-              <button className="menosCantidad" onClick={() => cambiarCantidad("incrementar")}>+</button>
+              <button
+                className="menosCantidad"
+                onClick={() => cambiarCantidad("incrementar")}
+              >
+                +
+              </button>
             </div>
-            <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={handleAddToCart} />
+            <Button
+              label="Añadir a la cesta"
+              styleType="btnAñadir"
+              onClick={handleAddToCart}
+            />
           </div>
         </div>
         <hr />
