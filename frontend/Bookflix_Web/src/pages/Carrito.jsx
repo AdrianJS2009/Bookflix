@@ -18,10 +18,18 @@ const Carrito = () => {
   const token = useSelector(selectToken);
 
   useEffect(() => {
-    if (usuario && token) {
-      dispatch(cargarCarrito(usuario.id));
+    if (!usuario || !usuario.id || !token) {
+      console.warn("El usuario o token no están definidos correctamente.");
+      console.log("Usuario actual:", usuario);
+      console.log("Token actual:", token);
+      return;
     }
+
+    dispatch(cargarCarrito(usuario.id));
   }, [usuario, token, dispatch]);
+
+  console.log("Usuario actual:", usuario);
+  console.log("Token actual:", token);
 
   const handleClearCart = () => {
     dispatch(limpiarCarrito());
@@ -29,30 +37,42 @@ const Carrito = () => {
   };
 
   const eliminarItemCarrito = async (itemId) => {
+    if (!usuario || !usuario.id) {
+      console.error(
+        "No se puede eliminar el producto porque el usuario no está definido."
+      );
+      return;
+    }
+
+    if (!itemId || typeof itemId !== "number") {
+      console.error("El itemId proporcionado no es válido:", itemId);
+      return;
+    }
+
     try {
       const response = await fetch(
-        `https://localhost:7182/api/Carrito/eliminar/${itemId}`, // URL corregida
+        `https://localhost:7182/api/Carrito/eliminar/${itemId}`,
         {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Token del usuario autenticado
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
           },
         }
       );
 
       if (response.ok) {
         console.log("Item eliminado del carrito");
-        dispatch(cargarCarrito(usuario.id)); // Recargar el carrito después de eliminar
+        dispatch(cargarCarrito(usuario.id)); // Actualizar el estado del carrito
       } else {
         const data = await response.json();
         console.error(
-          "Error eliminando el artículo",
+          "Error eliminando el artículo:",
           data.error || data.message
         );
       }
     } catch (error) {
-      console.error("Error al hacer la solicitud", error);
+      console.error("Error al hacer la solicitud:", error.message);
     }
   };
 
@@ -118,7 +138,7 @@ const Carrito = () => {
 
                 <button
                   className="botonEliminar"
-                  onClick={(e) => eliminarItemCarrito(e, item.idLibro)}
+                  onClick={() => eliminarItemCarrito(item.productoId)}
                 >
                   x
                 </button>
