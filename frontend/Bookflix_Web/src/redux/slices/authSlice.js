@@ -10,18 +10,19 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     iniciarSesion: (state, action) => {
-      console.log("Acción iniciarSesion ejecutada:", action.payload);
       const { usuario, token } = action.payload;
-      state.usuario = usuario;
-      state.token = token;
-      localStorage.setItem("token", JSON.stringify({ token }));
+      if (usuario && usuario.id) {
+        state.usuario = usuario;
+        state.token = token;
+        sessionStorage.setItem("token", token);
+      } else {
+        console.error("Usuario o token inválidos en iniciarSesion.");
+      }
     },
-
     cerrarSesion: (state) => {
-      console.log("Acción cerrarSesion ejecutada");
       state.usuario = null;
       state.token = null;
-      localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
     },
   },
 });

@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "../components/Button";
-import Header from "../components/Header";
 import Footer from "../components/Footer";
+import Header from "../components/Header";
 import { selectToken, selectUsuario } from "../redux/slices/authSlice";
 import {
   cargarCarrito,
@@ -25,37 +25,62 @@ const Carrito = () => {
   useEffect(() => {
     if (usuario && token) {
       dispatch(cargarCarrito(usuario.id));
+    if (!usuario || !usuario.id || !token) {
+      console.warn("El usuario o token no están definidos correctamente.");
+      console.log("Usuario actual:", usuario);
+      console.log("Token actual:", token);
+      return;
     }
-  }, [usuario, token, dispatch]);
+
+    dispatch(cargarCarrito(usuario.id));
+  } 
+},[usuario, token, dispatch]);
+
+  console.log("Usuario actual:", usuario);
+  console.log("Token actual:", token);
 
   const handleClearCart = () => {
     dispatch(limpiarCarrito());
     alert("El carrito ha sido vaciado.");
   };
 
-  const eliminarItemCarrito = async (e, itemId) => {
-    if (e.target) {
-      try {
-        const response = await fetch(
-          `https://localhost:7182/api/Carrito/${usuario.id}/eliminar/${itemId}`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+  const eliminarItemCarrito = async (itemId) => {
+    if (!usuario || !usuario.id) {
+      console.error(
+        "No se puede eliminar el producto porque el usuario no está definido."
+      );
+      return;
+    }
 
-        const data = await response.json();
-        if (response.ok) {
-          console.log("Item eliminado del carrito", data);
-        } else {
-          console.error("Error eliminando el artículo", data.error || data.message);
+    if (!itemId || typeof itemId !== "number") {
+      console.error("El itemId proporcionado no es válido:", itemId);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `https://localhost:7182/api/Carrito/eliminar/${itemId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
         }
-      } catch (error) {
-        console.error("Error al hacer la solicitud", error);
+      );
+
+      if (response.ok) {
+        console.log("Item eliminado del carrito");
+        dispatch(cargarCarrito(usuario.id)); // Actualizar el estado del carrito
+      } else {
+        const data = await response.json();
+        console.error(
+          "Error eliminando el artículo:",
+          data.error || data.message
+        );
       }
+    } catch (error) {
+      console.error("Error al hacer la solicitud:", error.message);
     }
   };
 
@@ -119,7 +144,12 @@ const Carrito = () => {
                 </p>
                 <p>Cantidad: {item.cantidad}</p>
 
-                <button className="botonEliminar" onClick={(e) => eliminarItemCarrito(e, item.idLibro)}>x</button>
+                <button
+                  className="botonEliminar"
+                  onClick={() => eliminarItemCarrito(item.productoId)}
+                >
+                  x
+                </button>
               </div>
             ))}
           </div>

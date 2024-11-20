@@ -103,8 +103,9 @@ namespace Bookflix_Server.Controllers
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, usuario.Email),
-                new Claim(ClaimTypes.Role, usuario.Rol)
+                new Claim(ClaimTypes.Name, usuario.Email), // Correo electrónico
+                new Claim(ClaimTypes.NameIdentifier, usuario.IdUser.ToString()), // ID del usuario
+                new Claim(ClaimTypes.Role, usuario.Rol) // Rol del usuario
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
@@ -124,10 +125,26 @@ namespace Bookflix_Server.Controllers
         // Endpoint para leer el contenido del token
         [HttpGet("read")]
         [Authorize]
-        public IActionResult ReadToken()
+        public IActionResult LeerToken()
         {
             string email = ObtenerCorreoUsuario();
             return Ok(new { Email = email });
         }
+
+        [HttpGet("usuario")]
+        [Authorize]
+        public IActionResult ObtenerDetallesUsuario()
+        {
+            var email = User.FindFirst(ClaimTypes.Name)?.Value;
+            var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(id))
+            {
+                return Unauthorized(new { error = "No se pudo determinar el usuario." });
+            }
+
+            return Ok(new { Id = id, Email = email });
+        }
+
     }
 }

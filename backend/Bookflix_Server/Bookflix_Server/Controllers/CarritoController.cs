@@ -102,18 +102,28 @@ namespace Bookflix_Server.Controllers
         public async Task<IActionResult> EliminarProductoDelCarrito(int idProducto, string correo = null)
         {
             string correoUsuario = correo ?? ObtenerCorreoUsuario();
+
+            if (string.IsNullOrEmpty(correoUsuario))
+            {
+                return BadRequest(new { error = "El correo del usuario no se pudo determinar." });
+            }
+
             var usuario = await _userRepository.ObtenerPorCorreoAsync(correoUsuario);
 
             if (usuario == null)
-                return NotFound(new { error = "Usuario no encontrado." });
+            {
+                return NotFound(new { error = $"Usuario con el correo {correoUsuario} no encontrado." });
+            }
 
             var carritoUsuario = await _carritoRepository.ObtenerCarritoPorUsuarioIdAsync(usuario.IdUser);
+
             if (carritoUsuario == null)
             {
                 return NotFound(new { error = "No existe un carrito asociado al usuario." });
             }
 
             bool productoEliminado = await _carritoRepository.EliminarProductoDelCarritoAsync(carritoUsuario, idProducto);
+
             if (!productoEliminado)
             {
                 return NotFound(new { error = "El producto no se encuentra en el carrito." });
