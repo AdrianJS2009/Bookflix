@@ -73,9 +73,13 @@ namespace Bookflix_Server.Controllers
         }
 
         // Eliminar producto del carrito
-        [HttpDelete("{idUsuario}/eliminar/{idProducto}")]
-        public async Task<IActionResult> EliminarProductoDelCarrito(int idUsuario, int idProducto)
+        [HttpDelete("usuario/eliminar/{idProducto}")]
+        [Authorize]
+        public async Task<IActionResult> EliminarProductoDelCarrito(int idProducto)
         {
+
+            string idUsuario = User.FindFirst("id").Value;
+
             var carritoUsuario = await _carritoRepository.ObtenerCarritoPorUsuarioIdAsync(idUsuario);
             if (carritoUsuario == null)
             {

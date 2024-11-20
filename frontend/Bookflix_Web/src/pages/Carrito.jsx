@@ -18,7 +18,7 @@ const Carrito = () => {
   const token = useSelector(selectToken);
 
   useEffect(() => {
-    if (usuario && token) {
+    if (token) {
       dispatch(cargarCarrito(usuario.id));
     }
   }, [usuario, token, dispatch]);
@@ -31,6 +31,8 @@ const Carrito = () => {
   const eliminarItemCarrito = async (e, itemId) => {
     if (e.target) {
       try {
+        console.log(usuario.id)
+        console.log(itemId);
         const response = await fetch(
           `https://localhost:7182/api/Carrito/${usuario.id}/eliminar/${itemId}`,
           {
@@ -88,6 +90,7 @@ const Carrito = () => {
   };
 
   
+  
 
   return (
     <>
@@ -118,7 +121,6 @@ const Carrito = () => {
                 })}
               </p>
               <p>Cantidad: {item.cantidad}</p>
-              
               <button className="botonEliminar" onClick={(e) => eliminarItemCarrito(e, item.idLibro)}>x</button>
             </div>
           ))}
@@ -127,12 +129,14 @@ const Carrito = () => {
       <Button
         label="Vaciar Carrito"
         styleType="btnDefault"
+        className="botonVaciar"
         onClick={handleClearCart}
       />
       {"  "}
       <Button
         label="Comprar"
         styleType="btnComprar"
+        className="botonComprar"
         onClick={registrarCompra}
       />
     </div>
