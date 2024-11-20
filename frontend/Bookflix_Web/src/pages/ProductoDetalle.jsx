@@ -37,40 +37,31 @@ const ProductoDetalle = () => {
       }
     };
 
-  //   const checkPurchaseStatus = async () => {
-  //     if (usuario && token) {
-  //       try {
-  //         const response = await fetch(
-  //           `https://localhost:7182/api/Carrito/${usuario.id}/checkPurchase/${productoId}`,
-  //           { headers: { Authorization: `Bearer ${token}` } }
-  //         );
-  //         if (response.ok) {
-  //           const result = await response.json();
-  //           setHasPurchased(result.hasPurchased);
-  //         }
-  //       } catch (error) {
-  //         console.error("Error al verificar el estado de compra:", error);
-  //       }
-  //     }
-  //   };
-  //   checkPurchaseStatus();
     fetchProducto();
-  }, [productoId, usuario, token]);
+  }, [productoId]);
 
   const manejarCambio = (e) => {
-    const nuevoValor = parseInt(e.target.value, 10);
-    
-    if (!isNaN(nuevoValor) && nuevoValor >= 1) {
-      if (nuevoValor > producto.stock) {
+    const nuevoValor = e.target.value;
+    // Aquí no validamos aún, solo guardamos lo que el usuario ingresa
+    setCantidad(nuevoValor);
+  };
+
+  const manejarBlur = () => {
+    const cantidadInt = parseInt(cantidad, 10);
+    // Validar la cantidad cuando el campo pierde el foco
+    if (!isNaN(cantidadInt)) {
+      if (cantidadInt < 1) {
+        setCantidad(1);
+      } else if (cantidadInt > producto.stock) {
         setCantidad(producto.stock);
       } else {
-        setCantidad(nuevoValor);
+        setCantidad(cantidadInt);
       }
     } else {
       setCantidad(1);
     }
   };
-  
+
   const cambiarCantidad = (accion) => {
     setCantidad((prevCantidad) => {
       if (accion === "incrementar") {
@@ -89,7 +80,7 @@ const ProductoDetalle = () => {
   };
 
   const handleAddToCart = () => {
-    if (producto && (cantidad > 0 && cantidad <= producto.sto1)) {
+    if (producto && (cantidad > 0 && cantidad <= producto.stock)) {
       dispatch(agregarAlCarritoLocal({
         productoId: producto.idLibro,
         cantidad,
@@ -213,15 +204,16 @@ const ProductoDetalle = () => {
               )}
             </p>
             <div className="cantidad">
-            <button className="masCantidad" onClick={() => cambiarCantidad("decrementar")}>-</button>
-            <input 
-              type="text" 
-              value={cantidad} 
-              onChange={manejarCambio} // Permite cambiar la cantidad escribiendo
-            />
-            <button className="menosCantidad" onClick={() => cambiarCantidad("incrementar")}>+</button>
+              <button className="masCantidad" onClick={() => cambiarCantidad("decrementar")}>-</button>
+              <input
+                type="text"
+                value={cantidad}
+                onChange={manejarCambio} // Permite cambiar la cantidad escribiendo
+                onBlur={manejarBlur} // Validar al perder el foco
+              />
+              <button className="menosCantidad" onClick={() => cambiarCantidad("incrementar")}>+</button>
             </div>
-            <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={handleAddToCart} data-id={producto.idLibro} />
+            <Button label="Añadir a la cesta" styleType="btnAñadir" onClick={handleAddToCart} />
           </div>
         </div>
         <hr />

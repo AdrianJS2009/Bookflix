@@ -21,13 +21,13 @@ export default function Login() {
     navigate("/"); // Redirige al inicio después de iniciar sesión
   };
 
-  const manejarToken = () => {
-    const datosDecodificados = jwtDecode(sessionStorage.getItem("token"));
-    const fechaExpiracion = new Date((datosDecodificados.exp * 1000));
-    console.log("El token expira en: ", fechaExpiracion);
-  };
+  // const manejarToken = () => {
+  //   const datosDecodificados = jwtDecode(sessionStorage.getItem("token"));
+  //   const fechaExpiracion = new Date((datosDecodificados.exp * 1000));
+  //   console.log("El token expira en: ", fechaExpiracion);
+  // };
 
-  manejarToken();
+  // manejarToken();
   
   return (
     <>
