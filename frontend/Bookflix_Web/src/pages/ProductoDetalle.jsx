@@ -97,7 +97,7 @@ const ProductoDetalle = () => {
   const registrarCompra = async () => {
     if (!usuario || !token) {
       alert("Debes iniciar sesión para realizar esta acción.");
-      navigate("/login");
+      //   navigate("/login");
       return;
     }
 
@@ -131,7 +131,7 @@ const ProductoDetalle = () => {
       alert(
         "Debes haber iniciado sesión y comprado el producto para dejar una reseña."
       );
-      navigate("/login");
+      //   navigate("/login");
       return;
     }
 

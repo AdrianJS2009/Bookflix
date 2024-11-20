@@ -1,9 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-// Selectores
 export const selectCarritoItems = (state) => state.carrito.items;
 
-// Acciones
 export const cargarCarrito = createAsyncThunk(
   "carrito/cargarCarrito",
   async (userId, { getState }) => {
@@ -55,6 +53,7 @@ const carritoSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(cargarCarrito.fulfilled, (state, action) => {
       state.items = action.payload;
+      localStorage.setItem("carrito", JSON.stringify(state.items));
     });
   },
 });

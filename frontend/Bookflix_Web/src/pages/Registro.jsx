@@ -48,7 +48,7 @@ export default function Registro() {
       }
 
       alert("Usuario registrado correctamente.");
-      navigate("/login");
+      //   navigate("/login");
     } catch (error) {
       console.error("Error al registrar el usuario:", error.message);
       alert("No se pudo registrar el usuario. Intenta de nuevo.");

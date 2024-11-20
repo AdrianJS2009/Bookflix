@@ -8,6 +8,7 @@ import {
   cargarCarrito,
   limpiarCarrito,
   selectCarritoItems,
+  cargarCarritoDesdeLocalStorage,
 } from "../redux/slices/carritoSlice";
 import "../styles/Carrito.css";
 
@@ -16,6 +17,10 @@ const Carrito = () => {
   const items = useSelector(selectCarritoItems);
   const usuario = useSelector(selectUsuario);
   const token = useSelector(selectToken);
+
+  useEffect(() => {
+    dispatch(cargarCarritoDesdeLocalStorage());
+  }, [dispatch]);
 
   useEffect(() => {
     if (usuario && token) {
@@ -41,7 +46,7 @@ const Carrito = () => {
             },
           }
         );
-  
+
         const data = await response.json();
         if (response.ok) {
           console.log("Item eliminado del carrito", data);
@@ -53,14 +58,13 @@ const Carrito = () => {
       }
     }
   };
-  
-  
+
   const registrarCompra = async () => {
-    if (!usuario || !token) {
-      alert("Debes iniciar sesión para realizar esta acción.");
-      navigate("/login");
-      return;
-    }
+    // if (!usuario || !token) {
+    //   alert("Debes iniciar sesión para realizar esta acción.");
+    //   navigate("/login");
+    //   return;
+    // }
 
     try {
       const response = await fetch(
@@ -87,56 +91,54 @@ const Carrito = () => {
     }
   };
 
-  
-
   return (
     <>
-    
-    
-    <Header />
-    <div className="carrito-container texto-pequeño">
-    <h1 className="texto-grande">Carrito de Compras</h1>
-      {items.length === 0 ? (
-        <p>No hay artículos en el carrito.</p>
-      ) : (
-        <div className="carrito-items">
-          {items.map((item, index) => (
-            <div key={index} className="carrito-item">
-              <img
-                src={item.urlImagen || "placeholder.jpg"}
-                alt={`Portada de ${item.nombre || "undefined"}`}
-                className="imagenProducto"
-              />
-              <p>
-                <strong>{item.nombre || "Producto sin nombre"}</strong>
-              </p>
-              <p>
-                Precio:{" "}
-                {(item.precio / 100 || 0).toLocaleString("es-ES", {
-                  style: "currency",
-                  currency: "EUR",
-                })}
-              </p>
-              <p>Cantidad: {item.cantidad}</p>
-              
-              <button className="botonEliminar" onClick={(e) => eliminarItemCarrito(e, item.idLibro)}>x</button>
-            </div>
-          ))}
-        </div>
-      )}
-      <Button
-        label="Vaciar Carrito"
-        styleType="btnDefault"
-        onClick={handleClearCart}
-      />
-      {"  "}
-      <Button
-        label="Comprar"
-        styleType="btnComprar"
-        onClick={registrarCompra}
-      />
-    </div>
-    <Footer />
+      <Header />
+      <div className="carrito-container texto-pequeño">
+        <h1 className="texto-grande">Carrito de Compras</h1>
+        {items.length === 0 ? (
+          <p>No hay artículos en el carrito.</p>
+        ) : (
+          <div className="carrito-items">
+            {items.map((item, index) => (
+              <div key={index} className="carrito-item">
+                <img
+                  src={item.urlImagen || "placeholder.jpg"}
+                  alt={`Portada de ${item.nombre || "undefined"}`}
+                  className="imagenProducto"
+                />
+                <p>
+                  <strong>{item.nombre || "Producto sin nombre"}</strong>
+                </p>
+                <p>
+                  Precio:{" "}
+                  {(item.precio / 100 || 0).toLocaleString("es-ES", {
+                    style: "currency",
+                    currency: "EUR",
+                  })}
+                </p>
+                <p>Cantidad: {item.cantidad}</p>
+
+                <button className="botonEliminar" onClick={(e) => eliminarItemCarrito(e, item.idLibro)}>x</button>
+              </div>
+            ))}
+          </div>
+        )}
+        <Button
+          label="Vaciar Carrito"
+          styleType="btnDefault"
+          className="botonVaciar" 
+          onClick={handleClearCart}
+        />
+        {"  "}
+        <Button
+          label="Comprar"
+          styleType="btnComprar"
+          className="botonComprar" 
+          onClick={registrarCompra}
+        />
+      </div>
+      <Footer />
     </>
   );
 };
