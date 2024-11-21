@@ -6,9 +6,9 @@ import Header from "../components/Header";
 import { selectToken, selectUsuario } from "../redux/slices/authSlice";
 import {
   cargarCarrito,
+  cargarCarritoDesdeStorage,
   limpiarCarrito,
   selectCarritoItems,
-  cargarCarritoDesdeLocalStorage,
 } from "../redux/slices/carritoSlice";
 import "../styles/Carrito.css";
 
@@ -19,25 +19,11 @@ const Carrito = () => {
   const token = useSelector(selectToken);
 
   useEffect(() => {
-    dispatch(cargarCarritoDesdeLocalStorage());
-  }, [dispatch]);
-
-  useEffect(() => {
+    dispatch(cargarCarritoDesdeStorage());
     if (usuario && token) {
       dispatch(cargarCarrito(usuario.id));
-    if (!usuario || !usuario.id || !token) {
-      console.warn("El usuario o token no están definidos correctamente.");
-      console.log("Usuario actual:", usuario);
-      console.log("Token actual:", token);
-      return;
     }
-
-    dispatch(cargarCarrito(usuario.id));
-  } 
-},[usuario, token, dispatch]);
-
-  console.log("Usuario actual:", usuario);
-  console.log("Token actual:", token);
+  }, [usuario, token, dispatch]);
 
   const handleClearCart = () => {
     dispatch(limpiarCarrito());
@@ -46,14 +32,7 @@ const Carrito = () => {
 
   const eliminarItemCarrito = async (itemId) => {
     if (!usuario || !usuario.id) {
-      console.error(
-        "No se puede eliminar el producto porque el usuario no está definido."
-      );
-      return;
-    }
-
-    if (!itemId || typeof itemId !== "number") {
-      console.error("El itemId proporcionado no es válido:", itemId);
+      console.error("Usuario no definido, no se puede eliminar el producto.");
       return;
     }
 
@@ -64,20 +43,15 @@ const Carrito = () => {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
       if (response.ok) {
-        console.log("Item eliminado del carrito");
-        dispatch(cargarCarrito(usuario.id)); // Actualizar el estado del carrito
+        dispatch(cargarCarrito(usuario.id));
       } else {
-        const data = await response.json();
-        console.error(
-          "Error eliminando el artículo:",
-          data.error || data.message
-        );
+        console.error("Error eliminando el artículo.");
       }
     } catch (error) {
       console.error("Error al hacer la solicitud:", error.message);
@@ -85,11 +59,10 @@ const Carrito = () => {
   };
 
   const registrarCompra = async () => {
-    // if (!usuario || !token) {
-    //   alert("Debes iniciar sesión para realizar esta acción.");
-    //   navigate("/login");
-    //   return;
-    // }
+    if (!usuario || !token) {
+      alert("Debes iniciar sesión para realizar esta acción.");
+      return;
+    }
 
     try {
       const response = await fetch(
@@ -103,16 +76,13 @@ const Carrito = () => {
         }
       );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        alert(`Error al registrar la compra: ${errorData.error}`);
-        return;
+      if (response.ok) {
+        alert("Compra registrada con éxito.");
+      } else {
+        alert("Error al registrar la compra.");
       }
-
-      alert("Compra registrada con éxito.");
     } catch (error) {
       console.error("Error al registrar la compra:", error.message);
-      alert("Error al registrar la compra. Intenta nuevamente.");
     }
   };
 
@@ -143,7 +113,6 @@ const Carrito = () => {
                   })}
                 </p>
                 <p>Cantidad: {item.cantidad}</p>
-
                 <button
                   className="botonEliminar"
                   onClick={() => eliminarItemCarrito(item.productoId)}
@@ -157,14 +126,14 @@ const Carrito = () => {
         <Button
           label="Vaciar Carrito"
           styleType="btnDefault"
-          className="botonVaciar" 
+          className="botonVaciar"
           onClick={handleClearCart}
         />
         {"  "}
         <Button
           label="Comprar"
           styleType="btnComprar"
-          className="botonComprar" 
+          className="botonComprar"
           onClick={registrarCompra}
         />
       </div>

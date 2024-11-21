@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-export const selectCarritoItems = (state) => state.carrito.items;
+const initialState = {
+  items: [],
+};
 
 export const cargarCarrito = createAsyncThunk(
   "carrito/cargarCarrito",
@@ -19,10 +21,6 @@ export const cargarCarrito = createAsyncThunk(
   }
 );
 
-const initialState = {
-  items: [],
-};
-
 const carritoSlice = createSlice({
   name: "carrito",
   initialState,
@@ -37,23 +35,33 @@ const carritoSlice = createSlice({
       } else {
         state.items.push({ ...item, idLibro: item.productoId });
       }
-      localStorage.setItem("carrito", JSON.stringify(state.items));
+
+      const storage = sessionStorage.getItem("token")
+        ? sessionStorage
+        : localStorage;
+      storage.setItem("carrito", JSON.stringify(state.items));
     },
     limpiarCarrito: (state) => {
       state.items = [];
-      localStorage.removeItem("carrito");
+      const storage = sessionStorage.getItem("token")
+        ? sessionStorage
+        : localStorage;
+      storage.removeItem("carrito");
     },
-    cargarCarritoDesdeLocalStorage: (state) => {
-      const carritoLocal = JSON.parse(localStorage.getItem("carrito"));
-      if (carritoLocal) {
-        state.items = carritoLocal;
+    cargarCarritoDesdeStorage: (state) => {
+      const storage = sessionStorage.getItem("token")
+        ? sessionStorage
+        : localStorage;
+      const carritoData = JSON.parse(storage.getItem("carrito"));
+      if (carritoData) {
+        state.items = carritoData;
       }
     },
   },
   extraReducers: (builder) => {
     builder.addCase(cargarCarrito.fulfilled, (state, action) => {
       state.items = action.payload;
-      localStorage.setItem("carrito", JSON.stringify(state.items));
+      sessionStorage.setItem("carrito", JSON.stringify(state.items));
     });
   },
 });
@@ -61,7 +69,7 @@ const carritoSlice = createSlice({
 export const {
   agregarAlCarritoLocal,
   limpiarCarrito,
-  cargarCarritoDesdeLocalStorage,
+  cargarCarritoDesdeStorage,
 } = carritoSlice.actions;
 
 export default carritoSlice.reducer;
