@@ -64,11 +64,10 @@ const ProductoDetalle = () => {
       alert("Inicia sesión para añadir productos al carrito.");
     } else if (producto && cantidad > 0 && cantidad <= producto.stock) {
       agregarAlCarrito({
-        LibroId: producto.idLibro, // Propiedad correcta según los datos cargados
-        Cantidad: cantidad,
-        Nombre: producto.nombre,
-        Precio: producto.precio,
-        UrlImagen: producto.urlImagen,
+        libroId: producto.idLibro, // Usar la propiedad que corresponde al backend
+        cantidad: cantidad,
+        nombreLibro: producto.nombre,
+        subtotal: producto.precio * cantidad, // Calcular subtotal
       });
       alert("Producto añadido al carrito");
     }
