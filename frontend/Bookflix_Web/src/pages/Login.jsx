@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { iniciarSesion } from "../redux/slices/authSlice";
-import "../styles/Login.css";
+import "../styles/form.css";
 
 const Login = () => {
   const dispatch = useDispatch();
