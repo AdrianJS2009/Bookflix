@@ -165,6 +165,8 @@ namespace Bookflix_Server.Controllers
         private readonly ICarritoRepository _icarritoRepository;
         private const int TamañoPagina = 10;
 
+
+
         public LibroController(MyDbContext context, ServicioBusquedaInteligente smartSearchService, ICarritoRepository carritoRepository)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
