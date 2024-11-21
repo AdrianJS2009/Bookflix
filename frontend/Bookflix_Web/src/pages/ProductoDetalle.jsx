@@ -64,7 +64,7 @@ const ProductoDetalle = () => {
       alert("Inicia sesión para añadir productos al carrito.");
     } else if (producto && cantidad > 0 && cantidad <= producto.stock) {
       agregarAlCarrito({
-        LibroId: producto.libroId || producto.idLibro || producto.id, // Manejar nombres posibles
+        LibroId: producto.idLibro, // Propiedad correcta según los datos cargados
         Cantidad: cantidad,
         Nombre: producto.nombre,
         Precio: producto.precio,
