@@ -34,7 +34,13 @@ const Carrito = () => {
           <ul className="carrito-lista">
             {items.map((item, index) => (
               <li key={index} className="carrito-item">
-                {item.nombre}
+                <img src={item.urlImagen || "placeholder.jpg"} alt={item.nombreLibro} className="carrito-item-imagen" />
+                <div className="carrito-item-info">
+                  <h3>{item.nombreLibro}</h3>
+                  <p>Precio: €{(item.subtotal / item.cantidad).toFixed(2)}</p>
+                  <p>Cantidad: {item.cantidad}</p>
+                  <p>Subtotal: €{item.subtotal.toFixed(2)}</p>
+                </div>
               </li>
             ))}
           </ul>

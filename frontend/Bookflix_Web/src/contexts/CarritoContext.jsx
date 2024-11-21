@@ -3,6 +3,10 @@ import { useAuth } from "../contexts/AuthContext";
 
 const CarritoContext = createContext();
 
+export const useCarrito = () => {
+  return useContext(CarritoContext);
+};
+
 export const CarritoProvider = ({ children }) => {
   const { auth } = useAuth();
   const [items, setItems] = useState(() => {
@@ -11,7 +15,27 @@ export const CarritoProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    if (!auth.token) {
+    if (auth.token) {
+      // Sincronizar con el servidor si hay un token
+      const sincronizarCarrito = async () => {
+        try {
+          const response = await fetch("https://localhost:7182/api/Carrito", {
+            headers: {
+              Authorization: `Bearer ${auth.token}`,
+            },
+          });
+          if (!response.ok) {
+            throw new Error("No se pudo sincronizar con el servidor.");
+          }
+          const data = await response.json();
+          setItems(data);
+        } catch (error) {
+          console.error("Error al sincronizar el carrito:", error);
+        }
+      };
+      sincronizarCarrito();
+    } else {
+      // Guardar en localStorage si no hay token
       localStorage.setItem("carrito", JSON.stringify(items));
     }
   }, [items, auth.token]);
@@ -53,7 +77,11 @@ export const CarritoProvider = ({ children }) => {
       }
     } else {
       // Si no hay token, guarda en localStorage
-      setItems((prevItems) => [...prevItems, producto]);
+      setItems((prevItems) => {
+        const newItems = [...prevItems, producto];
+        localStorage.setItem("carrito", JSON.stringify(newItems));
+        return newItems;
+      });
     }
   };
 
@@ -62,8 +90,4 @@ export const CarritoProvider = ({ children }) => {
       {children}
     </CarritoContext.Provider>
   );
-};
-
-export const useCarrito = () => {
-  return useContext(CarritoContext);
 };
