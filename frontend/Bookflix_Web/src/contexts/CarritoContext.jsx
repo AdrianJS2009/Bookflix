@@ -4,7 +4,7 @@ import { useAuth } from "./AuthContext";
 const CarritoContext = createContext();
 
 export const CarritoProvider = ({ children }) => {
-  const { auth } = useAuth();
+  const { auth } = useAuth(); // Acceder al estado de autenticación
   const [items, setItems] = useState([]);
 
   useEffect(() => {
@@ -21,6 +21,13 @@ export const CarritoProvider = ({ children }) => {
   const agregarAlCarrito = async (producto) => {
     if (auth.token) {
       try {
+        const payload = {
+          LibroId: producto.id, // Asegúrate de que coincide con el modelo del backend
+          Cantidad: 1, // Cantidad fija para cumplir con el modelo esperado
+        };
+
+        console.log("Payload being sent:", payload); // Depuración: Muestra los datos enviados
+
         const response = await fetch(
           "https://localhost:7182/api/Carrito/agregar",
           {
@@ -29,21 +36,22 @@ export const CarritoProvider = ({ children }) => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${auth.token}`,
             },
-            body: JSON.stringify({
-              LibroId: producto.id, // Propiedad esperada por el backend
-              Cantidad: 1, // Cantidad fija como mínimo 1
-            }),
+            body: JSON.stringify(payload),
           }
         );
+
+        console.log("Response status:", response.status); // Depuración: Muestra el estado de la respuesta
+        console.log("Response headers:", response.headers); // Depuración: Muestra los encabezados de la respuesta
 
         if (!response.ok) {
           throw new Error("No se pudo sincronizar con el servidor.");
         }
 
         const updatedItems = await response.json();
+        console.log("Updated items received:", updatedItems); // Depuración: Muestra los datos recibidos del backend
         setItems(updatedItems);
       } catch (error) {
-        console.error("Error al sincronizar el carrito:", error);
+        console.error("Error al sincronizar el carrito:", error); // Depuración: Muestra cualquier error en la sincronización
       }
     } else {
       setItems((prevItems) => [...prevItems, producto]);
