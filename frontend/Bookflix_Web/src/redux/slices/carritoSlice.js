@@ -66,6 +66,9 @@ const carritoSlice = createSlice({
   },
 });
 
+// Selector para acceder a los items del carrito
+export const selectCarritoItems = (state) => state.carrito.items;
+
 export const {
   agregarAlCarritoLocal,
   limpiarCarrito,
