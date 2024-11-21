@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
-import Button from "../components/Button";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import "../styles/catalogo.css";
 import "../styles/default.css";
 
-const Catalogo = ({ productos }) => {
+const Catalogo = () => {
   const navigate = useNavigate();
   const [libros, setLibros] = useState([]);
   const [nombre, setNombre] = useState("");
@@ -110,23 +109,8 @@ const Catalogo = ({ productos }) => {
               <option value="Literatura">Literatura</option>
               <option value="Autoayuda">Autoayuda</option>
               <option value="Referencia">Referencia</option>
-              <option value="Ilustrado">Ilustrado</option>
               <option value="Historia">Historia</option>
-              <option value="Emprendimiento">Emprendimiento</option>
               <option value="Tecnología">Tecnología</option>
-              <option value="Programación">Programación</option>
-              <option value="Fantasía">Fantasía</option>
-              <option value="Narrativa">Narrativa</option>
-              <option value="Drama">Drama</option>
-              <option value="Economía">Economía</option>
-              <option value="Novela">Novela</option>
-              <option value="Thriller">Thriller</option>
-              <option value="Filosofía">Filosofía</option>
-              <option value="Filosofía militar">Filosofía militar</option>
-              <option value="No ficción">No ficción</option>
-              <option value="Reflexión">Reflexión</option>
-              <option value="Espiritualidad">Espiritualidad</option>
-              <option value="Psicología">Psicología</option>
             </select>
 
             <select
@@ -150,8 +134,8 @@ const Catalogo = ({ productos }) => {
               }}
               className="filtro-select"
             >
-              <option value="Ascendente">Ordenar alfabéticamente (A-Z)</option>
-              <option value="Descendente">Ordenar alfabéticamente (Z-A)</option>
+              <option value="Ascendente">A-Z</option>
+              <option value="Descendente">Z-A</option>
             </select>
 
             <select
@@ -162,7 +146,6 @@ const Catalogo = ({ productos }) => {
               <option value={5}>5 por página</option>
               <option value={10}>10 por página</option>
               <option value={20}>20 por página</option>
-              <option value={30}>30 por página</option>
             </select>
           </div>
         </div>
@@ -190,22 +173,6 @@ const Catalogo = ({ productos }) => {
                   <h2 className="titulo">{libro.nombre}</h2>
                   <p className="precio">{libro.autor}</p>
                   <p className="precio">{(libro.precio / 100).toFixed(2)} €</p>
-                  <Button
-                    label="Comprar"
-                    styleType="btnComprar"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      alert("Compra realizada");
-                    }}
-                  />
-                  <Button
-                    label="Añadir a la cesta"
-                    styleType="btnAñadir"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      alert("Añadido a la cesta");
-                    }}
-                  />
                 </div>
               </div>
             ))}
