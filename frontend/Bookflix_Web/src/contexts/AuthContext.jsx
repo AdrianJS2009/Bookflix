@@ -8,12 +8,31 @@ export const AuthProvider = ({ children }) => {
     token: sessionStorage.getItem("token") || null,
   });
 
-  const iniciarSesion = (usuario, token) => {
-    if (usuario && usuario.id) {
-      setAuth({ usuario, token });
-      sessionStorage.setItem("token", token);
-    } else {
-      console.error("Usuario o token inválidos");
+  const iniciarSesion = async (email, password) => {
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Credenciales incorrectas o error de servidor");
+      }
+
+      const { token } = await response.json();
+
+      if (token) {
+        setAuth({ usuario: { email }, token });
+        sessionStorage.setItem("token", token);
+      } else {
+        throw new Error("Token no recibido del servidor");
+      }
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
+      throw error;
     }
   };
 
@@ -29,4 +48,6 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
