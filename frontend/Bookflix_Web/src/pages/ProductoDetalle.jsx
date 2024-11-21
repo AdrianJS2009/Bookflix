@@ -1,18 +1,16 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import Button from "../components/Button";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import { selectToken, selectUsuario } from "../redux/slices/authSlice";
-import { agregarAlCarritoLocal } from "../redux/slices/carritoSlice";
+import { useAuth } from "../contexts/AuthContext";
+import { useCarrito } from "../contexts/CarritoContext";
 import "../styles/ProductoDetalle.css";
 
 const ProductoDetalle = () => {
   const { productoId } = useParams();
-  const dispatch = useDispatch();
-  const usuario = useSelector(selectUsuario);
-  const token = useSelector(selectToken);
+  const { agregarAlCarrito } = useCarrito();
+  const { auth } = useAuth();
 
   const [producto, setProducto] = useState(null);
   const [error, setError] = useState(null);
@@ -61,16 +59,16 @@ const ProductoDetalle = () => {
   };
 
   const handleAddToCart = () => {
-    if (producto && cantidad > 0 && cantidad <= producto.stock) {
-      dispatch(
-        agregarAlCarritoLocal({
-          productoId: producto.idLibro,
-          cantidad,
-          nombre: producto.nombre,
-          precio: producto.precio,
-          urlImagen: producto.urlImagen,
-        })
-      );
+    if (!auth.usuario) {
+      alert("Inicia sesión para añadir productos al carrito.");
+    } else if (producto && cantidad > 0 && cantidad <= producto.stock) {
+      agregarAlCarrito({
+        productoId: producto.idLibro,
+        cantidad,
+        nombre: producto.nombre,
+        precio: producto.precio,
+        urlImagen: producto.urlImagen,
+      });
       alert("Producto añadido al carrito");
     }
   };

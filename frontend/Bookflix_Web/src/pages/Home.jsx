@@ -1,30 +1,37 @@
-import { Link } from "react-router-dom";
+import Banner from "../components/Banner";
+import Carrusel2 from "../components/Carrusel2";
 import Footer from "../components/Footer";
+import Generos from "../components/Generos";
 import Header from "../components/Header";
-import "../styles/Home.css";
+import TopVentas from "../components/TopVentas";
 
-const Home = () => {
+import "../styles/default.css";
+import "../styles/styles.css";
+
+export default function Home() {
   return (
     <>
       <Header />
-      <div className="home-container texto-mediano">
-        <h1 className="texto-grande">¡Bienvenidos a Bookflix!</h1>
-        <p>
-          Explora nuestro catálogo de libros, revisa los detalles y añade tus
-          favoritos al carrito.
-        </p>
-        <div className="acciones">
-          <Link to="/catalogo" className="btnHome">
-            Ver Catálogo
-          </Link>
-          <Link to="/registro" className="btnHome">
-            Crear Cuenta
-          </Link>
-        </div>
+      <div className="home-bookflix fondo-blanco">
+        <Banner
+          imageSrc="/assets/banner/BannerUnete.png"
+          altText="Banner Unete"
+        />
+        <Generos />
+        <Banner
+          imageSrc="/assets/banner/BannerEnvioGratuito.png"
+          altText="Banner Envío Gratuito"
+        />
+
+        <Carrusel2 />
+        <TopVentas />
+        <Banner
+          imageSrc="/assets/banner/BannerWebAmigas.png"
+          altText="Banner Web Amigas"
+        />
       </div>
+
       <Footer />
     </>
   );
-};
-
-export default Home;
+}

@@ -1,4 +1,3 @@
-import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
 import Carrito from "./pages/Carrito";
@@ -8,27 +7,31 @@ import Login from "./pages/Login";
 import ProductoDetalle from "./pages/ProductoDetalle";
 import Registro from "./pages/Registro";
 import SobreNosotros from "./pages/SobreNosotros";
-import store from "./redux/store";
+
+import { AuthProvider } from "./contexts/AuthContext";
+import { CarritoProvider } from "./contexts/CarritoContext";
 
 import "./styles/default.css";
 
 function App() {
   return (
-    <Provider store={store}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
-            <Route path="login" element={<Login />} />
-            <Route path="registro" element={<Registro />} />
-            <Route path="catalogo" element={<Catalogo />} />
-            <Route path="producto/:productoId" element={<ProductoDetalle />} />
-            <Route path="sobre-nosotros" element={<SobreNosotros />} />
-            <Route path="carrito" element={<Carrito />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </Provider>
+    <AuthProvider>
+      <CarritoProvider>
+        <BrowserRouter>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/catalogo" element={<Catalogo />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/registro" element={<Registro />} />
+              <Route path="/producto/:id" element={<ProductoDetalle />} />
+              <Route path="/carrito" element={<Carrito />} />
+              <Route path="/sobre-nosotros" element={<SobreNosotros />} />
+            </Routes>
+          </Layout>
+        </BrowserRouter>
+      </CarritoProvider>
+    </AuthProvider>
   );
 }
 
