@@ -15,11 +15,12 @@ import "./styles/default.css";
 
 function App() {
   return (
-    <AuthProvider>
-      <CarritoProvider>
-        <BrowserRouter>
-          <Layout>
+    <>
+      <BrowserRouter>
+        <AuthProvider>
+          <CarritoProvider>
             <Routes>
+              <Route path="/" element={<Home />} />
               <Route path="/" element={<Home />} />
               <Route path="/catalogo" element={<Catalogo />} />
               <Route path="/login" element={<Login />} />
@@ -28,11 +29,11 @@ function App() {
               <Route path="/carrito" element={<Carrito />} />
               <Route path="/sobre-nosotros" element={<SobreNosotros />} />
             </Routes>
-          </Layout>
-        </BrowserRouter>
-      </CarritoProvider>
-    </AuthProvider>
-  );
+          </CarritoProvider>
+        </AuthProvider>
+      </BrowserRouter>
+    </>
+    );
 }
 
 export default App;
