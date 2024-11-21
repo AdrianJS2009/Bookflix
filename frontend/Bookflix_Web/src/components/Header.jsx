@@ -1,31 +1,32 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { useCarrito } from "../contexts/CarritoContext";
 import classes from "./styles/Header.module.css";
 
 const Header = () => {
-  const [userName, setUsername] = useState("Usuario");
-  const carritoItems = useSelector((state) => state.carrito.items || []); // Ensure carritoItems is at least an empty array
+  const [userName, setUserName] = useState("Usuario");
+  const { items } = useCarrito(); // Usar CarritoContext para obtener los ítems del carrito
+  const { auth } = useAuth(); // Usar AuthContext para manejar el estado del usuario
 
-  const cartCount = carritoItems.reduce(
-    (total, item) => total + item.cantidad,
-    0
-  );
+  const cartCount = items.reduce((total, item) => total + item.cantidad, 0); // Calcular la cantidad total en el carrito
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     if (token) {
       try {
         const decoded = JSON.parse(atob(token.split(".")[1]));
-        setUsername(
+        setUserName(
           `Hola, ${decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]}`
         );
       } catch (error) {
         console.error("Error decodificando el token:", error);
-        setUsername("Usuario");
+        setUserName("Usuario");
       }
+    } else if (auth.usuario) {
+      setUserName(`Hola, ${auth.usuario.Nombre || "Usuario"}`);
     }
-  }, []);
+  }, [auth]);
 
   return (
     <header className={`${classes.header} fondo-negro`}>
@@ -53,7 +54,7 @@ const Header = () => {
               alt="Icono Cesta"
             />
             <span className={classes.cartCount}>{cartCount}</span>
-            Cesta 
+            Cesta
           </NavLink>
         </div>
       </div>
