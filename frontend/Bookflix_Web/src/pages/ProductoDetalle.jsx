@@ -60,23 +60,23 @@ const ProductoDetalle = () => {
   };
   
   const handleAddToCart = () => {
-  if (!auth.usuario) {
-    alert("Inicia sesión para añadir productos al carrito.");
-  } else if (producto && cantidad > 0 && cantidad <= producto.stock) {
-    if (!producto.idLibro) {
-      console.error("El producto no tiene un idLibro definido:", producto);
-      alert("Error: El producto no tiene un ID válido.");
-      return;
+    if (!auth.usuario) {
+      alert("Inicia sesión para añadir productos al carrito.");
+    } else if (producto && cantidad > 0 && cantidad <= producto.stock) {
+      if (!producto.idLibro) {
+        console.error("El producto no tiene un idLibro definido:", producto);
+        alert("Error: El producto no tiene un ID válido.");
+        return;
+      }
+      agregarAlCarrito({
+        libroId: producto.idLibro, // Usar la propiedad que corresponde al backend
+        cantidad: cantidad,
+        nombreLibro: producto.nombre,
+        subtotal: producto.precio * cantidad, // Calcular subtotal
+      });
+      alert("Producto añadido al carrito");
     }
-    agregarAlCarrito({
-      libroId: producto.LibroId, // Usar la propiedad que corresponde al backend
-      cantidad: cantidad,
-      nombreLibro: producto.nombre,
-      subtotal: producto.precio * cantidad, // Calcular subtotal
-    });
-    alert("Producto añadido al carrito");
-  }
-};
+  };
 
 // Asegúrate de que producto está correctamente definido antes de renderizar el componente
 if (error) return <p>{error}</p>;
