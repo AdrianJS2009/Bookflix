@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import Button from "../components/Button";
@@ -19,21 +19,22 @@ const ProductoDetalle = () => {
   const [cantidad, setCantidad] = useState(1);
 
   useEffect(() => {
-    const fetchProducto = async () => {
+    const cargarProducto = async () => {
       try {
         const response = await fetch(
           `https://localhost:7182/api/Libro/Detalle/${productoId}`
         );
-        if (!response.ok)
-          throw new Error("Error al cargar los detalles del producto");
+        if (!response.ok) {
+          throw new Error("Error al cargar el producto.");
+        }
         const data = await response.json();
         setProducto(data);
-      } catch (error) {
-        setError(error.message);
+      } catch (err) {
+        setError(err.message);
       }
     };
 
-    fetchProducto();
+    cargarProducto();
   }, [productoId]);
 
   const manejarCambio = (e) => {
@@ -44,13 +45,7 @@ const ProductoDetalle = () => {
   const manejarBlur = () => {
     const cantidadInt = parseInt(cantidad, 10);
     if (!isNaN(cantidadInt)) {
-      if (cantidadInt < 1) {
-        setCantidad(1);
-      } else if (cantidadInt > producto.stock) {
-        setCantidad(producto.stock);
-      } else {
-        setCantidad(cantidadInt);
-      }
+      setCantidad(Math.min(Math.max(cantidadInt, 1), producto?.stock || 1));
     }
   };
 
@@ -81,7 +76,7 @@ const ProductoDetalle = () => {
   };
 
   if (error) return <p>{error}</p>;
-  if (!producto) return <p>Cargando...</p>;
+  if (!producto) return <p>Cargando producto...</p>;
 
   return (
     <>
