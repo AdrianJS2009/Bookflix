@@ -26,6 +26,7 @@ const ProductoDetalle = () => {
           throw new Error("Error al cargar el producto.");
         }
         const data = await response.json();
+        console.log("Producto cargado:", data); // Registro para verificar la estructura
         setProducto(data);
       } catch (err) {
         setError(err.message);
@@ -63,11 +64,11 @@ const ProductoDetalle = () => {
       alert("Inicia sesión para añadir productos al carrito.");
     } else if (producto && cantidad > 0 && cantidad <= producto.stock) {
       agregarAlCarrito({
-        productoId: producto.idLibro,
-        cantidad,
-        nombre: producto.nombre,
-        precio: producto.precio,
-        urlImagen: producto.urlImagen,
+        LibroId: producto.libroId || producto.idLibro || producto.id, // Manejar nombres posibles
+        Cantidad: cantidad,
+        Nombre: producto.nombre,
+        Precio: producto.precio,
+        UrlImagen: producto.urlImagen,
       });
       alert("Producto añadido al carrito");
     }
