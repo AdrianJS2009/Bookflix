@@ -4,16 +4,14 @@ import { useAuth } from "./AuthContext";
 const CarritoContext = createContext();
 
 export const CarritoProvider = ({ children }) => {
-  const { auth } = useAuth(); // Acceder al estado de autenticación
+  const { auth } = useAuth();
   const [items, setItems] = useState([]);
 
-  // Cargar carrito desde localStorage al iniciar
   useEffect(() => {
     const carritoLocal = JSON.parse(localStorage.getItem("carrito")) || [];
     setItems(carritoLocal);
   }, []);
 
-  // Guardar carrito en localStorage al cambiar
   useEffect(() => {
     if (!auth.token) {
       localStorage.setItem("carrito", JSON.stringify(items));
@@ -22,7 +20,6 @@ export const CarritoProvider = ({ children }) => {
 
   const agregarAlCarrito = async (producto) => {
     if (auth.token) {
-      // Usuario logeado: sincronizar con el backend
       try {
         const response = await fetch(
           "https://localhost:7182/api/Carrito/agregar",
@@ -32,7 +29,10 @@ export const CarritoProvider = ({ children }) => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${auth.token}`,
             },
-            body: JSON.stringify({ productoId: producto.id, cantidad: 1 }),
+            body: JSON.stringify({
+              LibroId: producto.id, // Propiedad esperada por el backend
+              Cantidad: 1, // Cantidad fija como mínimo 1
+            }),
           }
         );
 
@@ -41,19 +41,17 @@ export const CarritoProvider = ({ children }) => {
         }
 
         const updatedItems = await response.json();
-        setItems(updatedItems); // Actualizar el estado con los datos del servidor
+        setItems(updatedItems);
       } catch (error) {
         console.error("Error al sincronizar el carrito:", error);
       }
     } else {
-      // Usuario no logeado: agregar al carrito local
       setItems((prevItems) => [...prevItems, producto]);
     }
   };
 
   const vaciarCarrito = async () => {
     if (auth.token) {
-      // Usuario logeado: sincronizar con el backend
       try {
         const response = await fetch(
           "https://localhost:7182/api/Carrito/vaciar",
@@ -74,7 +72,6 @@ export const CarritoProvider = ({ children }) => {
       }
     }
 
-    // Vaciar el carrito local
     setItems([]);
     if (!auth.token) {
       localStorage.removeItem("carrito");
