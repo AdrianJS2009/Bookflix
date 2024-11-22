@@ -20,16 +20,13 @@ namespace Bookflix_Server.Services
             _repositorioProductos = repositorioProductos ?? throw new ArgumentNullException(nameof(repositorioProductos));
         }
 
-        // Inicializa la lista de títulos de libros desde el repositorio
         public async Task InicializarLibrosAsync()
         {
             TitulosLibros = await _repositorioProductos.ObtenerTodosLosNombres();
         }
 
-        // Realiza una búsqueda de títulos que coincidan con la consulta proporcionada
         public IEnumerable<string> Buscar(string consulta)
         {
-            // Verificamos si la lista está inicializada
             if (TitulosLibros == null || !TitulosLibros.Any())
                 throw new InvalidOperationException("La lista de títulos no ha sido inicializada.");
 
@@ -60,7 +57,6 @@ namespace Bookflix_Server.Services
             return resultado;
         }
 
-        // Verifica si alguna palabra de la consulta coincide con las del título
         private bool TieneCoincidencia(string[] palabrasConsulta, string[] palabrasTitulo)
         {
             foreach (string palabraTitulo in palabrasTitulo)
@@ -75,7 +71,6 @@ namespace Bookflix_Server.Services
             return false;
         }
 
-        // Determina si dos palabras coinciden exacta o parcialmente
         private bool EsCoincidencia(string palabraTitulo, string palabraConsulta)
         {
             return palabraTitulo == palabraConsulta
@@ -83,19 +78,16 @@ namespace Bookflix_Server.Services
                 || _comparadorSimilitud.Similarity(palabraTitulo, palabraConsulta) >= UMBRAL_SIMILITUD;
         }
 
-        // Divide un texto en palabras eliminando espacios adicionales
         private string[] ObtenerPalabras(string texto)
         {
             return texto.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         }
 
-        // Limpia el texto eliminando diacríticos y convirtiéndolo a minúsculas
         private string LimpiarTexto(string texto)
         {
             return EliminarDiacriticos(texto.ToLower());
         }
 
-        // Elimina los diacríticos de un texto (por ejemplo, acentos)
         private string EliminarDiacriticos(string texto)
         {
             string textoNormalizado = texto.Normalize(NormalizationForm.FormD);

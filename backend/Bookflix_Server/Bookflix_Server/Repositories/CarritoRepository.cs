@@ -14,7 +14,6 @@ namespace Bookflix_Server.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        // Obtiene el carrito de un usuario por su ID
         public async Task<Carrito> ObtenerCarritoPorUsuarioIdAsync(int idUsuario)
         {
             return await _context.Carritos
@@ -23,7 +22,6 @@ namespace Bookflix_Server.Repositories
                 .FirstOrDefaultAsync(c => c.UserId == idUsuario);
         }
 
-        // Obtiene o crea un carrito para un usuario
         public async Task<Carrito> ObtenerOCrearCarritoPorUsuarioIdAsync(int idUsuario)
         {
             var carrito = await ObtenerCarritoPorUsuarioIdAsync(idUsuario);
@@ -36,7 +34,6 @@ namespace Bookflix_Server.Repositories
             return carrito;
         }
 
-        // Agrega un producto al carrito
         public async Task AgregarProductoAlCarritoAsync(Carrito carrito, int idProducto, int cantidad)
         {
             if (carrito == null || cantidad <= 0)
@@ -57,7 +54,6 @@ namespace Bookflix_Server.Repositories
 
         }
 
-        // Elimina un producto del carrito
         public async Task<bool> EliminarProductoDelCarritoAsync(Carrito carrito, int idProducto)
         {
             if (carrito == null)
@@ -71,7 +67,6 @@ namespace Bookflix_Server.Repositories
             return true;
         }
 
-        // Vacía el carrito
         public async Task VaciarCarritoAsync(Carrito carrito)
         {
             if (carrito == null)
@@ -81,13 +76,11 @@ namespace Bookflix_Server.Repositories
             await GuardarCambiosAsync();
         }
 
-        // Guarda los cambios en el contexto
         public async Task GuardarCambiosAsync()
         {
             await _context.SaveChangesAsync();
         }
 
-        // Verifica si un usuario ha comprado un producto
         public async Task<bool> UsuarioHaCompradoProductoAsync(int idUsuario, int idProducto)
         {
             return await _context.Carritos

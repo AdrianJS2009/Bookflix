@@ -20,13 +20,11 @@ namespace Bookflix_Server.Repositories
 
         public async Task<int> SaveChangesAsync()
         {
-            // Guarda los cambios en la base de datos
             return await _context.SaveChangesAsync();
         }
 
         public void Dispose()
         {
-            // Libera los recursos del contexto
             _context.Dispose();
         }
     }
