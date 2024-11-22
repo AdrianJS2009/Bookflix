@@ -18,7 +18,7 @@ export const CarritoProvider = ({ children }) => {
     if (auth.token) {
       const sincronizarCarrito = async () => {
         try {
-          const response = await fetch("https://localhost:7182/api/Carrito", {
+          const response = await fetch("https://localhost:7182/api/Carrito/ListarCarrito", {
             headers: {
               Authorization: `Bearer ${auth.token}`,
             },

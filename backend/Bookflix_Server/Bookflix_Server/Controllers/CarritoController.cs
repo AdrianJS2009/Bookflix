@@ -27,12 +27,10 @@ namespace Bookflix_Server.Controllers
 
         private string ObtenerCorreoUsuario()
         {
-            return User.FindFirst(ClaimTypes.Name)?.Value; // Extraer el correo del token
+            return User.FindFirst(ClaimTypes.Name)?.Value;
         }
 
-        // Obtener carrito asociado al usuario autenticado o a un correo específico
         [HttpGet("ListarCarrito")]
-        [AllowAnonymous]
         public async Task<IActionResult> ObtenerCarrito(string correo = null)
         {
             string correoUsuario = correo ?? ObtenerCorreoUsuario();
@@ -64,7 +62,6 @@ namespace Bookflix_Server.Controllers
             return Ok(carritoDto);
         }
 
-        // Agregar producto al carrito
         [HttpPost("agregar")]
         public async Task<IActionResult> AgregarProductoAlCarrito([FromBody] CarritoItemAgregarDto itemDto)
         {
@@ -97,7 +94,6 @@ namespace Bookflix_Server.Controllers
             return Ok(new { success = true, message = "El producto se ha añadido al carrito exitosamente." });
         }
 
-        // Eliminar producto del carrito
         [HttpDelete("eliminar/{idProducto}")]
         public async Task<IActionResult> EliminarProductoDelCarrito(int idProducto, string correo = null)
         {
@@ -134,7 +130,6 @@ namespace Bookflix_Server.Controllers
             return Ok(new { success = true, message = "El producto se ha eliminado del carrito exitosamente." });
         }
 
-        // Vaciar carrito
         [HttpDelete("vaciar")]
         [AllowAnonymous]
         public async Task<IActionResult> VaciarCarrito(string correo = null)
@@ -155,6 +150,25 @@ namespace Bookflix_Server.Controllers
             await _carritoRepository.GuardarCambiosAsync();
 
             return Ok(new { success = true, message = "El carrito se ha vaciado correctamente." });
+        }
+
+        [HttpPost("comprar")]
+        public async Task<IActionResult> ComprarCarrito()
+        {
+            string correoUsuario = ObtenerCorreoUsuario();
+            var usuario = await _userRepository.ObtenerPorCorreoAsync(correoUsuario);
+
+            if (usuario == null)
+                return NotFound(new { error = "Usuario no encontrado." });
+
+            var carritoUsuario = await _carritoRepository.ObtenerCarritoPorUsuarioIdAsync(usuario.IdUser);
+            if (carritoUsuario == null || !carritoUsuario.Items.Any())
+                return NotFound(new { error = "El carrito está vacío." });
+
+            await _carritoRepository.ComprarCarritoAsync(carritoUsuario);
+            await _carritoRepository.GuardarCambiosAsync();
+
+            return Ok(new { success = true, message = "El carrito se ha comprado exitosamente." });
         }
     }
 }
