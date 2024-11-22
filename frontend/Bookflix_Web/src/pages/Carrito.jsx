@@ -7,109 +7,87 @@ import { useCarrito } from "../contexts/CarritoContext";
 import "../styles/Carrito.css";
 
 const Carrito = () => {
-  const { usuario, token } = useAuth();
-  const { items, vaciarCarrito, eliminarItem, cargarCarrito } = useCarrito();
+  const { items, vaciarCarrito, eliminarItem } = useCarrito();
+  const { auth } = useAuth();
+
+  const handleCompra = () => {
+    if (!auth.usuario) {
+      alert("Inicia sesión para realizar la compra");
+    } else {
+      alert("Compra realizada con éxito");
+      vaciarCarrito();
+    }
+  };
+
+  const handleEliminarItem = (libroId) => {
+    eliminarItem(libroId);
+  };
 
   useEffect(() => {
-    if (usuario) {
-      cargarCarrito(usuario.id);
-    }
-  }, [usuario, cargarCarrito]);
-
-  const handleClearCart = () => {
-    vaciarCarrito();
-    alert("El carrito ha sido vaciado.");
-  };
-
-  const handleCompra = async () => {
-    if (!usuario || !token) {
-      alert("Debes iniciar sesión para realizar esta acción.");
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `https://localhost:7182/api/Carrito/${usuario.id}/comprar`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        alert(
-          `Error al registrar la compra: ${errorData.error || "Desconocido"}`
-        );
-        return;
-      }
-
-      alert("Compra registrada con éxito.");
-      vaciarCarrito();
-    } catch (error) {
-      console.error("Error al registrar la compra:", error.message);
-      alert("Error al registrar la compra. Intenta nuevamente.");
-    }
-  };
+    console.log("Carrito actualizado", items);
+  }, [items]);
 
   return (
-    <>
+    <div className="carrito-container">
       <Header />
-      <div className="carrito-container texto-pequeño">
-        <h1 className="texto-grande">Carrito de Compras</h1>
+      <main>
+        <h1 className="texto-grande">Carrito de compras</h1>
         {items.length === 0 ? (
-          <p>No hay artículos en el carrito.</p>
+          <p className="texto-pequeño">Tu carrito está vacío.</p>
         ) : (
-          <div className="carrito-items">
-            {items.map((item) => (
-              <div key={item.productoId} className="carrito-item">
+          <ul className="carrito-lista">
+            {items.map((item, index) => (
+              <li key={index} className="carrito-item">
                 <img
                   src={item.urlImagen || "placeholder.jpg"}
-                  alt={`Portada de ${item.nombre || "Producto"}`}
+                  alt={`Portada de ${item.nombreLibro || "Producto"}`}
                   className="imagenProducto"
                 />
-                <p>
-                  <strong>{item.nombre || "Producto sin nombre"}</strong>
-                </p>
-                <p>
-                  Precio:{" "}
-                  {(item.precio / 100 || 0).toLocaleString("es-ES", {
-                    style: "currency",
-                    currency: "EUR",
-                  })}
-                </p>
-                <p>Cantidad: {item.cantidad}</p>
+                <div className="carrito-item-info">
+                  <p>
+                    <strong>{item.nombreLibro || "Producto sin nombre"}</strong>
+                  </p>
+                  <p>
+                    Precio unitario:{" "}
+                    {(item.precio / 100).toLocaleString("es-ES", {
+                      style: "currency",
+                      currency: "EUR",
+                    })}
+                  </p>
+                  <p>Cantidad: {item.cantidad}</p>
+                  <p>
+                    Precio total:{" "}
+                    {((item.precio * item.cantidad) / 100).toLocaleString("es-ES", {
+                      style: "currency",
+                      currency: "EUR",
+                    })}
+                  </p>
+                </div>
                 <button
                   className="botonEliminar"
-                  onClick={() => eliminarItem(item.productoId)}
+                  onClick={() => handleEliminarItem(item.libroId)}
                 >
                   x
                 </button>
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
         )}
         <Button
           label="Vaciar Carrito"
           styleType="btnDefault"
           className="botonVaciar"
-          onClick={handleClearCart}
-          disabled={items.length === 0}
+          onClick={vaciarCarrito}
         />
-        {"  "}
         <Button
           label="Comprar"
-          styleType="btnComprar"
+          styleType="btnDefault"
           className="botonComprar"
           onClick={handleCompra}
-          disabled={items.length === 0}
         />
-      </div>
+      </main>
       <Footer />
-    </>
+    </div>
   );
 };
 

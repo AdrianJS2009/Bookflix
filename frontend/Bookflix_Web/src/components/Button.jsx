@@ -1,7 +1,13 @@
 import PropTypes from "prop-types";
 import styles from "./styles/Button.module.css";
 
-const Button = ({ label, onClick, type, styleType, className }) => {
+const Button = ({
+  label,
+  onClick = () => {},
+  type = "button",
+  styleType = "btnDefault",
+  className = "",
+}) => {
   return (
     <button
       className={`${styles.button} ${styles[styleType]} ${className}`}
@@ -19,13 +25,6 @@ Button.propTypes = {
   type: PropTypes.string,
   styleType: PropTypes.string,
   className: PropTypes.string,
-};
-
-Button.defaultProps = {
-  type: "button",
-  onClick: () => {},
-  styleType: "btnDefault",
-  className: "",
 };
 
 export default Button;

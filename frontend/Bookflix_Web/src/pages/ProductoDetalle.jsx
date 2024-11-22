@@ -15,6 +15,7 @@ const ProductoDetalle = () => {
   const [producto, setProducto] = useState(null);
   const [error, setError] = useState(null);
   const [cantidad, setCantidad] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const cargarProducto = async () => {
@@ -30,6 +31,8 @@ const ProductoDetalle = () => {
         setProducto(data);
       } catch (err) {
         setError(err.message);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -77,6 +80,18 @@ const ProductoDetalle = () => {
       alert("Producto añadido al carrito");
     }
   };
+
+  if (loading) {
+    return <p>Cargando producto...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
+
+  if (!producto) {
+    return <p>Producto no encontrado.</p>;
+  }
 
   return (
     <>
