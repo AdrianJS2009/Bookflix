@@ -56,7 +56,7 @@ const Carrito = () => {
                   </p>
                   <p>Cantidad: {item.cantidad}</p>
                   <p>
-                    Precio total:{" "}
+                    Subtotal:{" "}
                     {((item.precio * item.cantidad) / 100).toLocaleString("es-ES", {
                       style: "currency",
                       currency: "EUR",

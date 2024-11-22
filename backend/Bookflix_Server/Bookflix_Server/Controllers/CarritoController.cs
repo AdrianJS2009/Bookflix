@@ -1,8 +1,12 @@
 ﻿using Bookflix_Server.DTOs;
+using Bookflix_Server.Models;
 using Bookflix_Server.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Bookflix_Server.Controllers
 {
@@ -14,15 +18,21 @@ namespace Bookflix_Server.Controllers
         private readonly ICarritoRepository _carritoRepository;
         private readonly IProductoRepository _productoRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ICompraRepository _compraRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
         public CarritoController(
             ICarritoRepository carritoRepository,
             IProductoRepository productoRepository,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            ICompraRepository compraRepository,
+            IUnitOfWork unitOfWork)
         {
             _carritoRepository = carritoRepository;
             _productoRepository = productoRepository;
             _userRepository = userRepository;
+            _compraRepository = compraRepository;
+            _unitOfWork = unitOfWork;
         }
 
         private string ObtenerCorreoUsuario()
@@ -89,7 +99,8 @@ namespace Bookflix_Server.Controllers
             }
 
             await _carritoRepository.AgregarProductoAlCarritoAsync(carritoUsuario, itemDto.LibroId, itemDto.Cantidad);
-            await _carritoRepository.GuardarCambiosAsync();
+
+            await _unitOfWork.SaveChangesAsync();
 
             return Ok(new { success = true, message = "El producto se ha añadido al carrito exitosamente." });
         }
@@ -125,13 +136,12 @@ namespace Bookflix_Server.Controllers
                 return NotFound(new { error = "El producto no se encuentra en el carrito." });
             }
 
-            await _carritoRepository.GuardarCambiosAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Ok(new { success = true, message = "El producto se ha eliminado del carrito exitosamente." });
         }
 
         [HttpDelete("vaciar")]
-        [AllowAnonymous]
         public async Task<IActionResult> VaciarCarrito(string correo = null)
         {
             string correoUsuario = correo ?? ObtenerCorreoUsuario();
@@ -147,7 +157,8 @@ namespace Bookflix_Server.Controllers
             }
 
             await _carritoRepository.VaciarCarritoAsync(carritoUsuario);
-            await _carritoRepository.GuardarCambiosAsync();
+
+            await _unitOfWork.SaveChangesAsync();
 
             return Ok(new { success = true, message = "El carrito se ha vaciado correctamente." });
         }
@@ -165,10 +176,38 @@ namespace Bookflix_Server.Controllers
             if (carritoUsuario == null || !carritoUsuario.Items.Any())
                 return NotFound(new { error = "El carrito está vacío." });
 
-            await _carritoRepository.ComprarCarritoAsync(carritoUsuario);
-            await _carritoRepository.GuardarCambiosAsync();
+            var compra = new Compra
+            {
+                UsuarioId = usuario.IdUser,
+                FechaCompra = DateTime.UtcNow
+            };
 
-            return Ok(new { success = true, message = "El carrito se ha comprado exitosamente." });
+            foreach (var item in carritoUsuario.Items)
+            {
+                var libro = await _productoRepository.ObtenerPorIdAsync(item.LibroId);
+                if (libro == null || libro.Stock < item.Cantidad)
+                {
+                    return BadRequest(new { error = $"El producto '{libro?.Nombre}' no tiene suficiente stock." });
+                }
+
+                libro.Stock -= item.Cantidad;
+
+                var detalle = new CompraDetalle
+                {
+                    LibroId = item.LibroId,
+                    Cantidad = item.Cantidad,
+                    PrecioUnitario = libro.Precio
+                };
+
+                compra.Detalles.Add(detalle);
+            }
+
+            await _compraRepository.RegistrarCompraAsync(compra);
+            await _carritoRepository.VaciarCarritoAsync(carritoUsuario);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return Ok(new { success = true, message = "Compra realizada exitosamente." });
         }
     }
 }
