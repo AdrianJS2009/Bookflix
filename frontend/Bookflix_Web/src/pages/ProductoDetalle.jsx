@@ -26,7 +26,7 @@ const ProductoDetalle = () => {
           throw new Error("Error al cargar el producto.");
         }
         const data = await response.json();
-        console.log("Producto cargado:", data); // Registro para verificar la estructura
+        console.log("Producto cargado:", data);
         setProducto(data);
       } catch (err) {
         setError(err.message);
@@ -58,7 +58,7 @@ const ProductoDetalle = () => {
       return prevCantidad;
     });
   };
-  
+
   const handleAddToCart = () => {
     if (!auth.usuario) {
       alert("Inicia sesión para añadir productos al carrito.");
@@ -69,18 +69,14 @@ const ProductoDetalle = () => {
         return;
       }
       agregarAlCarrito({
-        libroId: producto.idLibro, // Usar la propiedad que corresponde al backend
+        libroId: producto.idLibro,
         cantidad: cantidad,
         nombreLibro: producto.nombre,
-        subtotal: producto.precio * cantidad, // Calcular subtotal
+        subtotal: producto.precio * cantidad,
       });
       alert("Producto añadido al carrito");
     }
   };
-
-// Asegúrate de que producto está correctamente definido antes de renderizar el componente
-if (error) return <p>{error}</p>;
-if (!producto) return <p>Cargando producto...</p>;
 
   return (
     <>

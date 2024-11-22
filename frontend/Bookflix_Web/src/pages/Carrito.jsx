@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import Button from "../components/Button";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
@@ -7,8 +7,8 @@ import { useCarrito } from "../contexts/CarritoContext";
 import "../styles/Carrito.css";
 
 const Carrito = () => {
-  const { usuario, token } = useAuth(); // Obtenemos usuario y token del contexto
-  const { items, vaciarCarrito, eliminarItem, cargarCarrito } = useCarrito(); // Acciones del carrito
+  const { usuario, token } = useAuth();
+  const { items, vaciarCarrito, eliminarItem, cargarCarrito } = useCarrito();
 
   useEffect(() => {
     if (usuario) {
@@ -41,12 +41,14 @@ const Carrito = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        alert(`Error al registrar la compra: ${errorData.error || "Desconocido"}`);
+        alert(
+          `Error al registrar la compra: ${errorData.error || "Desconocido"}`
+        );
         return;
       }
 
       alert("Compra registrada con éxito.");
-      vaciarCarrito(); // Vaciamos el carrito después de la compra
+      vaciarCarrito();
     } catch (error) {
       console.error("Error al registrar la compra:", error.message);
       alert("Error al registrar la compra. Intenta nuevamente.");

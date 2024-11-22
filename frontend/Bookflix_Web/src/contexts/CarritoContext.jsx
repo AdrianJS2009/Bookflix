@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 
 const CarritoContext = createContext();
@@ -16,7 +16,6 @@ export const CarritoProvider = ({ children }) => {
 
   useEffect(() => {
     if (auth.token) {
-      // Sincronizar con el servidor si hay un token
       const sincronizarCarrito = async () => {
         try {
           const response = await fetch("https://localhost:7182/api/Carrito", {
@@ -44,11 +43,9 @@ export const CarritoProvider = ({ children }) => {
     if (auth.token) {
       try {
         const payload = {
-          LibroId: producto.libroId, // Asegúrate de que coincide con el modelo del backend
-          Cantidad: producto.cantidad, // Utiliza la cantidad proporcionada
+          LibroId: producto.libroId,
+          Cantidad: producto.cantidad,
         };
-
-        console.log("Payload being sent:", payload); // Depuración: Muestra los datos enviados
 
         const response = await fetch(
           "https://localhost:7182/api/Carrito/agregar",
@@ -62,9 +59,6 @@ export const CarritoProvider = ({ children }) => {
           }
         );
 
-        console.log("Response status:", response.status); // Depuración: Muestra el estado de la respuesta
-        console.log("Response headers:", response.headers); // Depuración: Muestra los encabezados de la respuesta
-
         if (!response.ok) {
           throw new Error("No se pudo sincronizar con el servidor.");
         }
@@ -73,7 +67,6 @@ export const CarritoProvider = ({ children }) => {
         setItems((prevItems) => [...prevItems, producto]);
       } catch (error) {
         console.error("Error al sincronizar el carrito:", error);
-        // Manejo del error
       }
     } else {
       // Si no hay token, guarda en localStorage
