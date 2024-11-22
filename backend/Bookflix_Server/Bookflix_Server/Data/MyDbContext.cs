@@ -10,7 +10,7 @@ namespace Bookflix_Server.Data
         public DbSet<Reseña> Reseñas { get; set; }
         public DbSet<Carrito> Carritos { get; set; }
         public DbSet<CarritoItem> CarritoItems { get; set; }
-        public DbSet<Compra> Compras { get; set; }
+        public DbSet<Compras> Compras { get; set; }
         public DbSet<CompraDetalle> CompraDetalles { get; set; }
 
         public MyDbContext(DbContextOptions<MyDbContext> options) : base(options) { }
@@ -50,7 +50,7 @@ namespace Bookflix_Server.Data
               .HasForeignKey(ci => ci.CarritoId)
               .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Compra>()
+            modelBuilder.Entity<Compras>()
                 .HasMany(c => c.Detalles)
                 .WithOne(d => d.Compra)
                 .HasForeignKey(d => d.CompraId)

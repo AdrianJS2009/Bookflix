@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Bookflix_Server.Models
 {
-    public class Compra
+    public class Compras
     {
+
         [Key]
         public int IdCompra { get; set; }
 

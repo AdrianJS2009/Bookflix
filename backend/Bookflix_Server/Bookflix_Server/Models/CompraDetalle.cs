@@ -12,7 +12,7 @@ namespace Bookflix_Server.Models
         public int CompraId { get; set; }
 
         [ForeignKey("CompraId")]
-        public Compra Compra { get; set; }
+        public Compras Compra { get; set; }
 
         [Required]
         public int LibroId { get; set; }

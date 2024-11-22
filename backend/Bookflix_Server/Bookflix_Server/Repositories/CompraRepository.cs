@@ -15,7 +15,7 @@ namespace Bookflix_Server.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task RegistrarCompraAsync(Compra compra)
+        public async Task RegistrarCompraAsync(Compras compra)
         {
             if (compra == null)
                 throw new ArgumentNullException(nameof(compra));
@@ -24,7 +24,7 @@ namespace Bookflix_Server.Repositories
             await GuardarCambiosAsync();
         }
 
-        public async Task<IEnumerable<Compra>> ObtenerComprasPorUsuarioIdAsync(int usuarioId)
+        public async Task<IEnumerable<Compras>> ObtenerComprasPorUsuarioIdAsync(int usuarioId)
         {
             return await _context.Compras
                 .Include(c => c.Detalles)
