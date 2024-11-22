@@ -66,9 +66,7 @@ const ProductoDetalle = () => {
   };
 
   const handleAddToCart = () => {
-    if (!auth.usuario) {
-      alert("Inicia sesión para añadir productos al carrito.");
-    } else if (producto && cantidad > 0 && cantidad <= producto.stock) {
+     if (producto && cantidad > 0 && cantidad <= producto.stock) {
       if (!producto.idLibro) {
         console.error("El producto no tiene un idLibro definido:", producto);
         alert("Error: El producto no tiene un ID válido.");

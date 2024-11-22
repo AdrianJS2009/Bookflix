@@ -19,20 +19,18 @@ export const CarritoProvider = ({ children }) => {
       // Sincronizar con el servidor si hay un token
       const sincronizarCarrito = async () => {
         try {
-          const response = await fetch("https://localhost:7182/api/Carrito/", {
-            headers: {
-              Authorization: `Bearer ${auth.token}`,
-            },
-          });
-          if (!response.ok) {
-            throw new Error("No se pudo sincronizar con el servidor.");
-          }
-          const data = await response.json();
-          setItems(data);
+            const response = await fetch("https://localhost:7182/api/Carrito/ListarCarrito", {
+                headers: { Authorization: `Bearer ${auth.token}` },
+            });
+            if (!response.ok) throw new Error("No se pudo sincronizar con el servidor.");
+    
+            const data = await response.json();
+            const carritoItems = Array.isArray(data?.items) ? data.items : []; // Asegurar que siempre sea un array
+            setItems(carritoItems);
         } catch (error) {
-          console.error("Error al sincronizar el carrito:", error);
+            console.error("Error al sincronizar el carrito:", error);
         }
-      };
+    };
       sincronizarCarrito();
     } else {
       // Guardar en localStorage si no hay token
