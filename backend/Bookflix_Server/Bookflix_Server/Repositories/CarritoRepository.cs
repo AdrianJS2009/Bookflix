@@ -87,5 +87,18 @@ namespace Bookflix_Server.Repositories
                 .Include(c => c.Items)
                 .AnyAsync(c => c.UserId == idUsuario && c.Items.Any(item => item.LibroId == idProducto && item.Comprado));
         }
+
+        public async Task ComprarCarritoAsync(Carrito carrito)
+        {
+            if (carrito == null)
+                throw new ArgumentNullException(nameof(carrito));
+
+            foreach (var item in carrito.Items)
+            {
+                item.Comprado = true;
+            }
+            carrito.Items.Clear();
+            await GuardarCambiosAsync();
+        }
     }
 }
