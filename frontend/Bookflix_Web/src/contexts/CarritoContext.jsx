@@ -23,17 +23,24 @@ export const CarritoProvider = ({ children }) => {
               Authorization: `Bearer ${auth.token}`,
             },
           });
+
           if (!response.ok) {
             throw new Error("No se pudo sincronizar con el servidor.");
           }
+
           const data = await response.json();
-          setItems(data);
+          setItems(Array.isArray(data) ? data : []);
         } catch (error) {
           console.error("Error al sincronizar el carrito:", error);
         }
       };
+
       sincronizarCarrito();
-    } else {
+    }
+  }, [auth.token]);
+
+  useEffect(() => {
+    if (!auth.token) {
       localStorage.setItem("carrito", JSON.stringify(items));
     }
   }, [items, auth.token]);
@@ -42,11 +49,9 @@ export const CarritoProvider = ({ children }) => {
     if (auth.token) {
       try {
         const payload = {
-          LibroId: producto.libroId, 
-          Cantidad: producto.cantidad, 
+          LibroId: producto.libroId,
+          Cantidad: producto.cantidad,
         };
-
-        console.log("Payload being sent:", payload); 
 
         const response = await fetch(
           "https://localhost:7182/api/Carrito/agregar",
@@ -59,9 +64,6 @@ export const CarritoProvider = ({ children }) => {
             body: JSON.stringify(payload),
           }
         );
-
-        console.log("Response status:", response.status); 
-        console.log("Response headers:", response.headers); 
 
         if (!response.ok) {
           throw new Error("No se pudo sincronizar con el servidor.");
@@ -97,17 +99,15 @@ export const CarritoProvider = ({ children }) => {
           throw new Error("No se pudo eliminar el producto del servidor.");
         }
 
-        setItems((prevItems) => {
-          const newItems = prevItems.filter(item => item.libroId !== productoId);
-          localStorage.setItem("carrito", JSON.stringify(newItems));
-          return newItems;
-        });
+        setItems((prevItems) =>
+          prevItems.filter((item) => item.libroId !== productoId)
+        );
       } catch (error) {
         console.error("Error al eliminar el producto del carrito:", error);
       }
     } else {
       setItems((prevItems) => {
-        const newItems = prevItems.filter(item => item.libroId !== productoId);
+        const newItems = prevItems.filter((item) => item.libroId !== productoId);
         localStorage.setItem("carrito", JSON.stringify(newItems));
         return newItems;
       });
@@ -143,7 +143,9 @@ export const CarritoProvider = ({ children }) => {
   };
 
   return (
-    <CarritoContext.Provider value={{ items, agregarAlCarrito, eliminarItem, vaciarCarrito }}>
+    <CarritoContext.Provider
+      value={{ items, agregarAlCarrito, eliminarItem, vaciarCarrito }}
+    >
       {children}
     </CarritoContext.Provider>
   );

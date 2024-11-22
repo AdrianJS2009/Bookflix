@@ -6,10 +6,12 @@ import classes from "./styles/Header.module.css";
 
 const Header = () => {
   const [userName, setUserName] = useState("Usuario");
-  const { items } = useCarrito(); 
-  const { auth } = useAuth();
+  const { items } = useCarrito(); // Usar CarritoContext para obtener los ítems del carrito
+  const { auth } = useAuth(); // Usar AuthContext para manejar el estado del usuario
 
-  const cartCount = items.reduce((total, item) => total + item.cantidad, 0); 
+  const cartCount = Array.isArray(items)
+    ? items.reduce((total, item) => total + item.cantidad, 0)
+    : 0;
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
