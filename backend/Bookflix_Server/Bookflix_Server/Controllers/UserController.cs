@@ -134,5 +134,45 @@ namespace Bookflix_Server.Controllers
 
             return Ok(new { message = "La cuenta del usuario ha sido eliminada exitosamente." });
         }
+
+        // Publicar una reseña
+        [HttpPost("publicar-resena")]
+        public async Task<IActionResult> PublicarResena([FromBody] ReseñaDTO datosResena)
+        {
+            var idUsuario = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+            var usuario = await _context.Users.Include(u => u.Reseñas).FirstOrDefaultAsync(u => u.IdUser == idUsuario);
+            if (usuario == null)
+            {
+                return Unauthorized(new { error = "Usuario no autenticado." });
+            }
+
+            var producto = await _context.Libros.FindAsync(datosResena.ProductoId);
+            if (producto == null)
+            {
+                return NotFound(new { error = "El producto especificado no fue encontrado." });
+            }
+
+            var resenaExistente = usuario.Reseñas.FirstOrDefault(r => r.ProductoId == datosResena.ProductoId);
+            if (resenaExistente != null)
+            {
+                return BadRequest(new { error = "Ya has publicado una reseña para este producto." });
+            }
+
+            var resena = new Reseña
+            {
+                UsuarioId = idUsuario,
+                Autor = usuario.Nombre,
+                ProductoId = datosResena.ProductoId,
+                Texto = datosResena.Texto,
+                Estrellas = datosResena.Estrellas,
+                FechaPublicacion = DateTime.UtcNow
+            };
+
+            _context.Reseñas.Add(resena);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "La reseña ha sido publicada exitosamente." });
+        }
     }
 }

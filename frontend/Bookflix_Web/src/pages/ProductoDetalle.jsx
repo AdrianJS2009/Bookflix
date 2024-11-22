@@ -17,6 +17,9 @@ const ProductoDetalle = () => {
   const [cantidad, setCantidad] = useState(1);
   const [loading, setLoading] = useState(true);
 
+  const [textoReseña, setTextoReseña] = useState("");
+  const [reseñas, setReseñas] = useState([]);
+
   useEffect(() => {
     const cargarProducto = async () => {
       try {
@@ -78,6 +81,43 @@ const ProductoDetalle = () => {
         subtotal: producto.precio * cantidad,
       });
       alert("Producto añadido al carrito");
+    }
+  };
+
+  const handleCrearReseña = async () => {
+
+    if (textoReseña.trim()) {
+      try {
+        const nuevaReseña = {
+          texto: textoReseña,
+          libroId: productoId,
+        };
+
+        const response = await fetch(
+          `https://localhost:7182/api/User/publicar-resena`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${auth.token}`,
+            },
+            body: JSON.stringify(nuevaReseña),
+          }
+        );
+
+        if (!response.ok) throw new Error("Error al enviar la reseña");
+
+        const data = await response.json();
+        setReseñas([
+          { texto: textoReseña, categoria: data.categoria },
+          ...reseñas,
+        ]);
+        setTextoReseña("");
+      } catch (error) {
+        console.error("Error al crear la reseña:", error);
+      }
+    } else {
+      alert("Escribe una reseña antes de enviar");
     }
   };
 
@@ -167,6 +207,35 @@ const ProductoDetalle = () => {
             />
           </div>
         </div>
+        <hr />
+        <div className="reseñas texto-pequeño">
+          <h2 className="texto-grande">Reseñas</h2>
+
+          <div className="crearReseña">
+            <textarea
+              className="textoReseñaNueva"
+              value={textoReseña}
+              onChange={(e) => setTextoReseña(e.target.value)}
+              placeholder="Escribe tu reseña aquí..."
+            />
+            <Button
+              label="Crear"
+              styleType="btnCrearReseña"
+              onClick={handleCrearReseña}
+            />
+          </div>
+        </div>
+        {reseñas.length > 0 ? (
+            reseñas.map((reseña, index) => (
+              <div key={index} className="reseña">
+                <p>
+                  Texto: {reseña.texto} - Categoría: {reseña.categoria}
+                </p>
+              </div>
+            ))
+          ) : (
+            <p className="sin-reviews">No hay reseñas para este producto.</p>
+          )}
       </div>
       <Footer />
     </>
