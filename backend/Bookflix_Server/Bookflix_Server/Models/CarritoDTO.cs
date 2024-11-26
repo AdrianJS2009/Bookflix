@@ -14,5 +14,9 @@
         public string NombreLibro { get; set; }
         public int Cantidad { get; set; }
         public int Subtotal { get; set; }
+
+        public string UrlImagen { get; set; }
+
+        public int Precio { get; set; }
     }
 }

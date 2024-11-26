@@ -72,11 +72,22 @@ const ProductoDetalle = () => {
 
   const handleAgregar = () => {
     if (producto && cantidad > 0 && cantidad <= producto.stock) {
-      agregarAlCarrito({
-        libroId: producto.idLibro,
+      console.log("Producto antes de agregar:", producto);
+      console.log("Cantidad seleccionada:", cantidad);
+
+      agregarAlCarrito(
+        {
+          idLibro: producto.idLibro,
+          nombre: producto.nombre,
+          precio: producto.precio,
+          urlImagen: producto.urlImagen,
+        },
+        cantidad
+      );
+    } else {
+      console.warn("No se puede agregar al carrito: datos inválidos.", {
+        producto,
         cantidad,
-        nombre: producto.nombre,
-        subtotal: producto.precio * cantidad,
       });
     }
   };

@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { useAuth } from "../contexts/AuthContext";
@@ -19,7 +18,10 @@ const Carrito = () => {
       alert("Inicia sesión para realizar la compra");
     } else {
       alert("Compra realizada con éxito");
-      const total = items.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
+      const total = items.reduce(
+        (sum, item) => sum + item.precio * item.cantidad,
+        0
+      );
       vaciarCarrito();
       navigate("/confirmacion-compra", { state: { items, total } });
     }
@@ -30,28 +32,38 @@ const Carrito = () => {
   };
 
   return (
-    <>
-      <main className="carrito-container texto-pequeño">
-        <h1 className="texto-grande">Carrito de compras</h1>
-        {items.length === 0 ? (
-          <p className="texto-pequeño">Tu carrito está vacío.</p>
-        ) : (
-          <ul className="carrito-lista">
-            {items.map((item, index) => (
+    <main className="carrito-container texto-pequeño">
+      <h1 className="texto-grande">Carrito de compras</h1>
+      {items.length === 0 ? (
+        <p className="texto-pequeño">Tu carrito está vacío.</p>
+      ) : (
+        <ul className="carrito-lista">
+          {items.map((item, index) => {
+            console.log("Item en carrito:", item);
+            return (
               <li key={index} className="carrito-item">
-                <p>{item.nombreLibro}</p>
+                <img
+                  src={item.urlImagen || "placeholder.jpg"}
+                  alt={`Imagen de ${item.nombre || "Producto"}`}
+                  className="imagen-carrito"
+                />
+                <p>{item.nombre || "Sin nombre"}</p>
                 <p>Cantidad: {item.cantidad}</p>
                 <p>Precio: {(item.precio / 100).toFixed(2)} €</p>
-                <p>Subtotal: {((item.precio * item.cantidad) / 100).toFixed(2)} €</p>
-                <button onClick={() => handleEliminarItem(item.libroId)}>Eliminar</button>
+                <p>
+                  Subtotal: {((item.precio * item.cantidad) / 100).toFixed(2)} €
+                </p>
+                <button onClick={() => handleEliminarItem(item.libroId)}>
+                  Eliminar
+                </button>
               </li>
-            ))}
-          </ul>
-        )}
-        <Button label="Vaciar Carrito" onClick={vaciarCarrito} />
-        <Button label="Comprar" onClick={handleCompra} />
-      </main>
-    </>
+            );
+          })}
+        </ul>
+      )}
+      <Button label="Vaciar Carrito" onClick={vaciarCarrito} />
+      <Button label="Comprar" onClick={handleCompra} />
+    </main>
   );
 };
 

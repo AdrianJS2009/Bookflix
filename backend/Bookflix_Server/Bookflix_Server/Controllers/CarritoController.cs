@@ -62,9 +62,11 @@ namespace Bookflix_Server.Controllers
                 Items = carrito.Items.Select(item => new CarritoItemDTO
                 {
                     LibroId = item.LibroId,
-                    NombreLibro = item.Libro?.Nombre,
+                    NombreLibro = item.Libro.Nombre,
                     Cantidad = item.Cantidad,
-                    Subtotal = item.Subtotal
+                    Subtotal = item.Cantidad * item.Libro.Precio,
+                    UrlImagen = item.Libro.UrlImagen,
+                    Precio = item.Libro.Precio
                 }).ToList(),
                 Total = carrito.Total
             };

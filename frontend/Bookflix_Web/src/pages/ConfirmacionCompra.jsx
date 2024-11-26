@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
-import "../componets/styles/ConfirmacionCompra.css";
+import "../components/styles/ConfirmacionCompra.css";
 
 const ConfirmacionCompra = () => {
   const location = useLocation();
@@ -24,12 +24,25 @@ const ConfirmacionCompra = () => {
       <ul className="lista-productos">
         {items.map((item, index) => (
           <li key={index} className="producto">
-            <img src={item.urlImagen || "placeholder.jpg"} alt={item.nombreLibro} className="imagen-producto" />
+            <img
+              src={item.urlImagen || "placeholder.jpg"}
+              alt={item.nombreLibro}
+              className="imagen-producto"
+            />
             <div className="detalles-producto">
-              <p><strong>Producto:</strong> {item.nombreLibro}</p>
-              <p><strong>Cantidad:</strong> {item.cantidad}</p>
-              <p><strong>Precio:</strong> {(item.precio / 100).toFixed(2)} €</p>
-              <p><strong>Subtotal:</strong> {((item.precio * item.cantidad) / 100).toFixed(2)} €</p>
+              <p>
+                <strong>Producto:</strong> {item.nombreLibro}
+              </p>
+              <p>
+                <strong>Cantidad:</strong> {item.cantidad}
+              </p>
+              <p>
+                <strong>Precio:</strong> {(item.precio / 100).toFixed(2)} €
+              </p>
+              <p>
+                <strong>Subtotal:</strong>{" "}
+                {((item.precio * item.cantidad) / 100).toFixed(2)} €
+              </p>
             </div>
             <Button
               label="Descargar Libro"

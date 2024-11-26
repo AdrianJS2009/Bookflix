@@ -31,7 +31,7 @@ export const CarritoProvider = ({ children }) => {
           const carritoItems = Array.isArray(data?.items)
             ? data.items.map((item) => ({
                 libroId: item.libroId,
-                nombre: item.nombre || "Sin nombre",
+                nombre: item.nombreLibro || "Sin nombre",
                 cantidad: item.cantidad || 1,
                 precio: item.precio || 0,
                 urlImagen: item.urlImagen || "placeholder.jpg",
@@ -49,6 +49,16 @@ export const CarritoProvider = ({ children }) => {
   }, [auth.token]);
 
   const agregarAlCarrito = (producto, cantidad) => {
+    console.log("Datos recibidos en agregarAlCarrito:", { producto, cantidad });
+
+    if (!producto || !cantidad) {
+      console.error(
+        "Error: producto o cantidad no definidos en agregarAlCarrito.",
+        { producto, cantidad }
+      );
+      return;
+    }
+
     const productoConDatosCompletos = {
       libroId: producto.idLibro,
       cantidad,
@@ -79,39 +89,13 @@ export const CarritoProvider = ({ children }) => {
         newItems = [...prevItems, productoConDatosCompletos];
       }
 
-      // Guarda los cambios en localStorage
       localStorage.setItem("carrito", JSON.stringify(newItems));
-
       return newItems;
     });
 
     alert(
       `${productoConDatosCompletos.cantidad} unidad(es) de "${productoConDatosCompletos.nombre}" añadida(s) al carrito.`
     );
-
-    if (auth.token) {
-      try {
-        const payload = {
-          LibroId: productoConDatosCompletos.libroId,
-          Cantidad: productoConDatosCompletos.cantidad,
-        };
-
-        const response = fetch("https://localhost:7182/api/Carrito/agregar", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${auth.token}`,
-          },
-          body: JSON.stringify(payload),
-        });
-
-        if (!response.ok) {
-          throw new Error("Error al sincronizar con el servidor.");
-        }
-      } catch (error) {
-        console.error("Error al agregar producto al carrito remoto:", error);
-      }
-    }
   };
 
   const eliminarItem = async (productoId) => {
@@ -175,7 +159,6 @@ export const CarritoProvider = ({ children }) => {
         console.error("Error al vaciar el carrito:", error);
       }
     } else {
-      // Si no hay token, vacía el localStorage
       setItems([]);
       localStorage.removeItem("carrito");
     }
