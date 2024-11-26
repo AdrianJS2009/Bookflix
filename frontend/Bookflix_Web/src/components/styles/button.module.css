@@ -28,6 +28,24 @@
   box-shadow: 0 4px 8px var(--difuminado);
 }
 
+.btnDescargar {
+  background-color: #28a745;
+  color: white;
+}
+
+.btnDescargar:hover {
+  background-color: #218838;
+}
+
+.btnVolver {
+  background-color: #007bff;
+  color: white;
+}
+
+.btnVolver:hover {
+  background-color: #0056b3;
+}
+
 .btnDefault {
   background-color: var(--negro);
   color: var(--blanco);
