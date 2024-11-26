@@ -17,7 +17,7 @@ const ConfirmacionCompra = () => {
   };
 
   return (
-    <div className="confirmacion-compra-container">
+    <main className="confirmacion-compra-container">
       <h1 className="texto-grande">Confirmación de Compra</h1>
       <p className="texto-mediano">¡Gracias por tu compra!</p>
       <p className="texto-mediano">Detalles de la compra:</p>
@@ -58,7 +58,7 @@ const ConfirmacionCompra = () => {
         onClick={handleVolverAlCatalogo}
         styleType="btnVolver"
       />
-    </div>
+    </main>
   );
 };
 
