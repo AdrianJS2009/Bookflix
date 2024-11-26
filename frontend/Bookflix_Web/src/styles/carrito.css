@@ -29,10 +29,11 @@
     width: 100%;
     min-height: 150px;
     box-sizing: border-box;
+    box-shadow: 4px 4px 10px var(--difuminado);
 }
 
-.carrito-item img.imagenProducto {
-    max-height: 150px;
+.carrito-item img.imagen-carrito {
+    max-height: 200px;
     width: auto;
     object-fit: contain;
     border-radius: 5px;

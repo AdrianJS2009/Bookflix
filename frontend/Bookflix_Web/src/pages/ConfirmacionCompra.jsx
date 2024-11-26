@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
-import "../components/styles/ConfirmacionCompra.css";
+import "../styles/ConfirmacionCompra.css";
 
 const ConfirmacionCompra = () => {
   const location = useLocation();

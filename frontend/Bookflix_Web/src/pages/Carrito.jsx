@@ -53,7 +53,7 @@ const Carrito = () => {
                 <p>
                   Subtotal: {((item.precio * item.cantidad) / 100).toFixed(2)} €
                 </p>
-                <button onClick={() => handleEliminarItem(item.libroId)}>
+                <button className="botonEliminar" onClick={() => handleEliminarItem(item.libroId)}>
                   Eliminar
                 </button>
               </li>
@@ -61,8 +61,8 @@ const Carrito = () => {
           })}
         </ul>
       )}
-      <Button label="Vaciar Carrito" onClick={vaciarCarrito} />
-      <Button label="Comprar" onClick={handleCompra} />
+      <Button label="Vaciar Carrito" className="botonVaciar" onClick={vaciarCarrito} />
+      <Button label="Comprar" className="botonComprar" onClick={handleCompra} />
     </main>
   );
 };
