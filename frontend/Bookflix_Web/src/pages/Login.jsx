@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
-import { useAuth } from "../contexts/AuthContext"; // Importa el hook del contexto
+import { useAuth } from "../contexts/AuthContext";
 import "../styles/default.css";
 import "../styles/form.css";
 
@@ -9,13 +9,12 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { iniciarSesion } = useAuth(); // Obtén la función iniciarSesion del contexto
-
+  const { iniciarSesion } = useAuth();
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await iniciarSesion(email, password); // Llama al método iniciarSesion del contexto
-      navigate("/"); // Redirige al inicio después de iniciar sesión
+      await iniciarSesion(email, password);
+      navigate("/");
     } catch (error) {
       alert("Error al iniciar sesión: " + error.message);
     }

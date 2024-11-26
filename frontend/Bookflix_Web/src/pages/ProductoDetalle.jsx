@@ -236,12 +236,12 @@ const ProductoDetalle = () => {
                 value={textoReseña}
                 onChange={(e) => setTextoReseña(e.target.value)}
                 placeholder="Escribe tu reseña aquí..."
-                disabled={haReseñado} // Deshabilitar si ya ha reseñado
+                disabled={haReseñado}
               />
               <button
                 className="btnCrearReseña"
                 onClick={handleCrearReseña}
-                disabled={haReseñado} // Deshabilitar si ya ha reseñado
+                disabled={haReseñado}
               >
                 Crear
               </button>
