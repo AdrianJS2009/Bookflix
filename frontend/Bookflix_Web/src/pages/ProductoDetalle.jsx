@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Button from "../components/Button";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
 import { useAuth } from "../contexts/AuthContext";
 import { useCarrito } from "../contexts/CarritoContext";
 import "../styles/ProductoDetalle.css";
@@ -157,8 +155,7 @@ const ProductoDetalle = () => {
 
   return (
     <>
-      <Header />
-      <div className="detalle-contenido">
+      <main className="detalle-contenido">
         <p className="volverAtras texto-pequeño">
           <Link to="/catalogo">◄◄ Volver al catálogo</Link>
         </p>
@@ -270,8 +267,7 @@ const ProductoDetalle = () => {
             <p>No hay reseñas para este producto.</p>
           )}
         </div>
-      </div>
-      <Footer />
+      </main>
     </>
   );
 };

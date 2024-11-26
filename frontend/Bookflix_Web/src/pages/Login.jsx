@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
 import { useAuth } from "../contexts/AuthContext"; // Importa el hook del contexto
 import "../styles/default.css";
 import "../styles/form.css";
@@ -25,8 +23,7 @@ export default function Login() {
 
   return (
     <>
-      <Header />
-      <div className="form-container">
+      <main className="form-container">
         <h1 className="texto-grande">Iniciar Sesión</h1>
         <form onSubmit={handleLogin} className="form texto-mediano">
           <div className="campo-formulario">
@@ -60,8 +57,7 @@ export default function Login() {
         <NavLink to="/registro" className="texto-pequeño">
           ¿Aún no tienes cuenta? Regístrate
         </NavLink>
-      </div>
-      <Footer />
+      </main>
     </>
   );
 }

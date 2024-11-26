@@ -1,7 +1,5 @@
 import { useEffect } from "react";
 import Button from "../components/Button";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
 import { useAuth } from "../contexts/AuthContext";
 import { useCarrito } from "../contexts/CarritoContext";
 import "../styles/Carrito.css";
@@ -32,8 +30,7 @@ const Carrito = () => {
 
   return (
     <>
-      <Header />
-      <div className="carrito-container texto-pequeño">
+      <main className="carrito-container texto-pequeño">
         <h1 className="texto-grande">Carrito de compras</h1>
         {items.length === 0 ? (
           <p className="texto-pequeño">Tu carrito está vacío.</p>
@@ -96,9 +93,7 @@ const Carrito = () => {
             />
           </div>
         </div>
-
-      </div>
-      <Footer />
+      </main>
     </>
   );
 };

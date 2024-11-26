@@ -78,7 +78,7 @@ input[type="range"] {
   width: 100%;
 }
 
-div.catalogo-container {
+.catalogo-container {
   padding: 20px;
   display: flex;
   flex-direction: column;

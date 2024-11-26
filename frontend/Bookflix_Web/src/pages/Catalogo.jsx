@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
 import "../styles/catalogo.css";
 import "../styles/default.css";
 
@@ -83,8 +81,7 @@ const Catalogo = () => {
 
   return (
     <>
-      <Header />
-      <div className="catalogo-container texto-pequeño">
+      <main className="catalogo-container texto-pequeño">
         <h1>Catálogo</h1>
         <div className="catalogoBuscadorFiltros">
           <div className="catalogoBuscador">
@@ -192,8 +189,7 @@ const Catalogo = () => {
             forcePage={currentPage}
           />
         </div>
-      </div>
-      <Footer />
+      </main>
     </>
   );
 };
