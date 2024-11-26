@@ -1,0 +1,50 @@
+.confirmacion-compra-container {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .texto-grande {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  .texto-mediano {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .lista-productos {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .producto {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .imagen-producto {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+  
+  .btnVolver {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 20px;
+  }
+  
+  .btnVolver:hover {
+    background-color: #0056b3;
+  }
