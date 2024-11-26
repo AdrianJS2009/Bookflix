@@ -70,22 +70,14 @@ const ProductoDetalle = () => {
     });
   };
 
-  const handleAddToCart = () => {
-    if (!auth.usuario) {
-      alert("Inicia sesión para añadir productos al carrito.");
-    } else if (producto && cantidad > 0 && cantidad <= producto.stock) {
-      if (!producto.idLibro) {
-        console.error("El producto no tiene un idLibro definido:", producto);
-        alert("Error: El producto no tiene un ID válido.");
-        return;
-      }
+  const handleAgregar = () => {
+    if (producto && cantidad > 0 && cantidad <= producto.stock) {
       agregarAlCarrito({
         libroId: producto.idLibro,
-        cantidad: cantidad,
-        nombreLibro: producto.nombre,
+        cantidad,
+        nombre: producto.nombre,
         subtotal: producto.precio * cantidad,
       });
-      alert("Producto añadido al carrito");
     }
   };
 
@@ -95,14 +87,14 @@ const ProductoDetalle = () => {
         const nuevaReseña = {
           texto: textoReseña,
           libroId: productoId,
-          nombreUsuario: auth.usuario ? auth.usuario.nombre : "Anónimo", // Verificación de usuario
-          fechaPublicacion: new Date().toISOString(), // Enviar la fecha en formato ISO
+          nombreUsuario: auth.usuario?.nombre || "Anónimo",
+          fechaPublicacion: new Date().toISOString(),
         };
 
-        console.log("Payload being sent:", nuevaReseña); // Depuración: Muestra los datos enviados
+        console.log("Payload being sent:", nuevaReseña);
 
         const response = await fetch(
-          `https://localhost:7182/api/User/publicar`, // Asegúrate de que esta URL es correcta
+          `https://localhost:7182/api/User/publicar`,
           {
             method: "POST",
             headers: {
@@ -113,12 +105,12 @@ const ProductoDetalle = () => {
           }
         );
 
-        console.log("Response status:", response.status); // Depuración: Muestra el estado de la respuesta
-        console.log("Response headers:", response.headers); // Depuración: Muestra los encabezados de la respuesta
+        console.log("Response status:", response.status);
+        console.log("Response headers:", response.headers);
 
         if (!response.ok) {
           const errorText = await response.text();
-          console.error("Error response from server:", errorText); // Depuración: Muestra el error del servidor
+          console.error("Error response from server:", errorText);
           throw new Error("No se pudo sincronizar con el servidor.");
         }
 
@@ -222,7 +214,7 @@ const ProductoDetalle = () => {
             <Button
               label="Añadir a la cesta"
               styleType="btnAñadir"
-              onClick={handleAddToCart}
+              onClick={handleAgregar}
             />
           </div>
         </div>

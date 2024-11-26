@@ -28,7 +28,7 @@ export const CarritoProvider = ({ children }) => {
             throw new Error("No se pudo sincronizar con el servidor.");
 
           const data = await response.json();
-          const carritoItems = Array.isArray(data?.items) ? data.items : []; // Asegurar que siempre sea un array
+          const carritoItems = Array.isArray(data?.items) ? data.items : [];
           setItems(carritoItems);
         } catch (error) {
           console.error("Error al sincronizar el carrito:", error);
@@ -41,14 +41,56 @@ export const CarritoProvider = ({ children }) => {
   }, [auth.token]);
 
   const agregarAlCarrito = async (producto) => {
+    console.log("Producto recibido:", producto);
+
+    // Verifica si el producto tiene los datos necesarios, si no, asigna valores predeterminados
+    const productoConDatosCompletos = {
+      ...producto,
+      nombre: producto.nombre || "Producto sin nombre", // Verifica que nombre esté presente
+      precio: producto.precio || 0, // Asegura que el precio esté presente
+      urlImagen: producto.urlImagen || "default-image.jpg", // Usa una imagen predeterminada si no existe
+    };
+
+    console.log("Producto con datos completos:", productoConDatosCompletos);
+
+    setItems((prevItems) => {
+      const existingItem = prevItems.find(
+        (item) => item.libroId === productoConDatosCompletos.libroId
+      );
+      let newItems;
+
+      if (existingItem) {
+        // Si el producto ya existe, actualiza la cantidad
+        newItems = prevItems.map((item) =>
+          item.libroId === productoConDatosCompletos.libroId
+            ? {
+                ...item,
+                cantidad: item.cantidad + productoConDatosCompletos.cantidad,
+              }
+            : item
+        );
+      } else {
+        // Si el producto no está en el carrito, añádelo
+        newItems = [...prevItems, productoConDatosCompletos];
+      }
+
+      // Guarda los cambios en localStorage
+      localStorage.setItem("carrito", JSON.stringify(newItems));
+
+      return newItems;
+    });
+
+    // Notificar al usuario que el producto se ha agregado
+    alert(
+      `${productoConDatosCompletos.cantidad} unidad(es) de "${productoConDatosCompletos.nombre}" añadida(s) al carrito.`
+    );
+
     if (auth.token) {
       try {
         const payload = {
-          LibroId: producto.libroId,
-          Cantidad: producto.cantidad,
+          LibroId: productoConDatosCompletos.libroId,
+          Cantidad: productoConDatosCompletos.cantidad,
         };
-
-        console.log("Payload del token:", payload);
 
         const response = await fetch(
           "https://localhost:7182/api/Carrito/agregar",
@@ -63,22 +105,11 @@ export const CarritoProvider = ({ children }) => {
         );
 
         if (!response.ok) {
-          const errorText = await response.text();
-          console.error("Error de respuesta con el servidor:", errorText);
-          throw new Error("No se pudo sincronizar con el servidor.");
+          throw new Error("Error al sincronizar con el servidor.");
         }
-
-        // Actualización del carro local
-        setItems((prevItems) => [...prevItems, producto]);
       } catch (error) {
-        console.error("Error al sincronizar el carrito:", error);
+        console.error("Error al agregar producto al carrito remoto:", error);
       }
-    } else {
-      setItems((prevItems) => {
-        const newItems = [...prevItems, producto];
-        localStorage.setItem("carrito", JSON.stringify(newItems));
-        return newItems;
-      });
     }
   };
 
