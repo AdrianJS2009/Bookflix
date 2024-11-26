@@ -23,15 +23,15 @@ const ConfirmacionCompra = () => {
       <p className="texto-mediano">Detalles de la compra:</p>
       <ul className="lista-productos">
         {items.map((item, index) => (
-          <li key={index} className="producto">
+          <li key={index} className="producto texto-pequeño">
             <img
               src={item.urlImagen || "placeholder.jpg"}
-              alt={item.nombreLibro}
+              alt={item.nombre}
               className="imagen-producto"
             />
             <div className="detalles-producto">
               <p>
-                <strong>Producto:</strong> {item.nombreLibro}
+                <strong>Producto:</strong> {item.nombre}
               </p>
               <p>
                 <strong>Cantidad:</strong> {item.cantidad}
