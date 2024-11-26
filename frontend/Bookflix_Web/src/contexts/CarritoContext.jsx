@@ -28,7 +28,15 @@ export const CarritoProvider = ({ children }) => {
             throw new Error("No se pudo sincronizar con el servidor.");
 
           const data = await response.json();
-          const carritoItems = Array.isArray(data?.items) ? data.items : [];
+          const carritoItems = Array.isArray(data?.items)
+            ? data.items.map((item) => ({
+                libroId: item.libroId,
+                nombre: item.nombre || "Sin nombre",
+                cantidad: item.cantidad || 1,
+                precio: item.precio || 0,
+                urlImagen: item.urlImagen || "placeholder.jpg",
+              }))
+            : [];
           setItems(carritoItems);
         } catch (error) {
           console.error("Error al sincronizar el carrito:", error);
@@ -40,15 +48,14 @@ export const CarritoProvider = ({ children }) => {
     }
   }, [auth.token]);
 
-  const agregarAlCarrito = async (producto) => {
-    console.log("Producto recibido:", producto);
-
-    // Verifica si el producto tiene los datos necesarios, si no, asigna valores predeterminados
+  const agregarAlCarrito = (producto, cantidad) => {
     const productoConDatosCompletos = {
-      ...producto,
-      nombre: producto.nombre || "Producto sin nombre", // Verifica que nombre esté presente
-      precio: producto.precio || 0, // Asegura que el precio esté presente
-      urlImagen: producto.urlImagen || "default-image.jpg", // Usa una imagen predeterminada si no existe
+      libroId: producto.idLibro,
+      cantidad,
+      nombre: producto.nombre,
+      precio: producto.precio,
+      urlImagen: producto.urlImagen,
+      subtotal: producto.precio * cantidad,
     };
 
     console.log("Producto con datos completos:", productoConDatosCompletos);
@@ -60,7 +67,6 @@ export const CarritoProvider = ({ children }) => {
       let newItems;
 
       if (existingItem) {
-        // Si el producto ya existe, actualiza la cantidad
         newItems = prevItems.map((item) =>
           item.libroId === productoConDatosCompletos.libroId
             ? {
@@ -70,7 +76,6 @@ export const CarritoProvider = ({ children }) => {
             : item
         );
       } else {
-        // Si el producto no está en el carrito, añádelo
         newItems = [...prevItems, productoConDatosCompletos];
       }
 
@@ -80,7 +85,6 @@ export const CarritoProvider = ({ children }) => {
       return newItems;
     });
 
-    // Notificar al usuario que el producto se ha agregado
     alert(
       `${productoConDatosCompletos.cantidad} unidad(es) de "${productoConDatosCompletos.nombre}" añadida(s) al carrito.`
     );
@@ -92,17 +96,14 @@ export const CarritoProvider = ({ children }) => {
           Cantidad: productoConDatosCompletos.cantidad,
         };
 
-        const response = await fetch(
-          "https://localhost:7182/api/Carrito/agregar",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${auth.token}`,
-            },
-            body: JSON.stringify(payload),
-          }
-        );
+        const response = fetch("https://localhost:7182/api/Carrito/agregar", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth.token}`,
+          },
+          body: JSON.stringify(payload),
+        });
 
         if (!response.ok) {
           throw new Error("Error al sincronizar con el servidor.");
