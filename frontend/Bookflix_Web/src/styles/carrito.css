@@ -85,3 +85,26 @@ button.botonEliminar:hover {
     color: var(--blanco);
     border: 1px solid var(--rojo-oscuro);
 }
+
+.resumen-carrito {
+    text-align: right;
+    font-size: 1.2rem; 
+    font-weight: bold;
+    color: #333; 
+}
+
+.resumen-carrito p {
+    margin: 5px 0; 
+}
+
+.resumen-carrito p:last-child {
+    font-size: 1.4rem; 
+}
+
+.texto-azul {
+    color: var(--azul-normal); 
+}
+
+.precio-negro {
+    color: #333; 
+}

@@ -13,6 +13,10 @@ const Carrito = () => {
     ? items.reduce((total, item) => total + item.cantidad, 0)
     : 0;
 
+  const subtotal = Array.isArray(items)
+    ? items.reduce((sum, item) => sum + item.precio * item.cantidad, 0)
+    : 0;
+
   const handleCompra = () => {
     if (!auth.usuario) {
       alert("Inicia sesión para realizar la compra");
@@ -37,29 +41,40 @@ const Carrito = () => {
       {items.length === 0 ? (
         <p className="texto-pequeño">Tu carrito está vacío.</p>
       ) : (
-        <ul className="carrito-lista">
-          {items.map((item, index) => {
-            console.log("Item en carrito:", item);
-            return (
-              <li key={index} className="carrito-item">
-                <img
-                  src={item.urlImagen || "placeholder.jpg"}
-                  alt={`Imagen de ${item.nombre || "Producto"}`}
-                  className="imagen-carrito"
-                />
-                <p>{item.nombre || "Sin nombre"}</p>
-                <p>Cantidad: {item.cantidad}</p>
-                <p>Precio: {(item.precio / 100).toFixed(2)} €</p>
-                <p>
-                  Subtotal: {((item.precio * item.cantidad) / 100).toFixed(2)} €
-                </p>
-                <button className="botonEliminar" onClick={() => handleEliminarItem(item.libroId)}>
-                  Eliminar
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+        <>
+          <ul className="carrito-lista">
+            {items.map((item, index) => {
+              console.log("Item en carrito:", item);
+              return (
+                <li key={index} className="carrito-item">
+                  <img
+                    src={item.urlImagen || "placeholder.jpg"}
+                    alt={`Imagen de ${item.nombre || "Producto"}`}
+                    className="imagen-carrito"
+                  />
+                  <p>{item.nombre || "Sin nombre"}</p>
+                  <p>Cantidad: {item.cantidad}</p>
+                  <p>Precio: {(item.precio / 100).toFixed(2)} €</p>
+                  <p>
+                    Subtotal: {((item.precio * item.cantidad) / 100).toFixed(2)} €
+                  </p>
+                  <button className="botonEliminar" onClick={() => handleEliminarItem(item.libroId)}>
+                    Eliminar
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+          <div className="resumen-carrito">
+            <p>
+              <strong>Total de ítems:</strong> {cartCount}
+            </p>
+            <p>
+              <strong className="texto-azul">Subtotal:</strong>{' '}
+              <span className="precio-negro">{(subtotal / 100).toFixed(2)} €</span>
+            </p>
+          </div>
+        </>
       )}
       <Button label="Vaciar Carrito" className="botonVaciar" onClick={vaciarCarrito} />
       <Button label="Comprar" className="botonComprar" onClick={handleCompra} />
