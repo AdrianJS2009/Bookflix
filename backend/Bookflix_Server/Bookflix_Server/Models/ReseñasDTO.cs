@@ -2,10 +2,11 @@
 {
     public class ReseñaDTO
     {
-        public int ProductoId { get; set; }
         public string Texto { get; set; }
         public int Estrellas { get; set; }
         public string Categoria { get; set; }
         public string LibroId { get; set; }
+        public DateTime FechaPublicacion { get; set; } 
+        public string NombreUsuario { get; set; } 
     }
 }

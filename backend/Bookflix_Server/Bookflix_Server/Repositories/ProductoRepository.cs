@@ -180,5 +180,14 @@ namespace Bookflix_Server.Repositories
                 .Select(l => l.Nombre)
                 .ToListAsync();
         }
+
+        public async Task ActualizarLibroAsync(Libro libro)
+        {
+            if (libro == null) throw new ArgumentNullException(nameof(libro));
+            _context.Libros.Update(libro);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
+

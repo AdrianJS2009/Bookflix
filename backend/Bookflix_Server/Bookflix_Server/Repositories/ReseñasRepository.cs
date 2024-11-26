@@ -74,5 +74,7 @@ namespace Bookflix_Server.Repositories
                 .Where(r => r.ProductoId == productoId && r.Categoria.Equals(categoria, StringComparison.OrdinalIgnoreCase))
                 .ToListAsync();
         }
+
+
     }
 }

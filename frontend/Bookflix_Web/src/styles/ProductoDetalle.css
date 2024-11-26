@@ -165,3 +165,26 @@ p.sin-reviews {
   justify-self: center;
   margin: 20px 0;
 }
+
+.reseña {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  background-color: #fff;
+}
+
+.reseña p {
+  margin: 5px 0;
+  color: #333;
+}
+
+.reseña p:first-child {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.reseña p:nth-child(2) {
+  font-style: italic;
+  color: #666;
+}

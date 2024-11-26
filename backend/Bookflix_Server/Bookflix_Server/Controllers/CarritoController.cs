@@ -210,6 +210,7 @@ namespace Bookflix_Server.Controllers
             return Ok(new { success = true, message = "Compra realizada exitosamente." });
         }
 
+
         [HttpGet("historial")]
         public async Task<IActionResult> ObtenerHistorialCompras()
         {

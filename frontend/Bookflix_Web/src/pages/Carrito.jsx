@@ -10,6 +10,11 @@ const Carrito = () => {
   const { items, vaciarCarrito, eliminarItem } = useCarrito();
   const { auth } = useAuth();
 
+
+  const cartCount = Array.isArray(items)
+    ? items.reduce((total, item) => total + item.cantidad, 0)
+    : 0;
+  
   const handleCompra = () => {
     if (!auth.usuario) {
       alert("Inicia sesión para realizar la compra");
@@ -23,14 +28,12 @@ const Carrito = () => {
     eliminarItem(libroId);
   };
 
-  useEffect(() => {
-    console.log("Carrito actualizado", items);
-  }, [items]);
+ 
 
   return (
-    <div className="carrito-container">
+    <>
       <Header />
-      <main>
+      <div className="carrito-container texto-pequeño">
         <h1 className="texto-grande">Carrito de compras</h1>
         {items.length === 0 ? (
           <p className="texto-pequeño">Tu carrito está vacío.</p>
@@ -73,21 +76,30 @@ const Carrito = () => {
             ))}
           </ul>
         )}
-        <Button
-          label="Vaciar Carrito"
-          styleType="btnDefault"
-          className="botonVaciar"
-          onClick={vaciarCarrito}
-        />
-        <Button
-          label="Comprar"
-          styleType="btnDefault"
-          className="botonComprar"
-          onClick={handleCompra}
-        />
-      </main>
+        <div className="botonesCarritoInfo">
+          <div className="infoBox">
+          <span className="articulosContador">Articulos en la cesta: {cartCount}</span>
+          <span className="precioCesta"></span> 
+          </div>
+          <div className="btnBox">
+            <Button
+              label="Vaciar Carrito"
+              styleType="btnDefault"
+              className="botonVaciar"
+              onClick={vaciarCarrito}
+            />
+            <Button
+              label="Comprar"
+              styleType="btnDefault"
+              className="botonComprar"
+              onClick={handleCompra}
+            />
+          </div>
+        </div>
+
+      </div>
       <Footer />
-    </div>
+    </>
   );
 };
 

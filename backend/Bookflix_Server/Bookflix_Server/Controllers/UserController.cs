@@ -1,5 +1,6 @@
 ﻿using Bookflix_Server.Data;
 using Bookflix_Server.Models;
+using Bookflix_Server.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +13,16 @@ namespace Bookflix_Server.Controllers
     public class UserController : ControllerBase
     {
         private readonly MyDbContext _context;
+        private readonly IReseñasRepository _reseñaRepository;
+        private readonly IProductoRepository _productoRepository;
+        private readonly IUserRepository _userRepository;
 
-        public UserController(MyDbContext context)
+        public UserController(MyDbContext context, IReseñasRepository reseñaRepository, IProductoRepository productoRepository, IUserRepository userRepository)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _reseñaRepository = reseñaRepository ?? throw new ArgumentNullException(nameof(reseñaRepository));
+            _productoRepository = productoRepository ?? throw new ArgumentNullException(nameof(productoRepository));
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         private string ObtenerCorreoUsuario()
@@ -135,44 +142,47 @@ namespace Bookflix_Server.Controllers
             return Ok(new { message = "La cuenta del usuario ha sido eliminada exitosamente." });
         }
 
-        // Publicar una reseña
-        [HttpPost("publicar-resena")]
-        public async Task<IActionResult> PublicarResena([FromBody] ReseñaDTO datosResena)
+        [HttpPost("publicar")]
+        public async Task<IActionResult> PublicarReseña([FromBody] ReseñaDTO reseñaDto)
         {
-            var idUsuario = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            if (reseñaDto == null)
+                return BadRequest(new { error = "Datos de la reseña no proporcionados." });
 
-            var usuario = await _context.Users.Include(u => u.Reseñas).FirstOrDefaultAsync(u => u.IdUser == idUsuario);
+            string correoUsuario = ObtenerCorreoUsuario();
+            var usuario = await _userRepository.ObtenerPorCorreoAsync(correoUsuario);
+
             if (usuario == null)
-            {
-                return Unauthorized(new { error = "Usuario no autenticado." });
-            }
+                return NotFound(new { error = "Usuario no encontrado." });
 
-            var producto = await _context.Libros.FindAsync(datosResena.ProductoId);
-            if (producto == null)
-            {
-                return NotFound(new { error = "El producto especificado no fue encontrado." });
-            }
+            if (!int.TryParse(reseñaDto.LibroId, out int libroId))
+                return BadRequest(new { error = "ID del libro no es válido." });
 
-            var resenaExistente = usuario.Reseñas.FirstOrDefault(r => r.ProductoId == datosResena.ProductoId);
-            if (resenaExistente != null)
-            {
-                return BadRequest(new { error = "Ya has publicado una reseña para este producto." });
-            }
+            var libro = await _productoRepository.ObtenerPorIdAsync(libroId);
+            if (libro == null)
+                return NotFound(new { error = "Libro no encontrado." });
 
-            var resena = new Reseña
+            var reseña = new Reseña
             {
-                UsuarioId = idUsuario,
-                Autor = usuario.Nombre,
-                ProductoId = datosResena.ProductoId,
-                Texto = datosResena.Texto,
-                Estrellas = datosResena.Estrellas,
-                FechaPublicacion = DateTime.UtcNow
+                UsuarioId = usuario.IdUser,
+                ProductoId = libroId, // Usar el ID del libro convertido
+                Autor = reseñaDto.NombreUsuario ?? $"{usuario.Nombre} {usuario.Apellidos}", // Nombre completo del usuario
+                Texto = reseñaDto.Texto,
+                FechaPublicacion = reseñaDto.FechaPublicacion != default ? reseñaDto.FechaPublicacion : DateTime.UtcNow, // Usar la fecha proporcionada o la actual
+                Categoria = reseñaDto.Categoria,
             };
 
-            _context.Reseñas.Add(resena);
+            await _reseñaRepository.AgregarAsync(reseña);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "La reseña ha sido publicada exitosamente." });
+            return Ok(new
+            {
+                success = true,
+                message = "Reseña publicada exitosamente.",
+                nombreUsuario = reseña.Autor,
+                fechaPublicacion = reseña.FechaPublicacion
+            });
         }
+
+
     }
 }

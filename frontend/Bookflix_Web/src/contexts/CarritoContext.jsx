@@ -36,7 +36,7 @@ export const CarritoProvider = ({ children }) => {
       // Guardar en localStorage si no hay token
       localStorage.setItem("carrito", JSON.stringify(items));
     }
-  }, [items, auth.token]);
+  }, [auth.token]);
 
   const agregarAlCarrito = async (producto) => {
     if (auth.token) {
