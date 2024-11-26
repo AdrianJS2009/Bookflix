@@ -27,6 +27,22 @@ div.navLogo {
   margin-left: 15px;
 }
 
+.userButton {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: var(--blanco);
+  gap: 0.5rem;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: inherit;
+}
+
+.userButton:hover {
+  text-decoration: underline;
+}
+
 nav.navPrincipal {
   display: flex;
   justify-content: center;
@@ -64,15 +80,62 @@ img.iconos {
   top: 20px;
   right: 25px;
   background-color: tomato;
-  padding: 0; /* Elimina el padding extra para mantener el círculo pequeño */
-  border-radius: 50%; /* Hace que el elemento sea un círculo */
-  width: 18px; /* Diámetro del círculo */
-  height: 18px; /* Asegura que la altura sea igual al ancho */
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
   display: flex;
-  justify-content: center; /* Centra el contenido horizontalmente */
-  align-items: center; /* Centra el contenido verticalmente */
-  color: white; /* Color del texto (generalmente el número) */
-  font-size: 10px; /* Ajusta el tamaño del texto */
-  font-weight: bold; /* Hace que el número sea más visible */
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
 }
 
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-rows: auto 1fr;
+  max-width: 400px;
+  width: 90%;
+}
+
+.modalActions {
+  display: grid;
+  gap: 1rem;
+  grid-template-rows: repeat(auto-fit, minmax(40px, auto));
+}
+
+.modalActions button,
+.modalActions a {
+  padding: 0.8rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+.modalActions button:hover,
+.modalActions a:hover {
+  background-color: #0056b3;
+}
