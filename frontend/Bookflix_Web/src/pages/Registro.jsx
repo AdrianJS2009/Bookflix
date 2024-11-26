@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Button from "../components/Button";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 import "../styles/default.css";
 import "../styles/form.css";
 
@@ -49,7 +51,8 @@ const Registro = () => {
 
   return (
     <>
-      <main className="form-container texto-mediano">
+      <Header />
+      <div className="form-container texto-mediano">
         <h1 className="texto-grande">Registro</h1>
         <form onSubmit={handleRegister} className="form">
           {error && <p className="error">{error}</p>}
@@ -121,7 +124,8 @@ const Registro = () => {
             Inicia sesión aquí.
           </a>
         </p>
-      </main>
+      </div>
+      <Footer />
     </>
   );
 };
