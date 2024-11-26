@@ -1,63 +1,61 @@
 .confirmacion-compra-container {
-    padding: 20px;
-    text-align: center;
-    min-height: calc( 100vh - 80px);
-  }
-  
-  .texto-grande {
-    font-size: 2rem;
-    margin-bottom: 20px;
-  }
-  
-  .texto-mediano {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-  }
-  
-  .lista-productos {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .producto {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .imagen-producto {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    border-radius: 5px;
-  }
-  
-  .detalles-producto {
-    flex-grow: 1;
-    text-align: left;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-  
-  .detalles-producto p {
-    margin: 0;
-  }
-  
-  .btnVolver {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    margin-top: 20px;
-  }
-  
-  .btnVolver:hover {
-    background-color: #0056b3;
-  }
+  padding: 20px;
+  text-align: center;
+  min-height: calc(100vh - 80px);
+}
+
+.texto-grande {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.texto-mediano {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.lista-productos {
+  list-style-type: none;
+  padding: 0;
+}
+
+.producto {
+  border: 3px solid black; 
+  padding: 15px;
+  margin-bottom: 20px; 
+  border-radius: 10px; 
+  display: flex;
+  align-items: center;
+  gap: 15px; 
+  background-color: #fafafa; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.producto:hover {
+  transform: translateY(-5px); 
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); 
+  background-color: #f0f0f0; 
+  border-color: black; 
+}
+
+.imagen-producto {
+  width: 180px; 
+  height: 210px; 
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.detalles-producto {
+  flex-grow: 1;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; 
+}
+
+.detalles-producto p {
+  margin: 0;
+  font-size: 1rem; 
+  color: #333; 
+}
