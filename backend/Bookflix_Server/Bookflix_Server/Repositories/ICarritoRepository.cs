@@ -20,6 +20,6 @@ namespace Bookflix_Server.Repositories
         Task<bool> UsuarioHaCompradoProductoAsync(int idUsuario, int idProducto);
 
         Task ComprarCarritoAsync(Carrito carrito);
-
+        Task<Carrito> ObtenerCarritoPorUsuarioIdAsync(string name);
     }
 }

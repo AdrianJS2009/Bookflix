@@ -100,5 +100,10 @@ namespace Bookflix_Server.Repositories
             carrito.Items.Clear();
             await GuardarCambiosAsync();
         }
+
+        public Task<Carrito> ObtenerCarritoPorUsuarioIdAsync(string name)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

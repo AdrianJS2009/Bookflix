@@ -182,42 +182,47 @@ export const CarritoProvider = ({ children }) => {
   };
 
   const eliminarItem = async (productoId) => {
-    if (auth.token) {
-      try {
+    if (!productoId) {
+      console.error("ID de producto no definido al intentar eliminar.");
+      return;
+    }
+  
+    try {
+      // Si el usuario está autenticado, eliminar el producto del servidor
+      if (auth.token) {
         const response = await fetch(
           `https://localhost:7182/api/Carrito/eliminar/${productoId}`,
           {
             method: "DELETE",
             headers: {
-              Authorization: `Bearer ${auth.token}`,
+              Authorization: `Bearer ${auth.token}`, // Asegúrate de que el token esté correctamente configurado
             },
           }
         );
-
+  
         if (!response.ok) {
-          throw new Error("No se pudo eliminar el producto del servidor.");
+          const errorData = await response.json();
+          throw new Error(errorData.error || "No se pudo eliminar el producto del servidor.");
         }
-
-        setItems((prevItems) => {
-          const newItems = prevItems.filter(
-            (item) => item.libroId !== productoId
-          );
-          localStorage.setItem("carrito", JSON.stringify(newItems));
-          return newItems;
-        });
-      } catch (error) {
-        console.error("Error al eliminar el producto del carrito:", error);
+  
+        console.log(`Producto con ID ${productoId} eliminado correctamente del servidor.`);
+      } else {
+        console.warn("El usuario no tiene token activo, eliminando localmente.");
       }
-    } else {
+  
+      // Eliminar el producto localmente del carrito
       setItems((prevItems) => {
-        const newItems = prevItems.filter(
-          (item) => item.libroId !== productoId
-        );
+        const newItems = prevItems.filter((item) => item.libroId !== productoId);
         localStorage.setItem("carrito", JSON.stringify(newItems));
         return newItems;
       });
+  
+    } catch (error) {
+      console.error("Error al eliminar el producto del carrito:", error);
     }
   };
+  
+  
 
   const vaciarCarrito = async () => {
     if (auth.token) {
