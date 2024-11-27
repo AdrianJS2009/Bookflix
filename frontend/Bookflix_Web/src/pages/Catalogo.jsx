@@ -10,7 +10,7 @@ const Catalogo = () => {
   const [nombre, setNombre] = useState("");
   const [genero, setGenero] = useState("");
   const [precioOrden, setPrecioOrden] = useState("");
-  const [alfabeticoOrden, setAlfabeticoOrden] = useState("Ascendente");
+  const [alfabeticoOrden, setAlfabeticoOrden] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [pageCount, setPageCount] = useState(0);
@@ -21,18 +21,27 @@ const Catalogo = () => {
     setIsLoading(true);
     setError(null);
 
-    const ordenPor = precioOrden ? "precio" : "nombre";
-    const ascendente = precioOrden
-      ? precioOrden === "Ascendente"
-      : alfabeticoOrden === "Ascendente";
+    let ordenarPor = "";
+    let ascendente = true;
+
+    if (precioOrden) {
+      ordenarPor = "precio";
+      ascendente = precioOrden === "Ascendente";
+    } else if (alfabeticoOrden) {
+      ordenarPor = "nombre";
+      ascendente = alfabeticoOrden === "Ascendente";
+    }
 
     try {
       let url = `https://localhost:7182/api/Libro/ListarLibros?pagina=${
         page + 1
       }&tamanoPagina=${itemsPerPage}`;
-      if (nombre) url += `&textoBuscado=${encodeURIComponent(nombre)}`;
+      if (nombre) url += `&textoBusqueda=${encodeURIComponent(nombre)}`;
       if (genero) url += `&genero=${encodeURIComponent(genero)}`;
-      url += `&ordenPor=${ordenPor}&ascendente=${ascendente}`;
+      if (ordenarPor)
+        url += `&ordenarPor=${ordenarPor}&ascendente=${ascendente}`;
+
+      console.log("URL generada:", url); // Para depuración
 
       const response = await fetch(url, {
         headers: {
@@ -45,6 +54,8 @@ const Catalogo = () => {
       }
 
       const data = await response.json();
+      console.log("Respuesta recibida:", data); // Depuración
+
       setLibros(data.libros || []);
       setPageCount(data.totalPaginas || 0);
     } catch (error) {
@@ -64,10 +75,9 @@ const Catalogo = () => {
 
   const handleItemsPerPageChange = (event) => {
     const newItemsPerPage = parseInt(event.target.value, 10);
-    const startItemIndex = currentPage * itemsPerPage;
-    const newPage = Math.floor(startItemIndex / newItemsPerPage);
     setItemsPerPage(newItemsPerPage);
-    setCurrentPage(newPage);
+    setCurrentPage(0); // Reinicia la paginación al cambiar el tamaño de página
+    fetchLibros(0); // Fuerza un nuevo fetch para reflejar el cambio
   };
 
   const handleSearchInputChange = (event) => {
@@ -129,7 +139,7 @@ const Catalogo = () => {
               value={precioOrden}
               onChange={(e) => {
                 setPrecioOrden(e.target.value);
-                setAlfabeticoOrden("");
+                setAlfabeticoOrden(""); // Reset alphabetical sorting
               }}
               className="filtro-select"
             >
@@ -142,12 +152,13 @@ const Catalogo = () => {
               value={alfabeticoOrden}
               onChange={(e) => {
                 setAlfabeticoOrden(e.target.value);
-                setPrecioOrden("");
+                setPrecioOrden(""); // Reset price sorting
               }}
               className="filtro-select"
             >
-              <option value="Ascendente">Ordenar alfabéticamente (A-Z)</option>
-              <option value="Descendente">Ordenar alfabéticamente (Z-A)</option>
+              <option value="">Ordenar alfabéticamente</option>
+              <option value="Ascendente">A-Z</option>
+              <option value="Descendente">Z-A</option>
             </select>
 
             <select

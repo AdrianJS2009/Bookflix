@@ -18,7 +18,7 @@ namespace Bookflix_Server.Controllers
         private readonly MyDbContext _context;
         private readonly ServicioBusquedaInteligente _smartSearchService;
         private readonly ICarritoRepository _icarritoRepository;
-        private const int TamañoPagina = 10;
+        private const int TamanoPagina = 10;
 
 
 
@@ -80,48 +80,54 @@ namespace Bookflix_Server.Controllers
             string ordenarPor = null,
             bool ascendente = true,
             int pagina = 1,
-            int tamañoPagina = TamañoPagina)
+            int tamanoPagina = TamanoPagina)
         {
             try
             {
-                if (pagina <= 0) return BadRequest(new { error = "El número de página debe ser mayor que cero." });
+                if (pagina <= 0)
+                    return BadRequest(new { error = "El número de página debe ser mayor que cero." });
+                if (tamanoPagina <= 0)
+                    tamanoPagina = TamanoPagina;
 
                 IQueryable<Libro> librosQuery;
 
                 if (!string.IsNullOrWhiteSpace(textoBusqueda))
                 {
                     var resultadoBusqueda = _smartSearchService.Buscar(textoBusqueda);
-                    librosQuery = _context.Libros.Where(l => resultadoBusqueda.Contains(l.Nombre) ||
-                                                             resultadoBusqueda.Contains(l.Autor) ||
-                                                             resultadoBusqueda.Contains(l.Genero) ||
-                                                             resultadoBusqueda.Contains(l.ISBN));
+
+                    librosQuery = _context.Libros.Where(l =>
+                        resultadoBusqueda.Contains(l.Nombre) ||
+                        resultadoBusqueda.Contains(l.Autor) ||
+                        resultadoBusqueda.Contains(l.Genero) ||
+                        resultadoBusqueda.Contains(l.ISBN));
                 }
                 else
                 {
                     librosQuery = _context.Libros;
                 }
 
-                if (precioMin.HasValue) librosQuery = librosQuery.Where(l => l.Precio >= precioMin.Value);
-                if (precioMax.HasValue) librosQuery = librosQuery.Where(l => l.Precio <= precioMax.Value);
+                if (precioMin.HasValue)
+                    librosQuery = librosQuery.Where(l => l.Precio >= precioMin.Value);
+
+                if (precioMax.HasValue)
+                    librosQuery = librosQuery.Where(l => l.Precio <= precioMax.Value);
 
                 if (!string.IsNullOrEmpty(genero))
-                {
                     librosQuery = librosQuery.Where(l => l.Genero.ToLower() == genero.ToLower());
-                }
 
                 librosQuery = ordenarPor switch
                 {
                     "precio" => ascendente ? librosQuery.OrderBy(l => l.Precio) : librosQuery.OrderByDescending(l => l.Precio),
                     "nombre" => ascendente ? librosQuery.OrderBy(l => l.Nombre) : librosQuery.OrderByDescending(l => l.Nombre),
-                    _ => librosQuery
+                    _ => librosQuery // Sin orden específico
                 };
 
                 var totalLibros = await librosQuery.CountAsync();
-                var totalPaginas = (int)Math.Ceiling(totalLibros / (double)tamañoPagina);
+                var totalPaginas = (int)Math.Ceiling(totalLibros / (double)tamanoPagina);
 
                 var libros = await librosQuery
-                    .Skip((pagina - 1) * tamañoPagina)
-                    .Take(tamañoPagina)
+                    .Skip((pagina - 1) * tamanoPagina)
+                    .Take(tamanoPagina)
                     .Select(l => new LibroDTO
                     {
                         IdLibro = l.IdLibro,
@@ -147,6 +153,7 @@ namespace Bookflix_Server.Controllers
                 return StatusCode(500, new { error = "Error interno del servidor", details = ex.Message });
             }
         }
+
 
         [HttpPost("VerificarStock")]
         public async Task<IActionResult> VerificarStock([FromBody] List<int> librosIds)
