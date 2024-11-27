@@ -3,10 +3,7 @@ import { createContext, useContext, useState } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [auth, setAuth] = useState({
-    usuario: null,
-    token: sessionStorage.getItem("token") || null,
-  });
+  const [auth, setAuth] = useState({token: sessionStorage.getItem("token") || null,});
 
   const iniciarSesion = async (email, password) => {
     try {
@@ -25,7 +22,7 @@ export const AuthProvider = ({ children }) => {
       const { token } = await response.json();
 
       if (token) {
-        setAuth({ usuario: { email }, token });
+        setAuth({ token });
         sessionStorage.setItem("token", token);
       } else {
         throw new Error("Token no recibido del servidor");
@@ -37,7 +34,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const cerrarSesion = () => {
-    setAuth({ usuario: null, token: null });
+    setAuth({ token: null });
     sessionStorage.removeItem("token");
   };
 

@@ -23,10 +23,10 @@ const Header = () => {
         );
       } catch (error) {
         console.error("Error decodificando el token:", error);
-        setUserName("Usuario");
+        
       }
-    } else if (auth.usuario) {
-      setUserName(`Hola, ${auth.usuario.Nombre || "Usuario"}`);
+    } else {
+      setUserName("Usuario");
     }
   }, [auth]);
 
@@ -51,7 +51,7 @@ const Header = () => {
             />
           </NavLink>
           <div className={`${classes.userCart} texto-pequeño-bold`}>
-            {auth.usuario ? (
+            {auth.token ? (
               <button onClick={toggleModal} className={classes.userButton}>
                 <img
                   src="/assets/iconos/Logo Usuario.png"

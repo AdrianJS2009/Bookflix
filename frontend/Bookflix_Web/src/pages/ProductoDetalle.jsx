@@ -32,9 +32,9 @@ const ProductoDetalle = () => {
         console.log("Producto cargado:", data);
         setProducto(data);
         setReseñas(data.reseñas || []);
-        if (auth.usuario) {
+        if (auth.token) {
           const usuarioHaReseñado = data.reseñas.some(
-            (reseña) => reseña.usuario === auth.usuario.nombre
+            (reseña) => reseña.usuario === auth.token.nombre
           );
           setHaReseñado(usuarioHaReseñado);
         }
@@ -46,7 +46,7 @@ const ProductoDetalle = () => {
     };
 
     cargarProducto();
-  }, [productoId, auth.usuario]);
+  }, [productoId, auth.token]);
 
   const manejarCambio = (e) => {
     const nuevoValor = e.target.value;
@@ -111,8 +111,6 @@ const ProductoDetalle = () => {
         const nuevaReseña = {
           texto: textoReseña,
           libroId: productoId,
-          nombreUsuario: auth.usuario?.nombre || "Anónimo",
-          fechaPublicacion: new Date().toISOString(),
         };
 
         console.log("Payload being sent:", nuevaReseña);
@@ -245,7 +243,7 @@ const ProductoDetalle = () => {
         <hr />
         <div className="reseñas texto-pequeño">
           <h2 className="texto-grande">Reseñas</h2>
-          {auth.usuario ? (
+          {auth.token ? (
             <div className="crearReseña">
               <input
                 className="textoReseñaNueva"
@@ -274,7 +272,7 @@ const ProductoDetalle = () => {
           {reseñas.length > 0 ? (
             reseñas.map((reseña, index) => (
               <div key={index} className="reseña">
-                <p>Usuario: {reseña.usuario}</p>
+                <p>Usuario: {reseña.autor}</p>
                 <p>Fecha: {new Date(reseña.fecha).toLocaleDateString()}</p>
                 <p>{reseña.texto}</p>
               </div>
