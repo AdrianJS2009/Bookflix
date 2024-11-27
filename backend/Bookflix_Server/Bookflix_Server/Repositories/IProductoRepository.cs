@@ -10,6 +10,7 @@ namespace Bookflix_Server.Repositories
         Task<IEnumerable<Libro>> ObtenerLibrosPaginadosAsync(int pagina, int tamañoPagina);
         Task<IEnumerable<Libro>> ObtenerTodosAsync();
         Task<bool> VerificarStockAsync(int idProducto, int cantidad);
+        Task<bool> ReducirStockAsync(int idProducto, int cantidad); // Nuevo método agregado
         Task<decimal> ObtenerPromedioCalificacionesAsync(int idProducto);
         Task<int> ObtenerCantidadReseñasAsync(int idProducto);
         Task<IEnumerable<Reseña>> ObtenerReseñasPorProductoIdAsync(int idProducto);

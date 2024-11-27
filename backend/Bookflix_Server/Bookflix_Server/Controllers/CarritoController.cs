@@ -186,19 +186,16 @@ namespace Bookflix_Server.Controllers
 
             foreach (var item in carritoUsuario.Items)
             {
-                var libro = await _productoRepository.ObtenerPorIdAsync(item.LibroId);
-                if (libro == null || libro.Stock < item.Cantidad)
+                if (!await _productoRepository.ReducirStockAsync(item.LibroId, item.Cantidad))
                 {
-                    return BadRequest(new { error = $"El producto '{libro?.Nombre}' no tiene suficiente stock." });
+                    return BadRequest(new { error = $"El producto '{item.LibroId}' no tiene suficiente stock." });
                 }
-
-                libro.Stock -= item.Cantidad;
 
                 var detalle = new CompraDetalle
                 {
                     LibroId = item.LibroId,
                     Cantidad = item.Cantidad,
-                    PrecioUnitario = libro.Precio
+                    PrecioUnitario = item.Libro.Precio
                 };
 
                 compra.Detalles.Add(detalle);
