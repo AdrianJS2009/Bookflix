@@ -64,7 +64,7 @@ namespace Bookflix_Server.Controllers
                     LibroId = item.LibroId,
                     NombreLibro = item.Libro.Nombre,
                     Cantidad = item.Cantidad,
-                    Subtotal = item.Cantidad * item.Libro.Precio,
+                    Subtotal = item.Subtotal,
                     UrlImagen = item.Libro.UrlImagen,
                     Precio = item.Libro.Precio
                 }).ToList(),
@@ -108,39 +108,35 @@ namespace Bookflix_Server.Controllers
         }
 
         [HttpDelete("eliminar/{idProducto}")]
-        public async Task<IActionResult> EliminarProductoDelCarrito(int idProducto, string correo = null)
+        public async Task<IActionResult> EliminarProductoDelCarrito(int idProducto)
         {
-            string correoUsuario = correo ?? ObtenerCorreoUsuario();
-
-            if (string.IsNullOrEmpty(correoUsuario))
-            {
-                return BadRequest(new { error = "El correo del usuario no se pudo determinar." });
-            }
-
+            string correoUsuario = ObtenerCorreoUsuario();
             var usuario = await _userRepository.ObtenerPorCorreoAsync(correoUsuario);
 
             if (usuario == null)
-            {
-                return NotFound(new { error = $"Usuario con el correo {correoUsuario} no encontrado." });
-            }
+                return NotFound(new { error = "Usuario no encontrado." });
 
             var carritoUsuario = await _carritoRepository.ObtenerCarritoPorUsuarioIdAsync(usuario.IdUser);
-
             if (carritoUsuario == null)
             {
                 return NotFound(new { error = "No existe un carrito asociado al usuario." });
+            }
+
+            var productoEnCarrito = carritoUsuario.Items.FirstOrDefault(p => p.LibroId == idProducto);
+
+            if (productoEnCarrito == null)
+            {
+                return NotFound(new { error = "El producto no se encuentra en el carrito." });
             }
 
             bool productoEliminado = await _carritoRepository.EliminarProductoDelCarritoAsync(carritoUsuario, idProducto);
 
             if (!productoEliminado)
             {
-                return NotFound(new { error = "El producto no se encuentra en el carrito." });
+                return NotFound(new { error = "No se pudo eliminar el producto del carrito." });
             }
 
-            await _unitOfWork.SaveChangesAsync();
-
-            return Ok(new { success = true, message = "El producto se ha eliminado del carrito exitosamente." });
+            return Ok(new { message = "Producto eliminado correctamente del carrito." });
         }
 
         [HttpDelete("vaciar")]
@@ -159,7 +155,6 @@ namespace Bookflix_Server.Controllers
             }
 
             await _carritoRepository.VaciarCarritoAsync(carritoUsuario);
-
             await _unitOfWork.SaveChangesAsync();
 
             return Ok(new { success = true, message = "El carrito se ha vaciado correctamente." });
@@ -208,7 +203,6 @@ namespace Bookflix_Server.Controllers
 
             return Ok(new { success = true, message = "Compra realizada exitosamente." });
         }
-
 
         [HttpGet("historial")]
         public async Task<IActionResult> ObtenerHistorialCompras()
