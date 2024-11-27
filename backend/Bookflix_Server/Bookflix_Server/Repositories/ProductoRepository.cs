@@ -188,6 +188,21 @@ namespace Bookflix_Server.Repositories
             await _context.SaveChangesAsync();
         }
 
+
+        public async Task<bool> ReducirStockAsync(int idProducto, int cantidad)
+        {
+            var producto = await _context.Libros.FindAsync(idProducto);
+            if (producto == null || producto.Stock < cantidad)
+            {
+                return false;
+            }
+
+            producto.Stock -= cantidad;
+            _context.Libros.Update(producto);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
     }
 }
 

@@ -147,5 +147,24 @@ namespace Bookflix_Server.Controllers
                 return StatusCode(500, new { error = "Error interno del servidor", details = ex.Message });
             }
         }
+
+        [HttpPost("VerificarStock")]
+        public async Task<IActionResult> VerificarStock([FromBody] List<int> librosIds)
+        {
+            var stockInfo = new List<object>();
+
+            foreach (var id in librosIds)
+            {
+                var libro = await _context.Libros.FindAsync(id);
+                stockInfo.Add(new
+                {
+                    Id = id,
+                    Stock = libro?.Stock ?? 0,
+                    Disponible = libro?.Stock > 0
+                });
+            }
+
+            return Ok(stockInfo);
+        }
     }
 }
