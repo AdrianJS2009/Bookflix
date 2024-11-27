@@ -18,7 +18,7 @@ const Carrito = () => {
     : 0;
 
   const handleCompra = async () => {
-    if (!auth.usuario) {
+    if (!auth.token) {
       alert("Inicia sesión para realizar la compra");
       return;
     }

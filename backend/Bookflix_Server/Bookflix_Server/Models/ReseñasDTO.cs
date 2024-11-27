@@ -7,6 +7,6 @@
         public string Categoria { get; set; }
         public string LibroId { get; set; }
         public DateTime FechaPublicacion { get; set; } 
-        public string NombreUsuario { get; set; } 
+        public string Autor { get; set; } 
     }
 }

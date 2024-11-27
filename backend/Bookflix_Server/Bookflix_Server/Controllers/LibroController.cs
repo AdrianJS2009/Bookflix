@@ -60,10 +60,11 @@ namespace Bookflix_Server.Controllers
                 Reseñas = libro.Reseñas.Select(r => new
                 {
                     r.IdReseña,
+                    r.Autor,
                     r.Texto,
                     r.Estrellas,
                     r.Categoria,
-                    r.FechaPublicacion
+                    FechaPublicacion = r.FechaPublicacion.ToString("yyyy-MM-dd HH:mm:ss")
                 })
             };
 

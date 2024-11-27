@@ -165,7 +165,9 @@ namespace Bookflix_Server.Controllers
             {
                 UsuarioId = usuario.IdUser,
                 ProductoId = libroId, // Usar el ID del libro convertido
-                Autor = reseñaDto.NombreUsuario ?? $"{usuario.Nombre} {usuario.Apellidos}", // Nombre completo del usuario
+                Autor = !string.IsNullOrEmpty(reseñaDto.Autor)
+                        ? reseñaDto.Autor
+                        : $"{usuario.Nombre} {usuario.Apellidos}",
                 Texto = reseñaDto.Texto,
                 FechaPublicacion = reseñaDto.FechaPublicacion != default ? reseñaDto.FechaPublicacion : DateTime.UtcNow, // Usar la fecha proporcionada o la actual
                 Categoria = reseñaDto.Categoria,
