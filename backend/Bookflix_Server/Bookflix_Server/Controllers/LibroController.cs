@@ -27,7 +27,12 @@ namespace Bookflix_Server.Controllers
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _smartSearchService = smartSearchService ?? throw new ArgumentNullException(nameof(smartSearchService));
             _icarritoRepository = carritoRepository ?? throw new ArgumentNullException(nameof(carritoRepository));
+
+           
+            _smartSearchService.InicializarLibrosAsync().Wait();
         }
+
+
 
         private string ObtenerCorreoUsuario()
         {
@@ -96,6 +101,16 @@ namespace Bookflix_Server.Controllers
                 {
                     var resultadoBusqueda = _smartSearchService.Buscar(textoBusqueda);
 
+                    if (resultadoBusqueda == null || !resultadoBusqueda.Any())
+                    {
+                        return Ok(new
+                        {
+                            libros = new List<LibroDTO>(),
+                            totalLibros = 0,
+                            totalPaginas = 0
+                        });
+                    }
+
                     librosQuery = _context.Libros.Where(l =>
                         resultadoBusqueda.Contains(l.Nombre) ||
                         resultadoBusqueda.Contains(l.Autor) ||
@@ -106,6 +121,7 @@ namespace Bookflix_Server.Controllers
                 {
                     librosQuery = _context.Libros;
                 }
+
 
                 if (precioMin.HasValue)
                     librosQuery = librosQuery.Where(l => l.Precio >= precioMin.Value);

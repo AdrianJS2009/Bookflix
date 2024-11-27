@@ -41,8 +41,6 @@ const Catalogo = () => {
       if (ordenarPor)
         url += `&ordenarPor=${ordenarPor}&ascendente=${ascendente}`;
 
-      console.log("URL generada:", url); // Para depuración
-
       const response = await fetch(url, {
         headers: {
           Accept: "application/json",
