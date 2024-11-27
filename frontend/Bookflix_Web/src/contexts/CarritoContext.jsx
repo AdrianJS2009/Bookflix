@@ -48,16 +48,57 @@ export const CarritoProvider = ({ children }) => {
     }
   }, [auth.token]);
 
-  const agregarAlCarrito = (producto, cantidad) => {
-    console.log("Datos recibidos en agregarAlCarrito:", { producto, cantidad });
-
-    if (!producto || !cantidad) {
-      console.error(
-        "Error: producto o cantidad no definidos en agregarAlCarrito.",
-        { producto, cantidad }
+  const validarStock = async (producto, cantidad) => {
+    try {
+      const response = await fetch(
+        "https://localhost:7182/api/Libro/VerificarStock",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth.token}`,
+          },
+          body: JSON.stringify([producto.idLibro]),
+        }
       );
+
+      if (!response.ok) {
+        throw new Error("Error al verificar el stock del producto.");
+      }
+
+      const stockInfo = await response.json();
+      console.log("Stock info response:", stockInfo); // Debug log
+      const productoStock = stockInfo.find((p) => p.id === producto.idLibro);
+      if (!productoStock) {
+        alert(`El producto "${producto.nombre}" no está disponible.`);
+        return false;
+      }
+
+      if (!productoStock.disponible || productoStock.stock < cantidad) {
+        alert(
+          `El producto "${producto.nombre}" no tiene suficiente stock disponible.`
+        );
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Error al verificar el stock:", error);
+      return false;
+    }
+  };
+
+  const agregarAlCarrito = async (producto, cantidad) => {
+    if (!producto || !cantidad) {
+      console.error("Producto o cantidad no definidos en agregarAlCarrito.", {
+        producto,
+        cantidad,
+      });
       return;
     }
+
+    const esValido = await validarStock(producto, cantidad);
+    if (!esValido) return;
 
     const productoConDatosCompletos = {
       libroId: producto.idLibro,
@@ -67,8 +108,6 @@ export const CarritoProvider = ({ children }) => {
       urlImagen: producto.urlImagen,
       subtotal: producto.precio * cantidad,
     };
-
-    console.log("Producto con datos completos:", productoConDatosCompletos);
 
     setItems((prevItems) => {
       const existingItem = prevItems.find(
@@ -98,6 +137,50 @@ export const CarritoProvider = ({ children }) => {
     );
   };
 
+  const validarStockCarrito = async () => {
+    try {
+      const idsProductos = items.map((item) => item.libroId);
+      const response = await fetch(
+        "https://localhost:7182/api/Libro/VerificarStock",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth.token}`,
+          },
+          body: JSON.stringify(idsProductos),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          "Error al verificar el stock de los productos del carrito."
+        );
+      }
+
+      const stockInfo = await response.json();
+      const sinStock = stockInfo.filter(
+        (producto) =>
+          !producto.Disponible ||
+          items.find((item) => item.libroId === producto.Id)?.cantidad >
+            producto.Stock
+      );
+
+      if (sinStock.length > 0) {
+        alert(
+          `Los siguientes productos no tienen suficiente stock: ${sinStock
+            .map((p) => p.Id)
+            .join(", ")}`
+        );
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.error("Error al validar el stock del carrito:", error);
+      return false;
+    }
+  };
+
   const eliminarItem = async (productoId) => {
     if (auth.token) {
       try {
@@ -115,7 +198,6 @@ export const CarritoProvider = ({ children }) => {
           throw new Error("No se pudo eliminar el producto del servidor.");
         }
 
-        // Actualización del carro local
         setItems((prevItems) => {
           const newItems = prevItems.filter(
             (item) => item.libroId !== productoId
@@ -166,7 +248,13 @@ export const CarritoProvider = ({ children }) => {
 
   return (
     <CarritoContext.Provider
-      value={{ items, agregarAlCarrito, eliminarItem, vaciarCarrito }}
+      value={{
+        items,
+        agregarAlCarrito,
+        eliminarItem,
+        vaciarCarrito,
+        validarStockCarrito,
+      }}
     >
       {children}
     </CarritoContext.Provider>

@@ -20,6 +20,7 @@ const ProductoDetalle = () => {
 
   useEffect(() => {
     const cargarProducto = async () => {
+      console.log("Recargando datos del producto tras compra.");
       try {
         const response = await fetch(
           `https://localhost:7182/api/Libro/Detalle/${productoId}`
@@ -91,6 +92,18 @@ const ProductoDetalle = () => {
       });
     }
   };
+
+  if (loading) {
+    return <p>Cargando producto...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
+
+  if (!producto) {
+    return <p>Producto no encontrado.</p>;
+  }
 
   const handleCrearReseña = async () => {
     if (textoReseña.trim()) {
