@@ -3,6 +3,7 @@ import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 import "../styles/catalogo.css";
 import "../styles/default.css";
+import "../styles/catalogoQuerys.css"
 
 const Catalogo = () => {
   const navigate = useNavigate();

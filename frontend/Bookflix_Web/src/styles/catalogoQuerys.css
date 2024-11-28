@@ -1,0 +1,49 @@
+/****************************************/
+/* <=1340px   SMALLER COMPUTER DESKTOPS */
+/****************************************/
+
+@media (max-width: 83.75rem) {
+  .catalogoItems {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+/****************************************/
+/* <=1200px   LANDSCAPE TABLETS */
+/****************************************/
+
+@media (max-width: 75rem) {
+  .catalogoItems {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/****************************************/
+/* <=940px   TABLETS */
+/****************************************/
+
+@media (max-width: 58.75rem) {
+  .catalogoItems {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/****************************************/
+/* <=700px  SMALLER TABLETS */
+/****************************************/
+
+@media (max-width: 43.75rem) {
+  .catalogoItems {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/****************************************/
+/* <=544px  PHONES */
+/****************************************/
+
+@media (max-width: 34rem) {
+  .catalogoItems {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
