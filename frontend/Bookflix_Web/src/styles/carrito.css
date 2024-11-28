@@ -108,3 +108,9 @@ button.botonEliminar:hover {
 .precio-negro {
     color: #333; 
 }
+
+div.cantidad input.cantidadBox {
+    border-radius: 5px;
+    margin: auto;
+    padding: 10px;
+}

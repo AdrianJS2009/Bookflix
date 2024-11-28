@@ -118,7 +118,27 @@ const Carrito = () => {
                     className="imagen-carrito"
                   />
                   <p>{item.nombre || "Sin nombre"}</p>
-                  <p>Cantidad: {item.cantidad}</p>
+                  <div className="cantidad">
+                    <button
+                      className="masCantidad"
+                      onClick={() => cambiarCantidad("decrementar")}
+                    >
+                      -
+                    </button>
+                    <input 
+                      className="cantidadBox"
+                      type="text"
+                      value={item.cantidad}
+                      // onChange={manejarCambio}
+                      // onBlur={manejarBlur}
+                    />
+                    <button
+                      className="menosCantidad"
+                      onClick={() => cambiarCantidad("incrementar")}
+                    >
+                      +
+                    </button>
+                  </div>
                   <p>Precio: {(item.precio / 100).toFixed(2)} €</p>
                   <p>
                     Subtotal: {((item.precio * item.cantidad) / 100).toFixed(2)}{" "}
