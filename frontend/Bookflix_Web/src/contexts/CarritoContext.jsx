@@ -67,7 +67,6 @@ export const CarritoProvider = ({ children }) => {
       }
 
       const stockInfo = await response.json();
-      console.log("Stock info response:", stockInfo); // Debug log
       const productoStock = stockInfo.find((p) => p.id === producto.idLibro);
       if (!productoStock) {
         alert(`El producto "${producto.nombre}" no está disponible.`);
@@ -137,6 +136,42 @@ export const CarritoProvider = ({ children }) => {
     );
   };
 
+  const actualizarCantidad = async (libroId, nuevaCantidad) => {
+    if (nuevaCantidad < 1) return;
+
+    try {
+      const response = await fetch(
+        "https://localhost:7182/api/Carrito/ActualizarCantidad",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth.token}`,
+          },
+          body: JSON.stringify({
+            LibroId: libroId,
+            NuevaCantidad: nuevaCantidad,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.error || "Error desconocido al actualizar la cantidad."
+        );
+      }
+
+      setItems((prevItems) =>
+        prevItems.map((item) =>
+          item.libroId === libroId ? { ...item, cantidad: nuevaCantidad } : item
+        )
+      );
+    } catch (error) {
+      console.error("Error al actualizar la cantidad del producto:", error);
+    }
+  };
+
   const validarStockCarrito = async () => {
     try {
       const idsProductos = items.map((item) => item.libroId);
@@ -186,43 +221,38 @@ export const CarritoProvider = ({ children }) => {
       console.error("ID de producto no definido al intentar eliminar.");
       return;
     }
-  
+
     try {
-      // Si el usuario está autenticado, eliminar el producto del servidor
       if (auth.token) {
         const response = await fetch(
           `https://localhost:7182/api/Carrito/eliminar/${productoId}`,
           {
             method: "DELETE",
             headers: {
-              Authorization: `Bearer ${auth.token}`, // Asegúrate de que el token esté correctamente configurado
+              Authorization: `Bearer ${auth.token}`,
             },
           }
         );
-  
+
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || "No se pudo eliminar el producto del servidor.");
+          throw new Error(
+            errorData.error || "No se pudo eliminar el producto del servidor."
+          );
         }
-  
-        console.log(`Producto con ID ${productoId} eliminado correctamente del servidor.`);
-      } else {
-        console.warn("El usuario no tiene token activo, eliminando localmente.");
       }
-  
-      // Eliminar el producto localmente del carrito
+
       setItems((prevItems) => {
-        const newItems = prevItems.filter((item) => item.libroId !== productoId);
+        const newItems = prevItems.filter(
+          (item) => item.libroId !== productoId
+        );
         localStorage.setItem("carrito", JSON.stringify(newItems));
         return newItems;
       });
-  
     } catch (error) {
       console.error("Error al eliminar el producto del carrito:", error);
     }
   };
-  
-  
 
   const vaciarCarrito = async () => {
     if (auth.token) {
@@ -259,6 +289,7 @@ export const CarritoProvider = ({ children }) => {
         eliminarItem,
         vaciarCarrito,
         validarStockCarrito,
+        actualizarCantidad,
       }}
     >
       {children}

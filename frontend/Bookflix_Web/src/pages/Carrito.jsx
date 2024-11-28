@@ -5,7 +5,8 @@ import { useCarrito } from "../contexts/CarritoContext";
 import "../styles/Carrito.css";
 
 const Carrito = () => {
-  const { items, vaciarCarrito, eliminarItem } = useCarrito();
+  const { items, vaciarCarrito, eliminarItem, actualizarCantidad } =
+    useCarrito();
   const { auth } = useAuth();
   const navigate = useNavigate();
 
@@ -24,7 +25,6 @@ const Carrito = () => {
     }
 
     try {
-      // Sincronizar carrito con el backend antes de comprar
       console.log(
         "Sincronizando el carrito con el backend antes de la compra..."
       );
@@ -59,7 +59,6 @@ const Carrito = () => {
         }
       }
 
-      // Llamada al endpoint `ComprarCarrito`
       console.log("Realizando la compra...");
       const response = await fetch(
         "https://localhost:7182/api/Carrito/comprar",
@@ -84,7 +83,6 @@ const Carrito = () => {
 
       alert("Compra realizada con éxito");
 
-      // Vaciar el carrito y navegar a la confirmación
       vaciarCarrito();
       const total = items.reduce(
         (sum, item) => sum + item.precio * item.cantidad,
@@ -121,20 +119,23 @@ const Carrito = () => {
                   <div className="cantidad">
                     <button
                       className="masCantidad"
-                      onClick={() => cambiarCantidad("decrementar")}
+                      onClick={() =>
+                        actualizarCantidad(item.libroId, item.cantidad - 1)
+                      }
                     >
                       -
                     </button>
-                    <input 
+                    <input
                       className="cantidadBox"
                       type="text"
                       value={item.cantidad}
-                      // onChange={manejarCambio}
-                      // onBlur={manejarBlur}
+                      readOnly
                     />
                     <button
                       className="menosCantidad"
-                      onClick={() => cambiarCantidad("incrementar")}
+                      onClick={() =>
+                        actualizarCantidad(item.libroId, item.cantidad + 1)
+                      }
                     >
                       +
                     </button>

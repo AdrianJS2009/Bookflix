@@ -232,5 +232,39 @@ namespace Bookflix_Server.Controllers
 
             return Ok(historialComprasDto);
         }
+
+        [HttpPut("ActualizarCantidad")]
+        public async Task<IActionResult> ActualizarCantidadProducto([FromBody] CarritoItemActualizarDTO datos)
+        {
+            Console.WriteLine($"Actualizando cantidad: LibroId={datos.LibroId}, NuevaCantidad={datos.NuevaCantidad}");
+
+            string correoUsuario = ObtenerCorreoUsuario();
+            var usuario = await _userRepository.ObtenerPorCorreoAsync(correoUsuario);
+            if (usuario == null)
+            {
+                Console.WriteLine("Usuario no encontrado.");
+                return NotFound(new { error = "Usuario no encontrado." });
+            }
+
+            var carrito = await _carritoRepository.ObtenerCarritoPorUsuarioIdAsync(usuario.IdUser);
+            if (carrito == null)
+            {
+                Console.WriteLine("Carrito no encontrado.");
+                return NotFound(new { error = "Carrito no encontrado." });
+            }
+
+            bool actualizado = await _carritoRepository.ActualizarCantidadProductoAsync(carrito, datos.LibroId, datos.NuevaCantidad);
+            if (!actualizado)
+            {
+                Console.WriteLine("No se pudo actualizar la cantidad.");
+                return BadRequest(new { error = "No se pudo actualizar la cantidad." });
+            }
+
+            Console.WriteLine("Cantidad actualizada correctamente.");
+            return Ok(new { message = "Cantidad actualizada correctamente." });
+        }
+
+
+
     }
 }

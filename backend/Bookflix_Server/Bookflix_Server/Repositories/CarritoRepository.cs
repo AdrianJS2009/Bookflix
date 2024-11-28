@@ -105,5 +105,23 @@ namespace Bookflix_Server.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public async Task<bool> ActualizarCantidadProductoAsync(Carrito carrito, int libroId, int nuevaCantidad)
+        {
+            Console.WriteLine($"Carrito recibido: {carrito.Items.Count} items.");
+
+            var item = carrito.Items.FirstOrDefault(i => i.LibroId == libroId);
+            if (item == null)
+            {
+                Console.WriteLine("Producto no encontrado en el carrito.");
+                return false;
+            }
+
+            Console.WriteLine($"Producto encontrado: {item.LibroId}, actualizando la cantidad a {nuevaCantidad}.");
+            item.Cantidad = nuevaCantidad;
+            _context.CarritoItems.Update(item);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
