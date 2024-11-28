@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
-import "../styles/catalogo.css";
 import "../styles/default.css";
+import "../styles/catalogo.css";
 import "../styles/catalogoQuerys.css"
 
 const Catalogo = () => {
@@ -193,10 +193,12 @@ const Catalogo = () => {
                   />
                 </div>
                 <div className="catalogoItemButtons">
-                  <h2 className="titulo">{libro.nombre}</h2>
+                  <h2 className="titulo">{Array.from(libro.nombre).length > 10 ? Array.from(libro.nombre).slice(0,50).join("") + '...'  : libro.nombre}</h2>
                   <p className="precio">{libro.autor}</p>
                   <p className="precio">{(libro.precio / 100).toFixed(2)} €</p>
+                  <button className="prueba">Prueba</button>
                 </div>
+             
               </div>
             ))}
           </div>
