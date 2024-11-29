@@ -32,7 +32,6 @@ public class Program
 
     private static void ConfigureServices(WebApplicationBuilder builder)
     {
-        // Servicios de controladores y Swagger
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
@@ -65,12 +64,9 @@ public class Program
 
 
 
-
-        // Configuración de la base de datos
         builder.Services.AddDbContext<MyDbContext>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-        // Dependencias
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
@@ -79,7 +75,6 @@ public class Program
         builder.Services.AddScoped<ICarritoRepository, CarritoRepository>();
         builder.Services.AddScoped<ICompraRepository, CompraRepository>();
 
-        // Configuración de CORS solo para el entorno de desarrollo
         if (builder.Environment.IsDevelopment())
         {
             builder.Services.AddCors(options =>
@@ -93,7 +88,6 @@ public class Program
             });
         }
 
-        // Configuración de autenticación JWT
         ConfigureJwtAuthentication(builder);
     }
 
@@ -142,14 +136,12 @@ public class Program
 
     private static void ConfigureMiddleware(WebApplication app)
     {
-        // Configuración de Swagger
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
         }
 
-        // Configuración de CORS
         app.UseCors(policy =>
             policy.WithOrigins("http://localhost:5173")
                   .AllowAnyHeader()

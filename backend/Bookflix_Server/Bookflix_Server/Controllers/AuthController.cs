@@ -36,7 +36,6 @@ namespace Bookflix_Server.Controllers
             return User.FindFirst(ClaimTypes.Email).Value;
         }
 
-        // Endpoint para generar y devolver el token JWT
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
@@ -73,7 +72,6 @@ namespace Bookflix_Server.Controllers
             return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
         }
 
-        // Endpoint para leer el contenido del token
         [HttpGet("read")]
         [Authorize]
         public IActionResult LeerToken()

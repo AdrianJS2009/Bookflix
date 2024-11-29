@@ -13,13 +13,6 @@ public class SeederLibros
 
     public async Task Seeder()
     {
-
-        //Verificamos si ya hay libros en la BBDD antes de nada
-   /*     if (_context.Libros.Any())
-        {
-            return;
-        }
-   */
         List<Libro> libros = new List<Libro>
         {
 

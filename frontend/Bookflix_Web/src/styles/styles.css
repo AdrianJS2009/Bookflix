@@ -11,23 +11,11 @@ body {
   gap: 100px;
 }
 
-/* ********** */
-/*   BANNER   */
-/* ********** */
-
 .box-banner {
   display: flex;
   justify-content: center;
   margin: 75px 0 50px 0;
 }
-
-/* ********** */
-/*   GÉNEROS  */
-/* ********** */
-
-/* ********** */
-/* TOP VENTAS */
-/* ********** */
 
 .top-ventas-section {
   display: grid;
@@ -60,10 +48,6 @@ body {
   width: 40px;
   height: 40px;
 }
-
-/* ********** */
-/* CARROUSEL  */
-/* ********** */
 
 .carrusel-container {
   display: flex;
@@ -103,7 +87,6 @@ body {
   margin-bottom: 15px;
 }
 
-/* Flechas de navegación */
 .flecha {
   font-size: 24px;
   cursor: pointer;

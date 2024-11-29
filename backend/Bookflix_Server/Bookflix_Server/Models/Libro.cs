@@ -23,7 +23,6 @@ public class Libro
     public string ISBN { get; set; }
     public string Autor { get; set; }
 
-    // Inicializa las reseñas para que no estén a null
     public ICollection<Reseña> Reseñas { get; set; } = new List<Reseña>();
 
     [NotMapped]

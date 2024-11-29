@@ -36,7 +36,7 @@ namespace Bookflix_Server.Controllers
 
         private string ObtenerCorreoUsuario()
         {
-            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Extraer el correo del token
+            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value; 
         }
 
         [HttpGet("Detalle/{idLibro}")]
@@ -136,7 +136,7 @@ namespace Bookflix_Server.Controllers
                 {
                     "precio" => ascendente ? librosQuery.OrderBy(l => l.Precio) : librosQuery.OrderByDescending(l => l.Precio),
                     "nombre" => ascendente ? librosQuery.OrderBy(l => l.Nombre) : librosQuery.OrderByDescending(l => l.Nombre),
-                    _ => librosQuery // Sin orden específico
+                    _ => librosQuery 
                 };
 
                 var totalLibros = await librosQuery.CountAsync();

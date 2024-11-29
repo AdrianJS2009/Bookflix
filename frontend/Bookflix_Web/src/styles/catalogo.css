@@ -1,4 +1,3 @@
-/* FLEX CON H2 y GRID DE ITEMS*/
 .catalogo-container {
   padding: var(--padding-container);
   min-height: calc(100vh - var(--altura-header));
@@ -9,11 +8,9 @@
   justify-content: center;
 }
 
-/* GRID DE ITEMS */
 .catalogoItems {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  /*   grid-template-columns: repeat(5, minmax(200px, 1fr)); */
   gap: var(--gap-items);
 }
 
@@ -24,7 +21,6 @@
   border-radius: var(--radio-bordes);
   cursor: pointer;
   transition: transform 0.2s ease;
-  /* text-wrap: balance; */
   box-shadow: var(--sombra-sutil);
   &:hover {
     transform: scale(1.02);

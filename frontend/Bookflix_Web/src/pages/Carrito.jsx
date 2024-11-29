@@ -10,7 +10,7 @@ const Carrito = () => {
     vaciarCarrito,
     eliminarItem,
     actualizarCantidad,
-  } = useCarrito(); // Asegura que `items` siempre sea un array vacío por defecto
+  } = useCarrito(); 
   const { auth } = useAuth();
   const navigate = useNavigate();
 

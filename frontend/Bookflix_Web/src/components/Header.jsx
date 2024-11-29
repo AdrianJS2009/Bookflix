@@ -18,7 +18,7 @@ const Header = () => {
     if (auth.token) {
       try {
         console.log(auth.token)
-        const decoded = JSON.parse(atob(auth.token.split(".")[1])); // Decodificar el token JWT
+        const decoded = JSON.parse(atob(auth.token.split(".")[1])); 
         console.log(decoded)
         setUserName(
           `Hola, ${decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]}`
@@ -111,7 +111,7 @@ const Header = () => {
         <div className={`${classes.modalOverlay} texto-pequeño`}  onClick={toggleModal}>
           <div
             className={classes.modalContent}
-            onClick={(e) => e.stopPropagation()} // Evitar cerrar el modal al hacer clic dentro
+            onClick={(e) => e.stopPropagation()} 
           >
             <h2 className="texto-mediano-bold">Opciones de usuario</h2>
             <div className={classes.modalActions}>

@@ -35,7 +35,7 @@ namespace Bookflix_Server.Controllers
 
         private string ObtenerIdUsuario()
         {
-            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Extraer el correo del token
+            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value; 
         }
 
         [HttpGet("ListarCarrito")]
@@ -203,7 +203,6 @@ namespace Bookflix_Server.Controllers
                 compra.Detalles.Add(detalle);
             }
 
-            // Registrar compra y vaciar carrito
             await _compraRepository.RegistrarCompraAsync(compra);
             await _carritoRepository.VaciarCarritoAsync(carritoUsuario);
 
@@ -275,8 +274,6 @@ namespace Bookflix_Server.Controllers
             Console.WriteLine("Cantidad actualizada correctamente.");
             return Ok(new { message = "Cantidad actualizada correctamente." });
         }
-
-
 
     }
 }

@@ -36,7 +36,6 @@
   --texto: "Inter", sans-serif;
 }
 
-/* Clases de css default para texto */
 .texto-extragrande {
   font-family: "Inter", sans-serif;
   font-size: var(--extra-grande);
@@ -66,7 +65,6 @@
   text-decoration: none;
 }
 
-/* Clase de color de texto */
 .texto-negro {
   color: var(--negro);
 }
@@ -74,7 +72,6 @@
   color: var(--blanco);
 }
 
-/* Clase color de fondos */
 .fondo-negro {
   background-color: var(--negro);
 }
@@ -91,7 +88,6 @@
   background-color: var(--blanco);
 }
 
-/* Limpiar estilos HTML */
 * {
   margin: 0;
   padding: 0;

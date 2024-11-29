@@ -30,7 +30,5 @@ namespace Bookflix_Server.Repositories
        
         Task<IEnumerable<Reseña>> ObtenerPorCategoriaAsync(int productoId, string categoria);
 
-        //Task<bool> VerificarCompraAsync(int usuarioId, int productoId);
-
     }
 }

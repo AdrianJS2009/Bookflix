@@ -27,10 +27,9 @@ namespace Bookflix_Server.Controllers
 
         private string ObtenerIdUsuario()
         {
-            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Extraer el correo del token
+            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value; 
         }
 
-        // Listar todos los usuarios
         [HttpGet("listar")]
         public async Task<ActionResult<IEnumerable<User>>> ListarUsuarios()
         {
@@ -38,12 +37,11 @@ namespace Bookflix_Server.Controllers
             return Ok(usuarios);
         }
 
-        // Obtener el perfil del usuario autenticado o por correo
         [HttpGet("perfil")]
         [AllowAnonymous]
         public async Task<ActionResult<User>> ObtenerPerfilUsuario()
         {
-            // Si no se especifica correo, se usa el del usuario autenticado
+            
             int idUsuario = int.Parse(ObtenerIdUsuario());
             var usuario = await _context.Users.FirstOrDefaultAsync(u => u.IdUser == idUsuario);
 
@@ -70,7 +68,6 @@ namespace Bookflix_Server.Controllers
                 return Conflict(new { error = "El correo electrónico ya está en uso." });
             }
 
-            // Crear el nuevo usuario
             var usuario = new User
             {
                 Nombre = datosUsuario.Nombre,
@@ -98,7 +95,6 @@ namespace Bookflix_Server.Controllers
         }
 
 
-        // Actualizar el perfil del usuario autenticado
         [HttpPut("actualizar")]
         [Authorize]
         public async Task<IActionResult> ActualizarPerfilUsuario([FromBody] UserDTO datosUsuario)
@@ -135,7 +131,6 @@ namespace Bookflix_Server.Controllers
             return NoContent();
         }
 
-        // Eliminar la cuenta del usuario autenticado
         [HttpDelete("eliminar")]
         [Authorize]
         public async Task<IActionResult> EliminarCuentaUsuario()
@@ -176,12 +171,12 @@ namespace Bookflix_Server.Controllers
             var reseña = new Reseña
             {
                 UsuarioId = usuario.IdUser,
-                ProductoId = libroId, // Usar el ID del libro convertido
+                ProductoId = libroId, 
                 Autor = !string.IsNullOrEmpty(reseñaDto.Autor)
                         ? reseñaDto.Autor
                         : $"{usuario.Nombre} {usuario.Apellidos}",
                 Texto = reseñaDto.Texto,
-                FechaPublicacion = reseñaDto.FechaPublicacion != default ? reseñaDto.FechaPublicacion : DateTime.UtcNow, // Usar la fecha proporcionada o la actual
+                FechaPublicacion = reseñaDto.FechaPublicacion != default ? reseñaDto.FechaPublicacion : DateTime.UtcNow, 
                 Categoria = reseñaDto.Categoria,
             };
 

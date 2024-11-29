@@ -23,8 +23,8 @@
 
 .form-container h1 {
   margin-bottom: 15px;
-  font-weight: 900; /* Peso de fuente aumentado */
-  text-transform: uppercase; /* Texto en mayúsculas */
+  font-weight: 900; 
+  text-transform: uppercase; 
 }
 
 .form {
