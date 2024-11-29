@@ -55,7 +55,7 @@ namespace Bookflix_Server.Controllers
             return Ok(usuario);
         }
 
-        // Crear un nuevo usuario (incluye verificación de unicidad de correo)
+       
         [HttpPost("crear")]
         [AllowAnonymous]
         public async Task<ActionResult<User>> CrearUsuario([FromBody] UserDTO datosUsuario)
@@ -63,13 +63,14 @@ namespace Bookflix_Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(new { error = "Los datos proporcionados para el usuario no son válidos." });
 
-            // Verificar si ya existe un usuario con el mismo correo
+      
             var usuarioExistente = await _context.Users.FirstOrDefaultAsync(u => u.Email == datosUsuario.Email);
             if (usuarioExistente != null)
             {
                 return Conflict(new { error = "El correo electrónico ya está en uso." });
             }
 
+            // Crear el nuevo usuario
             var usuario = new User
             {
                 Nombre = datosUsuario.Nombre,
@@ -83,8 +84,19 @@ namespace Bookflix_Server.Controllers
             _context.Users.Add(usuario);
             await _context.SaveChangesAsync();
 
+          
+            var carrito = new Carrito
+            {
+                UserId = usuario.IdUser,
+                Items = new List<CarritoItem>() 
+            };
+
+            _context.Carritos.Add(carrito);
+            await _context.SaveChangesAsync();
+
             return CreatedAtAction(nameof(ObtenerPerfilUsuario), new { correo = usuario.Email }, usuario);
         }
+
 
         // Actualizar el perfil del usuario autenticado
         [HttpPut("actualizar")]
