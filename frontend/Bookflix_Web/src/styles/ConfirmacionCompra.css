@@ -37,10 +37,10 @@
 }
 
 .imagen-producto {
-  width: 180px; 
-  height: 210px; 
+  height: 250px; 
   object-fit: cover;
   border-radius: 5px;
+  border: 3px solid black; 
 }
 
 .detalles-producto {
