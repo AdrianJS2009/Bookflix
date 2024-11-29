@@ -167,7 +167,6 @@ namespace Bookflix_Server.Controllers
             int idUsuario = int.Parse(ObtenerIdUsuario());
             var usuario = await _userRepository.ObtenerPorIdAsync(idUsuario);
 
-
             if (usuario == null)
                 return NotFound(new { error = "Usuario no encontrado." });
 
@@ -181,23 +180,30 @@ namespace Bookflix_Server.Controllers
                 FechaCompra = DateTime.UtcNow
             };
 
+          
             foreach (var item in carritoUsuario.Items)
             {
+                if (item.Cantidad <= 0)
+                {
+                    return BadRequest(new { error = $"Cantidad inválida para el producto '{item.LibroId}'." });
+                }
+
                 if (!await _productoRepository.ReducirStockAsync(item.LibroId, item.Cantidad))
                 {
-                    return BadRequest(new { error = $"El producto '{item.LibroId}' no tiene suficiente stock." });
+                    return BadRequest(new { error = $"Stock insuficiente para el producto '{item.LibroId}'." });
                 }
 
                 var detalle = new CompraDetalle
                 {
                     LibroId = item.LibroId,
-                    Cantidad = item.Cantidad,
+                    Cantidad = item.Cantidad, 
                     PrecioUnitario = item.Libro.Precio
                 };
 
                 compra.Detalles.Add(detalle);
             }
 
+            // Registrar compra y vaciar carrito
             await _compraRepository.RegistrarCompraAsync(compra);
             await _carritoRepository.VaciarCarritoAsync(carritoUsuario);
 
@@ -205,6 +211,7 @@ namespace Bookflix_Server.Controllers
 
             return Ok(new { success = true, message = "Compra realizada exitosamente." });
         }
+
 
         [HttpGet("historial")]
         public async Task<IActionResult> ObtenerHistorialCompras()

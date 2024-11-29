@@ -117,11 +117,11 @@ export const CarritoProvider = ({ children }) => {
         throw new Error("Error al agregar producto al carrito en el backend.");
       }
 
-      const carritoActualizado = await response.json();
-      setItems(carritoActualizado.items);
       alert(
         `${cantidad} unidad(es) de "${producto.nombre}" añadida(s) al carrito.`
       );
+
+      await sincronizarCarrito();
     } catch (error) {
       console.error("Error al agregar producto al carrito:", error);
       sincronizarCarrito();
