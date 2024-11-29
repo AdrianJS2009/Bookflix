@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
+import Button from "../components/Button";
+import { useCarrito } from "../contexts/CarritoContext";
 import "../styles/default.css";
 import "../styles/catalogo.css";
 import "../styles/catalogoQuerys.css"
 
 const Catalogo = () => {
   const navigate = useNavigate();
+  const { agregarAlCarrito } = useCarrito();
   const [libros, setLibros] = useState([]);
   const [nombre, setNombre] = useState("");
   const [genero, setGenero] = useState("");
@@ -17,6 +20,7 @@ const Catalogo = () => {
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [cantidad, setCantidad] = useState(1);
 
   const fetchLibros = async (page) => {
     setIsLoading(true);
@@ -34,9 +38,8 @@ const Catalogo = () => {
     }
 
     try {
-      let url = `https://localhost:7182/api/Libro/ListarLibros?pagina=${
-        page + 1
-      }&tamanoPagina=${itemsPerPage}`;
+      let url = `https://localhost:7182/api/Libro/ListarLibros?pagina=${page + 1
+        }&tamanoPagina=${itemsPerPage}`;
       if (nombre) url += `&textoBusqueda=${encodeURIComponent(nombre)}`;
       if (genero) url += `&genero=${encodeURIComponent(genero)}`;
       if (ordenarPor)
@@ -86,6 +89,28 @@ const Catalogo = () => {
 
   const handleProductoClick = (id) => {
     navigate(`/producto/${id}`);
+  };
+
+  const handleAgregar = (libro) => {
+    if (libro && cantidad > 0 && cantidad <= libro.stock) {
+      console.log("libro antes de agregar:", libro);
+      console.log("Cantidad seleccionada:", cantidad);
+  
+      agregarAlCarrito(
+        {
+          idLibro: libro.idLibro,
+          nombre: libro.nombre,
+          precio: libro.precio,
+          urlImagen: libro.urlImagen,
+        },
+        cantidad
+      );
+    } else {
+      console.warn("No se puede agregar al carrito: datos inválidos.", {
+        libro,
+        cantidad,
+      });
+    }
   };
 
   return (
@@ -183,7 +208,7 @@ const Catalogo = () => {
               <div
                 key={libro.idLibro}
                 className="catalogoItem"
-                onClick={() => handleProductoClick(libro.idLibro)}
+                // onClick={() => handleProductoClick(libro.idLibro)}
               >
                 <div className="catalogoItemContent">
                   <img
@@ -192,13 +217,20 @@ const Catalogo = () => {
                     className="imgItemCatalogo"
                   />
                 </div>
-                <div className="catalogoItemButtons">
-                  <h2 className="titulo">{Array.from(libro.nombre).length > 10 ? Array.from(libro.nombre).slice(0,50).join("") + '...'  : libro.nombre}</h2>
+                <div 
+                  className="catalogoItemButtons"
+                  onClick={() => handleProductoClick(libro.idLibro)}
+                >
+                  <h2 className="titulo">{Array.from(libro.nombre).length > 10 ? Array.from(libro.nombre).slice(0, 50).join("") + '...' : libro.nombre}</h2>
                   <p className="precio">{libro.autor}</p>
                   <p className="precio">{(libro.precio / 100).toFixed(2)} €</p>
-                  <button className="prueba">Prueba</button>
+                  
                 </div>
-             
+                <Button
+                    label="Añadir a la cesta"
+                    styleType="btnAñadir"
+                    onClick={() => handleAgregar(libro)}
+                  />
               </div>
             ))}
           </div>
