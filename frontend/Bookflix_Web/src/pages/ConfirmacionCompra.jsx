@@ -16,6 +16,7 @@ const ConfirmacionCompra = () => {
     navigate("/catalogo");
   };
 
+  const totalPrecio = items.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
   const totalItems = items.reduce((sum, item) => sum + item.cantidad, 0);
 
   return (
@@ -54,7 +55,7 @@ const ConfirmacionCompra = () => {
           </li>
         ))}
       </ul>
-      <p className="texto-mediano">Total: {(total / 100).toFixed(2)} €</p>
+      <p className="texto-mediano">Total: {(totalPrecio / 100).toFixed(2)} €</p>
       <p className="texto-mediano">Total de Ítems: {totalItems}</p>
       <Button
         label="Volver al catálogo"

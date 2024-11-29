@@ -154,7 +154,8 @@ namespace Bookflix_Server.Controllers
                         Genero = l.Genero,
                         Descripcion = l.Descripcion,
                         Autor = l.Autor,
-                        ISBN = l.ISBN
+                        ISBN = l.ISBN,
+                        Stock = l.Stock
                     })
                     .ToListAsync();
 
