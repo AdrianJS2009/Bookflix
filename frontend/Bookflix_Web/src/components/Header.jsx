@@ -37,7 +37,6 @@ const Header = () => {
   const handleLogout = () => {
     cerrarSesion();
     setMenuOpen(false);
-    window.location.reload(); 
   };
   
 
