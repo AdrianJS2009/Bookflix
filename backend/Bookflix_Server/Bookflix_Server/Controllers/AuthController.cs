@@ -5,10 +5,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-
-
-
-
 using Microsoft.AspNetCore.Authorization;
 
 
@@ -27,9 +23,9 @@ namespace Bookflix_Server.Controllers
             _userRepository = userRepository;
         }
 
-        private string ObtenerCorreoUsuario()
+        private string ObtenerIdUsuario()
         {
-            return User.FindFirst(ClaimTypes.Name)?.Value; // Extraer el correo del token
+            return User.FindFirst(ClaimTypes.Name).Value; // Extraer el id del token
         }
 
         // Endpoint para generar y devolver el token JWT
@@ -49,9 +45,9 @@ namespace Bookflix_Server.Controllers
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, usuario.Email), // Correo electrónico
-                new Claim(ClaimTypes.NameIdentifier, usuario.IdUser.ToString()), // ID del usuario
-                new Claim(ClaimTypes.Role, usuario.Rol) // Rol del usuario
+                new Claim(ClaimTypes.Name, usuario.IdUser.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, usuario.Email),
+                new Claim(ClaimTypes.Role, usuario.Rol)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
@@ -73,8 +69,8 @@ namespace Bookflix_Server.Controllers
         [Authorize]
         public IActionResult LeerToken()
         {
-            string email = ObtenerCorreoUsuario();
-            return Ok(new { Email = email });
+            int idUsuario = int.Parse(ObtenerIdUsuario());
+            return Ok(new { IdUser = idUsuario });
         }
 
         [HttpGet("usuario")]
