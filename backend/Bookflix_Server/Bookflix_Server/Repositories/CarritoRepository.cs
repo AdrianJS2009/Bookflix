@@ -22,36 +22,39 @@ namespace Bookflix_Server.Repositories
                 .FirstOrDefaultAsync(c => c.UserId == idUsuario);
         }
 
-        public async Task<Carrito> ObtenerOCrearCarritoPorUsuarioIdAsync(int idUsuario)
-        {
-            var carrito = await ObtenerCarritoPorUsuarioIdAsync(idUsuario);
-            if (carrito == null)
-            {
-                carrito = new Carrito { UserId = idUsuario };
-                _context.Carritos.Add(carrito);
-                await GuardarCambiosAsync();
-            }
-            return carrito;
-        }
+
 
         public async Task AgregarProductoAlCarritoAsync(Carrito carrito, int idProducto, int cantidad)
         {
             if (carrito == null || cantidad <= 0)
                 throw new ArgumentException("El carrito es nulo o la cantidad no es válida.");
 
+           
+            var producto = await _context.Libros.FindAsync(idProducto);
+            if (producto == null)
+            {
+                throw new InvalidOperationException($"El producto con ID {idProducto} no existe.");
+            }
+
             var item = carrito.Items.FirstOrDefault(i => i.LibroId == idProducto);
             if (item == null)
             {
-                var nuevoItem = new CarritoItem { LibroId = idProducto, Cantidad = cantidad, CarritoId = carrito.CarritoId };
-                _context.CarritoItems.Attach(nuevoItem); 
+                var nuevoItem = new CarritoItem
+                {
+                    LibroId = idProducto,
+                    Cantidad = cantidad,
+                    CarritoId = carrito.CarritoId
+                };
+
+                _context.CarritoItems.Add(nuevoItem);
                 carrito.Items.Add(nuevoItem);
             }
             else
             {
                 item.Cantidad += cantidad;
             }
-            await GuardarCambiosAsync();
 
+            await GuardarCambiosAsync();
         }
 
         public async Task<bool> EliminarProductoDelCarritoAsync(Carrito carrito, int idProducto)
@@ -101,9 +104,21 @@ namespace Bookflix_Server.Repositories
             await GuardarCambiosAsync();
         }
 
-        public Task<Carrito> ObtenerCarritoPorUsuarioIdAsync(string name)
+        public async Task<Carrito> ObtenerOCrearCarritoPorUsuarioIdAsync(int idUsuario)
         {
-            throw new NotImplementedException();
+            var carrito = await _context.Carritos
+                .Include(c => c.Items)
+                .ThenInclude(item => item.Libro)
+                .FirstOrDefaultAsync(c => c.UserId == idUsuario);
+
+            if (carrito == null)
+            {
+                carrito = new Carrito { UserId = idUsuario };
+                _context.Carritos.Add(carrito);
+                await _context.SaveChangesAsync();
+            }
+
+            return carrito;
         }
 
         public async Task<bool> ActualizarCantidadProductoAsync(Carrito carrito, int libroId, int nuevaCantidad)
