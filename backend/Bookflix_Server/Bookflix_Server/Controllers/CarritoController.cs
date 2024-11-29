@@ -78,7 +78,7 @@ namespace Bookflix_Server.Controllers
             int idUsuario = int.Parse(ObtenerIdUsuario());
             var usuario = await _userRepository.ObtenerPorIdAsync(idUsuario);
 
-
+            try { 
                 if (usuario == null)
                     return NotFound(new { error = "Usuario no encontrado." });
 
@@ -99,6 +99,8 @@ namespace Bookflix_Server.Controllers
 
                 return Ok(new { success = true, message = "El producto se ha añadido al carrito exitosamente." });
             }
+
+            
             catch (InvalidOperationException ex)
             {
                 return BadRequest(new { error = ex.Message });
