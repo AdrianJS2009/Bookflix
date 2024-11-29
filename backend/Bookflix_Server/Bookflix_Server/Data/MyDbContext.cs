@@ -5,6 +5,8 @@ namespace Bookflix_Server.Data
 {
     public class MyDbContext : DbContext
     {
+        private const string DATABASE_PATH = "bookflix.db";
+
         public DbSet<User> Users { get; set; }
         public DbSet<Libro> Libros { get; set; }
         public DbSet<Reseña> Reseñas { get; set; }
@@ -15,12 +17,14 @@ namespace Bookflix_Server.Data
 
         public MyDbContext(DbContextOptions<MyDbContext> options) : base(options) { }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlite("DataSource=bookflix.db");
-            }
+
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+
+           
+                options.UseSqlite($"DataSource={baseDir}{DATABASE_PATH}");
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
