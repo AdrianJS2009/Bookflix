@@ -1,11 +1,11 @@
 ﻿using Bookflix_Server.Models;
 using Bookflix_Server.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace Bookflix_Server.Controllers
@@ -14,56 +14,91 @@ namespace Bookflix_Server.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _config;
+        private readonly IUserRepository _userRepository;
 
-        public AuthController(IUnitOfWork unitOfWork, IConfiguration config)
+        public AuthController(IConfiguration config, IUserRepository userRepository)
         {
-            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-            _config = config ?? throw new ArgumentNullException(nameof(config));
+            _config = config;
+            _userRepository = userRepository;
         }
 
+        private string ObtenerIdUsuario()
+        {
+            return User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        }
+        private string ObtenerNombreUsuario()
+        {
+            return User.FindFirst(ClaimTypes.Name).Value;
+        }
+        private string ObtenerCorreoUsuario()
+        {
+            return User.FindFirst(ClaimTypes.Email).Value;
+        }
+
+        // Endpoint para generar y devolver el token JWT
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login([FromBody] LoginDto model)
+        [AllowAnonymous]
+        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-           
             if (!ModelState.IsValid)
-                return BadRequest("Datos de inicio de sesión no válidos.");
+                return BadRequest(new { error = "Datos de login inválidos." });
 
-            
-            var user = await _unitOfWork.Users.GetByEmailAsync(model.Email);
+            var usuario = await _userRepository.ObtenerPorCorreoAsync(loginDto.Email);
 
-          
-            if (user == null || user.Password != model.Password)
-                return Unauthorized("Credenciales incorrectas.");
+            if (usuario == null || usuario.Password != loginDto.Password)
+            {
+                return Unauthorized(new { error = "Credenciales incorrectas." });
+            }
 
-           
-            var token = GenerateToken(user);
-            return Ok(new { Token = token });
-        }
-
-       
-        private string GenerateToken(User user)
-        {
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.IdUser.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Name, user.Nombre),
-                new Claim(ClaimTypes.Role, user.Rol)
+                new Claim(ClaimTypes.NameIdentifier, usuario.IdUser.ToString()),
+                new Claim(ClaimTypes.Name, usuario.Nombre),
+                new Claim(ClaimTypes.Email, usuario.Email),
+                new Claim(ClaimTypes.Role, usuario.Rol)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
                 claims: claims,
                 expires: DateTime.Now.AddHours(1),
-                signingCredentials: creds);
+                signingCredentials: credentials
+            );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
         }
+
+        // Endpoint para leer el contenido del token
+        [HttpGet("read")]
+        [Authorize]
+        public IActionResult LeerToken()
+        {
+            int idUsuario = int.Parse(ObtenerIdUsuario());
+            string correo = ObtenerCorreoUsuario();
+            string nombre = ObtenerNombreUsuario();
+
+            return Ok(new { IdUser = idUsuario, Email = correo, Nombre = nombre });
+        }
+
+        [HttpGet("usuario")]
+        [Authorize]
+        public IActionResult ObtenerDetallesUsuario()
+        {
+            var email = User.FindFirst(ClaimTypes.Name)?.Value;
+            var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(id))
+            {
+                return Unauthorized(new { error = "No se pudo determinar el usuario." });
+            }
+
+            return Ok(new { Id = id, Email = email });
+        }
+
     }
 }

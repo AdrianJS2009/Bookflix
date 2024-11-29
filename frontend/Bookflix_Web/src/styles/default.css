@@ -15,7 +15,9 @@
   --negro: #0f0f0f;
   --blanco: #f0f0f0;
   --difuminado: #0f0f0f5b;
-  --rojo: red;
+  --rojo-normal: red;
+  --rojo-oscuro: rgb(192, 0, 0);
+  --rojo-claro: rgb(240, 74, 74);
   --verde: green;
 
   /*Tamaños texto*/
@@ -23,6 +25,13 @@
   --mediano: 18px;
   --grande: 36px;
   --extra-grande: 36px;
+  --altura-header: 80px;
+  --padding-container: 20px;
+  --padding-item: 10px;
+  --gap-botones: 10px;
+  --radio-bordes: 10px;
+  --sombra-sutil: 4px 4px 10px var(--difuminado);
+  --gap-items: 15px;
 
   --texto: "Inter", sans-serif;
 }

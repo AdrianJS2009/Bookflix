@@ -13,47 +13,53 @@ namespace Bookflix_Server.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<int> GetCountAsync()
+        
+        public async Task<int> ObtenerConteoAsync()
         {
             return await _context.Libros.CountAsync();
         }
 
-        // Lista paginada
-        public async Task<IEnumerable<Libro>> GetLibrosPagedAsync(int page, int pageSize)
+        
+        public async Task<IEnumerable<Libro>> ObtenerLibrosPaginadosAsync(int pagina, int tamañoPagina)
         {
             return await _context.Libros
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
+                .Skip((pagina - 1) * tamañoPagina)
+                .Take(tamañoPagina)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Libro>> GetAllAsync()
+        
+        public async Task<IEnumerable<Libro>> ObtenerTodosAsync()
         {
             return await _context.Libros.ToListAsync();
         }
 
-        public async Task<Libro> GetByIdAsync(int id)
+        
+        public async Task<Libro> ObtenerPorIdAsync(int id)
         {
             return await _context.Libros.FindAsync(id);
         }
 
-        public async Task AddAsync(Libro libro)
+       
+        public async Task AgregarAsync(Libro libro)
         {
             if (libro == null) throw new ArgumentNullException(nameof(libro));
             await _context.Libros.AddAsync(libro);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Libro libro)
+ 
+        public async Task ActualizarAsync(Libro libro)
         {
             if (libro == null) throw new ArgumentNullException(nameof(libro));
             _context.Libros.Update(libro);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+       
+        public async Task EliminarAsync(int id)
         {
-            var libro = await GetByIdAsync(id);
+            var libro = await ObtenerPorIdAsync(id);
             if (libro != null)
             {
                 _context.Libros.Remove(libro);
@@ -61,7 +67,7 @@ namespace Bookflix_Server.Repositories
             }
         }
 
-        // Filtros
+        
         public async Task<IEnumerable<Libro>> FiltrarLibrosAsync(
             string autor = null,
             string genero = null,
@@ -97,75 +103,106 @@ namespace Bookflix_Server.Repositories
             return await query.ToListAsync();
         }
 
-        public async Task<IEnumerable<Libro>> Buscador(string textoBuscado = null)
+       
+        public async Task<IEnumerable<Libro>> Buscador(string textoBusqueda = null)
         {
             var query = _context.Libros.AsQueryable();
 
-            if (!string.IsNullOrEmpty(textoBuscado))
+            if (!string.IsNullOrEmpty(textoBusqueda))
             {
-                query = query.Where(l => l.Nombre.Contains(textoBuscado) ||
-                                         l.Autor.Contains(textoBuscado) ||
-                                         l.Genero.Contains(textoBuscado) ||
-                                         l.ISBN == textoBuscado);
+                query = query.Where(l => l.Nombre.Contains(textoBusqueda) ||
+                                         l.Autor.Contains(textoBusqueda) ||
+                                         l.Genero.Contains(textoBusqueda) ||
+                                         l.ISBN == textoBusqueda);
             }
 
             return await query.ToListAsync();
         }
 
-        public async Task<IEnumerable<Libro>> GetByAutorAsync(string autor)
+       
+        public async Task<IEnumerable<Libro>> ObtenerPorAutorAsync(string autor)
         {
             return await _context.Libros
                 .Where(l => l.Autor.Contains(autor))
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Libro>> GetByGeneroAsync(string genero)
+       
+        public async Task<IEnumerable<Libro>> ObtenerPorGeneroAsync(string genero)
         {
             return await _context.Libros
                 .Where(l => l.Genero.Contains(genero))
                 .ToListAsync();
         }
 
-        public async Task<Libro> GetByISBNAsync(string isbn)
+       
+        public async Task<Libro> ObtenerPorISBNAsync(string isbn)
         {
             return await _context.Libros
                 .FirstOrDefaultAsync(l => l.ISBN == isbn);
         }
 
-        // Nuevos métodos para control de stock y reseñas
-        public async Task<bool> CheckStockAsync(int productId, int quantity)
+       
+        public async Task<bool> VerificarStockAsync(int idProducto, int cantidad)
         {
-            var producto = await _context.Libros.FindAsync(productId);
-            return producto != null && producto.Stock >= quantity;
+            var producto = await _context.Libros.FindAsync(idProducto);
+            return producto != null && producto.Stock >= cantidad;
         }
 
-        public async Task<decimal> GetAverageRatingAsync(int productId)
+       
+        public async Task<decimal> ObtenerPromedioCalificacionesAsync(int idProducto)
         {
             return await _context.Reseñas
-                .Where(r => r.ProductoId == productId)
+                .Where(r => r.ProductoId == idProducto)
                 .AverageAsync(r => (decimal?)r.Estrellas) ?? 0;
         }
 
-        public async Task<int> GetReviewCountAsync(int productId)
+        
+        public async Task<int> ObtenerCantidadReseñasAsync(int idProducto)
         {
             return await _context.Reseñas
-                .CountAsync(r => r.ProductoId == productId);
+                .CountAsync(r => r.ProductoId == idProducto);
         }
 
-        public async Task<IEnumerable<Reseña>> GetReseñasByProductoIdAsync(int productId)
+       
+        public async Task<IEnumerable<Reseña>> ObtenerReseñasPorProductoIdAsync(int idProducto)
         {
             return await _context.Reseñas
-                .Where(r => r.ProductoId == productId)
+                .Where(r => r.ProductoId == idProducto)
                 .OrderByDescending(r => r.FechaPublicacion)
                 .ToListAsync();
         }
-        public async Task<List<string>> GetAllNombres()
-        {
-            var nombres = await _context.Libros
-                                        .Select(l => l.Nombre)
-                                        .ToListAsync();
 
-            return nombres; // Devolver directamente la lista de nombres
+        
+        public async Task<List<string>> ObtenerTodosLosNombres()
+        {
+            return await _context.Libros
+                .Select(l => l.Nombre)
+                .ToListAsync();
         }
+
+        public async Task ActualizarLibroAsync(Libro libro)
+        {
+            if (libro == null) throw new ArgumentNullException(nameof(libro));
+            _context.Libros.Update(libro);
+            await _context.SaveChangesAsync();
+        }
+
+
+        public async Task<bool> ReducirStockAsync(int idProducto, int cantidad)
+        {
+            var producto = await _context.Libros.FindAsync(idProducto);
+            if (producto == null || producto.Stock < cantidad)
+            {
+                return false;
+            }
+
+            producto.Stock -= cantidad;
+            _context.Libros.Update(producto);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
     }
 }
+

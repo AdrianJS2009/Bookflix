@@ -1,13 +1,9 @@
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-
 import "../styles/sobrenosotros.css";
 
 function SobreNosotros() {
   return (
     <>
-      <Header />
-      <div className="sobrenosotros-container">
+      <main className="sobrenosotros-container">
         <section className="team-section">
           <h2>Sobre Nosotros</h2>
           <div className="team-members">
@@ -136,8 +132,7 @@ function SobreNosotros() {
           <p>Teléfono: 965 56 56 56</p>
           <p>Dirección: C/ Ortega y Gasset N1, Málaga, España</p>
         </section>
-      </div>
-      <Footer />
+      </main>
     </>
   );
 }

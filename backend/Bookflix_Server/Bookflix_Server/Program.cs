@@ -1,14 +1,13 @@
 ﻿using Bookflix_Server.Data;
 using Bookflix_Server.Models.Seeder;
 using Bookflix_Server.Repositories;
-using Bookflix_Server.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using Bookflix_Server.Models.IA;
 using Microsoft.Extensions.ML;
+using Bookflix_Server.Services;
 
 namespace Bookflix_Server;
 
@@ -63,9 +62,6 @@ public class Program
             });
         });
 
-        // Inyección del modelo de IA
-        builder.Services.AddPredictionEnginePool<ModelInput, ModelOutput>()
-            .FromFile("PruebaIADAW.mlnet");
 
 
 
@@ -79,10 +75,9 @@ public class Program
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
         builder.Services.AddScoped<IReseñasRepository, ReseñasRepository>();
-        builder.Services.AddScoped<SmartSearchService>();
+        builder.Services.AddScoped<ServicioBusquedaInteligente>();
         builder.Services.AddScoped<ICarritoRepository, CarritoRepository>();
-        builder.Services.AddScoped<IAService>();
-        builder.Services.AddScoped<ICarritoRepository, CarritoRepository>();
+        builder.Services.AddScoped<ICompraRepository, CompraRepository>();
 
         // Configuración de CORS solo para el entorno de desarrollo
         if (builder.Environment.IsDevelopment())

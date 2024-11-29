@@ -23,16 +23,17 @@
     justify-content: space-between;
     gap: 25px;
     padding: 15px;
-    background-color: rgba(245, 222, 179, 0.496);
+    background-color: var(--verde-claro);
     border-radius: 15px;
     margin: 10px 0;
     width: 100%;
     min-height: 150px;
     box-sizing: border-box;
+    box-shadow: 4px 4px 10px var(--difuminado);
 }
 
-.carrito-item img.imagenProducto {
-    max-height: 150px;
+.carrito-item img.imagen-carrito {
+    max-height: 200px;
     width: auto;
     object-fit: contain;
     border-radius: 5px;
@@ -46,9 +47,8 @@
 }
 
 .carrito-container button {
-    margin-top: 20px;
+    margin: 20px 10px;
     padding: 10px 20px;
-    background-color: #f5a623;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -56,6 +56,61 @@
     color: white;
 }
 
-.carrito-container button:hover {
-    background-color: #e59500;
+.carrito-container button.botonComprar {
+    background-color: var(--azul-normal);
+}
+
+.carrito-container button.botonVaciar {
+    background-color: var(--verde-normal);
+}
+
+.carrito-container button.botonComprar:hover {
+    background-color: var(--azul-claro);
+    border: 1px solid var(--azul-oscuro);
+    color: var(--azul-oscuro);
+}
+
+.carrito-container button.botonVaciar:hover {
+    background-color: var(--verde-claro);
+    border: 1px solid var(--verde-oscuro);
+    color: var(--verde-oscuro);
+}
+
+button.botonEliminar {
+    background-color: var(--rojo-oscuro);
+}
+
+button.botonEliminar:hover {
+    background-color: var(--rojo-claro);
+    color: var(--blanco);
+    border: 1px solid var(--rojo-oscuro);
+}
+
+.resumen-carrito {
+    text-align: right;
+    font-size: 1.2rem; 
+    font-weight: bold;
+    color: #333; 
+}
+
+.resumen-carrito p {
+    margin: 5px 0; 
+}
+
+.resumen-carrito p:last-child {
+    font-size: 1.4rem; 
+}
+
+.texto-azul {
+    color: var(--azul-normal); 
+}
+
+.precio-negro {
+    color: #333; 
+}
+
+div.cantidad input.cantidadBox {
+    border-radius: 5px;
+    margin: auto;
+    padding: 10px;
 }

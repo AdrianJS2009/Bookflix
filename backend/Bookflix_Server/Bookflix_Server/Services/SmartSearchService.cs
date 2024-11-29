@@ -4,110 +4,105 @@ using Bookflix_Server.Repositories;
 using System.Text;
 using System.Globalization;
 
-namespace Bookflix_Server.Services;
-
-public class SmartSearchService
+namespace Bookflix_Server.Services
 {
-    private const double THRESHOLD = 0.75;
-    private readonly IProductoRepository _productoRepository;
-    private readonly INormalizedStringSimilarity _stringSimilarityComparer;
-
-    private List<string> TituloLibros { get; set; } = new List<string>();
-
-    public SmartSearchService(IProductoRepository productoRepository)
+    public class ServicioBusquedaInteligente
     {
-        _stringSimilarityComparer = new JaroWinkler();
-        _productoRepository = productoRepository ?? throw new ArgumentNullException(nameof(productoRepository));
-    }
+        private const double UMBRAL_SIMILITUD = 0.75;
+        private readonly IProductoRepository _repositorioProductos;
+        private readonly INormalizedStringSimilarity _comparadorSimilitud;
 
-    // Método asincrónico para inicializar la lista de títulos
-    public async Task InitializeLibrosAsync()
-    {
-        TituloLibros = await _productoRepository.GetAllNombres();
-    }
+        private List<string> TitulosLibros { get; set; } = new List<string>();
 
-    public IEnumerable<string> Search(string query)
-    {
-        IEnumerable<string> result;
-
-        // Si la consulta está vacía o solo tiene espacios en blanco, devolvemos todos los items
-        if (string.IsNullOrWhiteSpace(query))
+        public ServicioBusquedaInteligente(IProductoRepository repositorioProductos)
         {
-            result = TituloLibros;
+            _comparadorSimilitud = new JaroWinkler();
+            _repositorioProductos = repositorioProductos ?? throw new ArgumentNullException(nameof(repositorioProductos));
         }
-        else
+
+        public async Task InicializarLibrosAsync()
         {
-            // Limpiamos la query y la separamos por espacios
-            string[] queryKeys = GetKeys(ClearText(query));
-            List<string> matches = new List<string>();
+            TitulosLibros = await _repositorioProductos.ObtenerTodosLosNombres();
+        }
 
-            foreach (string item in TituloLibros)
+        public IEnumerable<string> Buscar(string consulta)
+        {
+            if (TitulosLibros == null || !TitulosLibros.Any())
+                throw new InvalidOperationException("La lista de títulos no ha sido inicializada.");
+
+            IEnumerable<string> resultado;
+
+            if (string.IsNullOrWhiteSpace(consulta))
             {
-                string[] itemKeys = GetKeys(ClearText(item));
+                resultado = TitulosLibros;
+            }
+            else
+            {
+                string[] palabrasConsulta = ObtenerPalabras(LimpiarTexto(consulta));
+                List<string> coincidencias = new List<string>();
 
-                // Si coincide alguna de las palabras de item con las de query
-                if (IsMatch(queryKeys, itemKeys))
+                foreach (string titulo in TitulosLibros)
                 {
-                    matches.Add(item);
+                    string[] palabrasTitulo = ObtenerPalabras(LimpiarTexto(titulo));
+
+                    if (TieneCoincidencia(palabrasConsulta, palabrasTitulo))
+                    {
+                        coincidencias.Add(titulo);
+                    }
+                }
+
+                resultado = coincidencias;
+            }
+
+            return resultado;
+        }
+
+        private bool TieneCoincidencia(string[] palabrasConsulta, string[] palabrasTitulo)
+        {
+            foreach (string palabraTitulo in palabrasTitulo)
+            {
+                foreach (string palabraConsulta in palabrasConsulta)
+                {
+                    if (EsCoincidencia(palabraTitulo, palabraConsulta))
+                        return true;
                 }
             }
 
-            result = matches;
+            return false;
         }
 
-        return result;
-    }
-
-    private bool IsMatch(string[] queryKeys, string[] itemKeys)
-    {
-        bool isMatch = false;
-
-        for (int i = 0; !isMatch && i < itemKeys.Length; i++)
+        private bool EsCoincidencia(string palabraTitulo, string palabraConsulta)
         {
-            string itemKey = itemKeys[i];
-
-            for (int j = 0; !isMatch && j < queryKeys.Length; j++)
-            {
-                string queryKey = queryKeys[j];
-                isMatch = IsMatch(itemKey, queryKey);
-            }
+            return palabraTitulo == palabraConsulta
+                || palabraTitulo.Contains(palabraConsulta)
+                || _comparadorSimilitud.Similarity(palabraTitulo, palabraConsulta) >= UMBRAL_SIMILITUD;
         }
 
-        return isMatch;
-    }
-
-    private bool IsMatch(string itemKey, string queryKey)
-    {
-        return itemKey == queryKey
-            || itemKey.Contains(queryKey)
-            || _stringSimilarityComparer.Similarity(itemKey, queryKey) >= THRESHOLD;
-    }
-
-    private string[] GetKeys(string query)
-    {
-        return query.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-    }
-
-    private string ClearText(string text)
-    {
-        return RemoveDiacritics(text.ToLower());
-    }
-
-    private string RemoveDiacritics(string text)
-    {
-        string normalizedString = text.Normalize(NormalizationForm.FormD);
-        StringBuilder stringBuilder = new StringBuilder(normalizedString.Length);
-
-        for (int i = 0; i < normalizedString.Length; i++)
+        private string[] ObtenerPalabras(string texto)
         {
-            char c = normalizedString[i];
-            UnicodeCategory unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
-            if (unicodeCategory != UnicodeCategory.NonSpacingMark)
-            {
-                stringBuilder.Append(c);
-            }
+            return texto.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         }
 
-        return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
+        private string LimpiarTexto(string texto)
+        {
+            return EliminarDiacriticos(texto.ToLower());
+        }
+
+        private string EliminarDiacriticos(string texto)
+        {
+            string textoNormalizado = texto.Normalize(NormalizationForm.FormD);
+            StringBuilder resultado = new StringBuilder();
+
+            foreach (char c in textoNormalizado)
+            {
+                UnicodeCategory categoria = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (categoria != UnicodeCategory.NonSpacingMark)
+                {
+                    resultado.Append(c);
+                }
+            }
+
+            return resultado.ToString().Normalize(NormalizationForm.FormC);
+        }
     }
 }

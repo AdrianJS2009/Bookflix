@@ -2,40 +2,48 @@ import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import "../styles/catalogo.css";
+import { useCarrito } from "../contexts/CarritoContext";
 import "../styles/default.css";
+import "../styles/catalogo.css";
+import "../styles/catalogoQuerys.css"
 
-const Catalogo = ({ productos }) => {
+const Catalogo = () => {
   const navigate = useNavigate();
+  const { agregarAlCarrito } = useCarrito();
   const [libros, setLibros] = useState([]);
   const [nombre, setNombre] = useState("");
   const [genero, setGenero] = useState("");
   const [precioOrden, setPrecioOrden] = useState("");
-  const [alfabeticoOrden, setAlfabeticoOrden] = useState("Ascendente");
+  const [alfabeticoOrden, setAlfabeticoOrden] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [cantidad, setCantidad] = useState(1);
 
   const fetchLibros = async (page) => {
     setIsLoading(true);
     setError(null);
 
-    const ordenPor = precioOrden ? "precio" : "nombre";
-    const ascendente = precioOrden
-      ? precioOrden === "Ascendente"
-      : alfabeticoOrden === "Ascendente";
+    let ordenarPor = "";
+    let ascendente = true;
+
+    if (precioOrden) {
+      ordenarPor = "precio";
+      ascendente = precioOrden === "Ascendente";
+    } else if (alfabeticoOrden) {
+      ordenarPor = "nombre";
+      ascendente = alfabeticoOrden === "Ascendente";
+    }
 
     try {
-      let url = `https://localhost:7182/api/Libro/ListarLibros?pagina=${
-        page + 1
-      }&tamanoPagina=${itemsPerPage}`;
-      if (nombre) url += `&textoBuscado=${encodeURIComponent(nombre)}`;
+      let url = `https://localhost:7182/api/Libro/ListarLibros?pagina=${page + 1
+        }&tamanoPagina=${itemsPerPage}`;
+      if (nombre) url += `&textoBusqueda=${encodeURIComponent(nombre)}`;
       if (genero) url += `&genero=${encodeURIComponent(genero)}`;
-      url += `&ordenPor=${ordenPor}&ascendente=${ascendente}`;
+      if (ordenarPor)
+        url += `&ordenarPor=${ordenarPor}&ascendente=${ascendente}`;
 
       const response = await fetch(url, {
         headers: {
@@ -48,6 +56,8 @@ const Catalogo = ({ productos }) => {
       }
 
       const data = await response.json();
+      console.log("Respuesta recibida:", data); // Depuración
+
       setLibros(data.libros || []);
       setPageCount(data.totalPaginas || 0);
     } catch (error) {
@@ -67,10 +77,9 @@ const Catalogo = ({ productos }) => {
 
   const handleItemsPerPageChange = (event) => {
     const newItemsPerPage = parseInt(event.target.value, 10);
-    const startItemIndex = currentPage * itemsPerPage;
-    const newPage = Math.floor(startItemIndex / newItemsPerPage);
     setItemsPerPage(newItemsPerPage);
-    setCurrentPage(newPage);
+    setCurrentPage(0); // Reinicia la paginación al cambiar el tamaño de página
+    fetchLibros(0); // Fuerza un nuevo fetch para reflejar el cambio
   };
 
   const handleSearchInputChange = (event) => {
@@ -82,10 +91,31 @@ const Catalogo = ({ productos }) => {
     navigate(`/producto/${id}`);
   };
 
+  const handleAgregar = (libro) => {
+    if (libro && cantidad > 0 && cantidad <= libro.stock) {
+      console.log("libro antes de agregar:", libro);
+      console.log("Cantidad seleccionada:", cantidad);
+  
+      agregarAlCarrito(
+        {
+          idLibro: libro.idLibro,
+          nombre: libro.nombre,
+          precio: libro.precio,
+          urlImagen: libro.urlImagen,
+        },
+        cantidad
+      );
+    } else {
+      console.warn("No se puede agregar al carrito: datos inválidos.", {
+        libro,
+        cantidad,
+      });
+    }
+  };
+
   return (
     <>
-      <Header />
-      <div className="catalogo-container texto-pequeño">
+      <main className="catalogo-container texto-pequeño">
         <h1>Catálogo</h1>
         <div className="catalogoBuscadorFiltros">
           <div className="catalogoBuscador">
@@ -133,7 +163,7 @@ const Catalogo = ({ productos }) => {
               value={precioOrden}
               onChange={(e) => {
                 setPrecioOrden(e.target.value);
-                setAlfabeticoOrden("");
+                setAlfabeticoOrden(""); // Reset alphabetical sorting
               }}
               className="filtro-select"
             >
@@ -146,12 +176,13 @@ const Catalogo = ({ productos }) => {
               value={alfabeticoOrden}
               onChange={(e) => {
                 setAlfabeticoOrden(e.target.value);
-                setPrecioOrden("");
+                setPrecioOrden(""); // Reset price sorting
               }}
               className="filtro-select"
             >
-              <option value="Ascendente">Ordenar alfabéticamente (A-Z)</option>
-              <option value="Descendente">Ordenar alfabéticamente (Z-A)</option>
+              <option value="">Ordenar alfabéticamente</option>
+              <option value="Ascendente">A-Z</option>
+              <option value="Descendente">Z-A</option>
             </select>
 
             <select
@@ -177,7 +208,7 @@ const Catalogo = ({ productos }) => {
               <div
                 key={libro.idLibro}
                 className="catalogoItem"
-                onClick={() => handleProductoClick(libro.idLibro)}
+                // onClick={() => handleProductoClick(libro.idLibro)}
               >
                 <div className="catalogoItemContent">
                   <img
@@ -186,27 +217,20 @@ const Catalogo = ({ productos }) => {
                     className="imgItemCatalogo"
                   />
                 </div>
-                <div className="catalogoItemButtons">
-                  <h2 className="titulo">{libro.nombre}</h2>
+                <div 
+                  className="catalogoItemButtons"
+                  onClick={() => handleProductoClick(libro.idLibro)}
+                >
+                  <h2 className="titulo">{Array.from(libro.nombre).length > 10 ? Array.from(libro.nombre).slice(0, 50).join("") + '...' : libro.nombre}</h2>
                   <p className="precio">{libro.autor}</p>
                   <p className="precio">{(libro.precio / 100).toFixed(2)} €</p>
-                  <Button
-                    label="Comprar"
-                    styleType="btnComprar"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      alert("Compra realizada");
-                    }}
-                  />
-                  <Button
+                  
+                </div>
+                <Button
                     label="Añadir a la cesta"
                     styleType="btnAñadir"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      alert("Añadido a la cesta");
-                    }}
+                    onClick={() => handleAgregar(libro)}
                   />
-                </div>
               </div>
             ))}
           </div>
@@ -225,8 +249,7 @@ const Catalogo = ({ productos }) => {
             forcePage={currentPage}
           />
         </div>
-      </div>
-      <Footer />
+      </main>
     </>
   );
 };

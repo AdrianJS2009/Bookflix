@@ -1,65 +1,80 @@
-﻿using Bookflix_Server.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Bookflix_Server.Data;
+using Bookflix_Server.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bookflix_Server.Repositories
 {
     public class ReseñasRepository : IReseñasRepository
     {
-        private readonly List<Reseña> _listaReseñas = new List<Reseña>();
+        private readonly MyDbContext _context;
 
-        public Task<Reseña> GetByUsuarioIdAndProductoIdAsync(int usuarioId, int productoId)
+        public ReseñasRepository(MyDbContext context)
         {
-            var reseña = _listaReseñas.FirstOrDefault(r => r.UsuarioId == usuarioId && r.ProductoId == productoId);
-            return Task.FromResult(reseña);
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public Task AddAsync(Reseña reseña)
+       
+        public async Task<Reseña> ObtenerPorUsuarioYProductoAsync(int usuarioId, int productoId)
         {
-            _listaReseñas.Add(reseña);
-            return Task.CompletedTask;
+            return await _context.Reseñas
+                .FirstOrDefaultAsync(r => r.UsuarioId == usuarioId && r.ProductoId == productoId);
         }
 
-        public Task<bool> ReseñaExistsAsync(int usuarioId, int productoId)
+
+        public async Task AgregarAsync(Reseña reseña)
         {
-            var exists = _listaReseñas.Any(r => r.UsuarioId == usuarioId && r.ProductoId == productoId);
-            return Task.FromResult(exists);
+            if (reseña == null)
+                throw new ArgumentNullException(nameof(reseña));
+
+            await _context.Reseñas.AddAsync(reseña);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<Reseña>> GetByUsuarioIdAsync(int usuarioId)
+
+        public async Task<bool> ExisteReseñaAsync(int usuarioId, int productoId)
         {
-            var reseñas = _listaReseñas.Where(r => r.UsuarioId == usuarioId);
-            return Task.FromResult(reseñas.AsEnumerable());
+            return await _context.Reseñas
+                .AnyAsync(r => r.UsuarioId == usuarioId && r.ProductoId == productoId);
         }
 
-        public Task<IEnumerable<Reseña>> GetByProductoIdAsync(int productoId)
+ 
+        public async Task<IEnumerable<Reseña>> ObtenerPorUsuarioAsync(int usuarioId)
         {
-            var reseñas = _listaReseñas.Where(r => r.ProductoId == productoId);
-            return Task.FromResult(reseñas.AsEnumerable());
+            return await _context.Reseñas
+                .Where(r => r.UsuarioId == usuarioId)
+                .ToListAsync();
         }
 
-        public Task<double> CalcularPromedioEstrellasAsync(int productoId)
+  
+        public async Task<IEnumerable<Reseña>> ObtenerPorProductoAsync(int productoId)
         {
-            var reseñasProducto = _listaReseñas.Where(r => r.ProductoId == productoId);
-            if (!reseñasProducto.Any())
-                return Task.FromResult(0.0);
-
-            var promedio = reseñasProducto.Average(r => r.Estrellas);
-            return Task.FromResult(promedio);
+            return await _context.Reseñas
+                .Where(r => r.ProductoId == productoId)
+                .ToListAsync();
         }
 
-        public Task<int> ContarReseñasPorProductoAsync(int productoId)
+        public async Task<double> CalcularPromedioEstrellasAsync(int productoId)
         {
-            var count = _listaReseñas.Count(r => r.ProductoId == productoId);
-            return Task.FromResult(count);
+            return await _context.Reseñas
+                .Where(r => r.ProductoId == productoId)
+                .AverageAsync(r => (double?)r.Estrellas) ?? 0.0;
         }
 
-        public Task<IEnumerable<Reseña>> GetReseñasByCategoriaAsync(int productoId, string categoria)
+       
+        public async Task<int> ContarReseñasPorProductoAsync(int productoId)
         {
-            var reseñas = _listaReseñas.Where(r => r.ProductoId == productoId && r.Categoria.Equals(categoria, StringComparison.OrdinalIgnoreCase));
-            return Task.FromResult(reseñas.AsEnumerable());
+            return await _context.Reseñas
+                .CountAsync(r => r.ProductoId == productoId);
         }
+
+        
+        public async Task<IEnumerable<Reseña>> ObtenerPorCategoriaAsync(int productoId, string categoria)
+        {
+            return await _context.Reseñas
+                .Where(r => r.ProductoId == productoId && r.Categoria.Equals(categoria, StringComparison.OrdinalIgnoreCase))
+                .ToListAsync();
+        }
+
+
     }
 }

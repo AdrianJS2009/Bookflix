@@ -1,33 +1,23 @@
 ﻿using Bookflix_Server.Models;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Bookflix_Server.Repositories
 {
     public interface IProductoRepository
     {
-        Task<int> GetCountAsync();
-
-        Task<IEnumerable<Libro>> GetLibrosPagedAsync(int page, int pageSize);
-
-        Task<IEnumerable<Libro>> GetAllAsync();
-
-        Task<bool> CheckStockAsync(int productId, int quantity);
-
-        Task<decimal> GetAverageRatingAsync(int productId);
-
-        Task<int> GetReviewCountAsync(int productId);
-
-        Task<IEnumerable<Reseña>> GetReseñasByProductoIdAsync(int productId);
-
-        Task<Libro> GetByIdAsync(int id);
-
-        Task AddAsync(Libro libro);
-
-        Task UpdateAsync(Libro libro);
-
-        Task DeleteAsync(int id);
-
-        // Filtros
+        Task<int> ObtenerConteoAsync();
+        Task<IEnumerable<Libro>> ObtenerLibrosPaginadosAsync(int pagina, int tamañoPagina);
+        Task<IEnumerable<Libro>> ObtenerTodosAsync();
+        Task<bool> VerificarStockAsync(int idProducto, int cantidad);
+        Task<bool> ReducirStockAsync(int idProducto, int cantidad); // Nuevo método agregado
+        Task<decimal> ObtenerPromedioCalificacionesAsync(int idProducto);
+        Task<int> ObtenerCantidadReseñasAsync(int idProducto);
+        Task<IEnumerable<Reseña>> ObtenerReseñasPorProductoIdAsync(int idProducto);
+        Task<Libro> ObtenerPorIdAsync(int id);
+        Task AgregarAsync(Libro libro);
+        Task ActualizarAsync(Libro libro);
+        Task EliminarAsync(int id);
         Task<IEnumerable<Libro>> FiltrarLibrosAsync(
             string autor = null,
             string genero = null,
@@ -37,18 +27,10 @@ namespace Bookflix_Server.Repositories
             string ordenPor = null,
             bool ascendente = true
         );
-
-        Task<IEnumerable<Libro>> Buscador(string textoBuscado = null);
-
-
-        Task<IEnumerable<Libro>> GetByAutorAsync(string autor);
-
-
-        Task<IEnumerable<Libro>> GetByGeneroAsync(string genero);
-
-
-        Task<Libro> GetByISBNAsync(string isbn);
-
-        public Task<List<string>> GetAllNombres();
+        Task<IEnumerable<Libro>> Buscador(string textoBusqueda = null);
+        Task<IEnumerable<Libro>> ObtenerPorAutorAsync(string autor);
+        Task<IEnumerable<Libro>> ObtenerPorGeneroAsync(string genero);
+        Task<Libro> ObtenerPorISBNAsync(string isbn);
+        Task<List<string>> ObtenerTodosLosNombres();
     }
 }
