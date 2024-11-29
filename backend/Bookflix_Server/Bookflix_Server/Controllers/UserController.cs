@@ -27,7 +27,7 @@ namespace Bookflix_Server.Controllers
 
         private string ObtenerIdUsuario()
         {
-            return User.FindFirst(ClaimTypes.Name)?.Value; // Extraer el correo del token
+            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Extraer el correo del token
         }
 
         // Listar todos los usuarios
@@ -140,7 +140,7 @@ namespace Bookflix_Server.Controllers
         [Authorize]
         public async Task<IActionResult> EliminarCuentaUsuario()
         {
-            int idUsuario = int.Parse(ObtenerIdUsuario());
+            int idUsuario = int.Parse(ObtenerIdUsuario()); 
             var usuario = await _context.Users.FirstOrDefaultAsync(u => u.IdUser == idUsuario);
 
             if (usuario == null)

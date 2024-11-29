@@ -36,7 +36,7 @@ namespace Bookflix_Server.Controllers
 
         private string ObtenerCorreoUsuario()
         {
-            return User.FindFirst(ClaimTypes.Name)?.Value; // Extraer el correo del token
+            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Extraer el correo del token
         }
 
         [HttpGet("Detalle/{idLibro}")]

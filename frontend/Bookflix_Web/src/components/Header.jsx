@@ -17,7 +17,9 @@ const Header = () => {
   useEffect(() => {
     if (auth.token) {
       try {
+        console.log(auth.token)
         const decoded = JSON.parse(atob(auth.token.split(".")[1])); // Decodificar el token JWT
+        console.log(decoded)
         setUserName(
           `Hola, ${decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]}`
         );

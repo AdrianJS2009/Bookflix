@@ -35,7 +35,7 @@ namespace Bookflix_Server.Controllers
 
         private string ObtenerIdUsuario()
         {
-            return User.FindFirst(ClaimTypes.Name)?.Value; // Extraer el correo del token
+            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Extraer el correo del token
         }
 
         [HttpGet("ListarCarrito")]
@@ -78,7 +78,7 @@ namespace Bookflix_Server.Controllers
             int idUsuario = int.Parse(ObtenerIdUsuario());
             var usuario = await _userRepository.ObtenerPorIdAsync(idUsuario);
 
-
+            try { 
                 if (usuario == null)
                     return NotFound(new { error = "Usuario no encontrado." });
 
@@ -138,7 +138,7 @@ namespace Bookflix_Server.Controllers
         }
 
         [HttpDelete("vaciar")]
-        public async Task<IActionResult> VaciarCarrito(string correo = null)
+        public async Task<IActionResult> VaciarCarrito()
         {
             int idUsuario = int.Parse(ObtenerIdUsuario());
             var usuario = await _userRepository.ObtenerPorIdAsync(idUsuario);

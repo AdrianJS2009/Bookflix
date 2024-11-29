@@ -25,7 +25,15 @@ namespace Bookflix_Server.Controllers
 
         private string ObtenerIdUsuario()
         {
-            return User.FindFirst(ClaimTypes.Name).Value; // Extraer el id del token
+            return User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        }
+        private string ObtenerNombreUsuario()
+        {
+            return User.FindFirst(ClaimTypes.Name).Value;
+        }
+        private string ObtenerCorreoUsuario()
+        {
+            return User.FindFirst(ClaimTypes.Email).Value;
         }
 
         // Endpoint para generar y devolver el token JWT
@@ -45,8 +53,9 @@ namespace Bookflix_Server.Controllers
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, usuario.IdUser.ToString()),
-                new Claim(ClaimTypes.NameIdentifier, usuario.Email),
+                new Claim(ClaimTypes.NameIdentifier, usuario.IdUser.ToString()),
+                new Claim(ClaimTypes.Name, usuario.Nombre),
+                new Claim(ClaimTypes.Email, usuario.Email),
                 new Claim(ClaimTypes.Role, usuario.Rol)
             };
 
@@ -70,7 +79,10 @@ namespace Bookflix_Server.Controllers
         public IActionResult LeerToken()
         {
             int idUsuario = int.Parse(ObtenerIdUsuario());
-            return Ok(new { IdUser = idUsuario });
+            string correo = ObtenerCorreoUsuario();
+            string nombre = ObtenerNombreUsuario();
+
+            return Ok(new { IdUser = idUsuario, Email = correo, Nombre = nombre });
         }
 
         [HttpGet("usuario")]
