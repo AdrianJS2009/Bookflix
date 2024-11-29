@@ -5,18 +5,26 @@ import { useCarrito } from "../contexts/CarritoContext";
 import "../styles/Carrito.css";
 
 const Carrito = () => {
-  const { items, vaciarCarrito, eliminarItem, actualizarCantidad } =
-    useCarrito();
+  const {
+    items = [],
+    vaciarCarrito,
+    eliminarItem,
+    actualizarCantidad,
+  } = useCarrito(); // Asegura que `items` siempre sea un array vacío por defecto
   const { auth } = useAuth();
   const navigate = useNavigate();
 
-  const cartCount = Array.isArray(items)
-    ? items.reduce((total, item) => total + item.cantidad, 0)
-    : 0;
+  if (!Array.isArray(items)) {
+    console.error("Items en el carrito no es un array:", items);
+    return <p>Hubo un error al cargar el carrito.</p>;
+  }
 
-  const subtotal = Array.isArray(items)
-    ? items.reduce((sum, item) => sum + item.precio * item.cantidad, 0)
-    : 0;
+  const cartCount = items.reduce((total, item) => total + item.cantidad, 0);
+
+  const subtotal = items.reduce(
+    (sum, item) => sum + item.precio * item.cantidad,
+    0
+  );
 
   const handleCompra = async () => {
     if (!auth.token) {
@@ -25,75 +33,54 @@ const Carrito = () => {
     }
 
     try {
-      console.log(
-        "Sincronizando el carrito con el backend antes de la compra..."
-      );
-      for (const item of items) {
-        const response = await fetch(
-          "https://localhost:7182/api/Carrito/agregar",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${auth.token}`,
-            },
-            body: JSON.stringify({
-              LibroId: item.libroId,
-              Cantidad: item.cantidad,
-            }),
-          }
-        );
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error(
-            `Error al sincronizar el producto con ID ${item.libroId}:`,
-            errorData
-          );
-          alert(
-            `Error al sincronizar el carrito: ${
-              errorData.error || "Desconocido"
-            }`
-          );
-          return;
-        }
-      }
-
-      console.log("Realizando la compra...");
+      console.log("Obteniendo datos más recientes del carrito...");
       const response = await fetch(
-        "https://localhost:7182/api/Carrito/comprar",
+        "https://localhost:7182/api/Carrito/ListarCarrito",
         {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${auth.token}`,
-          },
+          headers: { Authorization: `Bearer ${auth.token}` },
         }
       );
 
       if (!response.ok) {
         const errorData = await response.json();
         alert(
+          `Error al obtener el carrito: ${errorData.error || "Desconocido"}`
+        );
+        return;
+      }
+
+      const carrito = await response.json();
+      if (!carrito.items || carrito.items.length === 0) {
+        alert("Tu carrito está vacío");
+        return;
+      }
+
+      console.log("Realizando la compra...");
+      const compraResponse = await fetch(
+        "https://localhost:7182/api/Carrito/comprar",
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${auth.token}` },
+        }
+      );
+
+      if (!compraResponse.ok) {
+        const errorData = await compraResponse.json();
+        alert(
           `Error al realizar la compra: ${errorData.error || "Desconocido"}`
         );
         return;
       }
 
-      const responseData = await response.json();
-      console.log("Compra realizada:", responseData);
-
       alert("Compra realizada con éxito");
-
-      vaciarCarrito();
-      const total = items.reduce(
-        (sum, item) => sum + item.precio * item.cantidad,
-        0
-      );
-      navigate("/confirmacion-compra", { state: { items, total } });
+      vaciarCarrito(); // Limpiar el carrito local
+      navigate("/confirmacion-compra", { state: { items: carrito.items } });
     } catch (error) {
       console.error("Error al realizar la compra:", error);
       alert("Ocurrió un error al realizar la compra. Inténtalo nuevamente.");
     }
   };
+
   const handleEliminarItem = (libroId) => {
     eliminarItem(libroId);
   };
