@@ -33,16 +33,16 @@ namespace Bookflix_Server.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        private string ObtenerCorreoUsuario()
+        private string ObtenerIdUsuario()
         {
-            return User.FindFirst(ClaimTypes.Name)?.Value;
+            return User.FindFirst(ClaimTypes.Name)?.Value; // Extraer el correo del token
         }
 
         [HttpGet("ListarCarrito")]
         public async Task<IActionResult> ObtenerCarrito(string correo = null)
         {
-            string correoUsuario = correo ?? ObtenerCorreoUsuario();
-            var usuario = await _userRepository.ObtenerPorCorreoAsync(correoUsuario);
+            int idUsuario = int.Parse(ObtenerIdUsuario());
+            var usuario = await _userRepository.ObtenerPorIdAsync(idUsuario);
 
             if (usuario == null)
                 return NotFound(new { error = "Usuario no encontrado." });
@@ -75,10 +75,9 @@ namespace Bookflix_Server.Controllers
         [HttpPost("agregar")]
         public async Task<IActionResult> AgregarProductoAlCarrito([FromBody] CarritoItemAgregarDto itemDto)
         {
-            try
-            {
-                string correoUsuario = ObtenerCorreoUsuario();
-                var usuario = await _userRepository.ObtenerPorCorreoAsync(correoUsuario);
+            int idUsuario = int.Parse(ObtenerIdUsuario());
+            var usuario = await _userRepository.ObtenerPorIdAsync(idUsuario);
+
 
                 if (usuario == null)
                     return NotFound(new { error = "Usuario no encontrado." });
@@ -113,8 +112,8 @@ namespace Bookflix_Server.Controllers
         [HttpDelete("eliminar/{idProducto}")]
         public async Task<IActionResult> EliminarProductoDelCarrito(int idProducto)
         {
-            string correoUsuario = ObtenerCorreoUsuario();
-            var usuario = await _userRepository.ObtenerPorCorreoAsync(correoUsuario);
+            int idUsuario = int.Parse(ObtenerIdUsuario());
+            var usuario = await _userRepository.ObtenerPorIdAsync(idUsuario);
 
             if (usuario == null)
                 return NotFound(new { error = "Usuario no encontrado." });
@@ -141,8 +140,9 @@ namespace Bookflix_Server.Controllers
         [HttpDelete("vaciar")]
         public async Task<IActionResult> VaciarCarrito(string correo = null)
         {
-            string correoUsuario = correo ?? ObtenerCorreoUsuario();
-            var usuario = await _userRepository.ObtenerPorCorreoAsync(correoUsuario);
+            int idUsuario = int.Parse(ObtenerIdUsuario());
+            var usuario = await _userRepository.ObtenerPorIdAsync(idUsuario);
+
 
             if (usuario == null)
                 return NotFound(new { error = "Usuario no encontrado." });
@@ -162,8 +162,9 @@ namespace Bookflix_Server.Controllers
         [HttpPost("comprar")]
         public async Task<IActionResult> ComprarCarrito()
         {
-            string correoUsuario = ObtenerCorreoUsuario();
-            var usuario = await _userRepository.ObtenerPorCorreoAsync(correoUsuario);
+            int idUsuario = int.Parse(ObtenerIdUsuario());
+            var usuario = await _userRepository.ObtenerPorIdAsync(idUsuario);
+
 
             if (usuario == null)
                 return NotFound(new { error = "Usuario no encontrado." });
@@ -206,8 +207,9 @@ namespace Bookflix_Server.Controllers
         [HttpGet("historial")]
         public async Task<IActionResult> ObtenerHistorialCompras()
         {
-            string correoUsuario = ObtenerCorreoUsuario();
-            var usuario = await _userRepository.ObtenerPorCorreoAsync(correoUsuario);
+            int idUsuario = int.Parse(ObtenerIdUsuario());
+            var usuario = await _userRepository.ObtenerPorIdAsync(idUsuario);
+
 
             if (usuario == null)
                 return NotFound(new { error = "Usuario no encontrado." });
@@ -237,8 +239,10 @@ namespace Bookflix_Server.Controllers
         {
             Console.WriteLine($"Actualizando cantidad: LibroId={datos.LibroId}, NuevaCantidad={datos.NuevaCantidad}");
 
-            string correoUsuario = ObtenerCorreoUsuario();
-            var usuario = await _userRepository.ObtenerPorCorreoAsync(correoUsuario);
+
+            int idUsuario = int.Parse(ObtenerIdUsuario());
+            var usuario = await _userRepository.ObtenerPorIdAsync(idUsuario);
+
             if (usuario == null)
             {
                 Console.WriteLine("Usuario no encontrado.");

@@ -25,7 +25,7 @@ namespace Bookflix_Server.Controllers
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
-        private string ObtenerCorreoUsuario()
+        private string ObtenerIdUsuario()
         {
             return User.FindFirst(ClaimTypes.Name)?.Value; // Extraer el correo del token
         }
@@ -41,11 +41,11 @@ namespace Bookflix_Server.Controllers
         // Obtener el perfil del usuario autenticado o por correo
         [HttpGet("perfil")]
         [AllowAnonymous]
-        public async Task<ActionResult<User>> ObtenerPerfilUsuario(string correo = null)
+        public async Task<ActionResult<User>> ObtenerPerfilUsuario()
         {
             // Si no se especifica correo, se usa el del usuario autenticado
-            string correoUsuario = correo ?? ObtenerCorreoUsuario();
-            var usuario = await _context.Users.FirstOrDefaultAsync(u => u.Email == correoUsuario);
+            int idUsuario = int.Parse(ObtenerIdUsuario());
+            var usuario = await _context.Users.FirstOrDefaultAsync(u => u.IdUser == idUsuario);
 
             if (usuario == null)
             {
@@ -103,8 +103,8 @@ namespace Bookflix_Server.Controllers
         [Authorize]
         public async Task<IActionResult> ActualizarPerfilUsuario([FromBody] UserDTO datosUsuario)
         {
-            string correoUsuario = ObtenerCorreoUsuario();
-            var usuario = await _context.Users.FirstOrDefaultAsync(u => u.Email == correoUsuario);
+            int idUsuario = int.Parse(ObtenerIdUsuario());
+            var usuario = await _context.Users.FirstOrDefaultAsync(u => u.IdUser == idUsuario);
 
             if (usuario == null)
             {
@@ -140,8 +140,8 @@ namespace Bookflix_Server.Controllers
         [Authorize]
         public async Task<IActionResult> EliminarCuentaUsuario()
         {
-            string correoUsuario = ObtenerCorreoUsuario();
-            var usuario = await _context.Users.FirstOrDefaultAsync(u => u.Email == correoUsuario);
+            int idUsuario = int.Parse(ObtenerIdUsuario());
+            var usuario = await _context.Users.FirstOrDefaultAsync(u => u.IdUser == idUsuario);
 
             if (usuario == null)
             {
@@ -160,8 +160,8 @@ namespace Bookflix_Server.Controllers
             if (reseñaDto == null)
                 return BadRequest(new { error = "Datos de la reseña no proporcionados." });
 
-            string correoUsuario = ObtenerCorreoUsuario();
-            var usuario = await _userRepository.ObtenerPorCorreoAsync(correoUsuario);
+            int idUsuario = int.Parse(ObtenerIdUsuario());
+            var usuario = await _userRepository.ObtenerPorIdAsync(idUsuario);
 
             if (usuario == null)
                 return NotFound(new { error = "Usuario no encontrado." });
