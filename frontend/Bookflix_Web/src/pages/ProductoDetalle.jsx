@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Button from "../components/Button";
 import { useAuth } from "../contexts/AuthContext";
 import { useCarrito } from "../contexts/CarritoContext";
@@ -147,11 +149,12 @@ const ProductoDetalle = () => {
         ]);
         setTextoReseña("");
         setHaReseñado(true);
+        toast.success("¡Gracias por tu opinión!.");
       } catch (error) {
-        console.error("Error al crear la reseña:", error);
+        toast.error(error.message || "No se ha podido crear la reseña.");
       }
     } else {
-      alert("Escribe una reseña antes de enviar");
+      toast.warn("Tienes que escribir algo para enviar una reseña.");
     }
   };
 
