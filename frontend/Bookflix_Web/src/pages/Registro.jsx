@@ -16,7 +16,6 @@ const Registro = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Ruta previa para redirección después del registro
   const from = location.state?.from?.pathname || "/";
 
   const handleRegister = async (e) => {
