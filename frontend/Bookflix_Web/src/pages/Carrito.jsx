@@ -10,7 +10,7 @@ const Carrito = () => {
     vaciarCarrito,
     eliminarItem,
     actualizarCantidad,
-  } = useCarrito(); 
+  } = useCarrito();
   const { auth } = useAuth();
   const navigate = useNavigate();
 
@@ -27,6 +27,9 @@ const Carrito = () => {
   );
 
   const handleCompra = async () => {
+    const token = sessionStorage.getItem("token");
+    // console log para ver en consola el token recogido
+
     if (!auth.token) {
       alert("Inicia sesión para realizar la compra");
       return;
@@ -73,7 +76,7 @@ const Carrito = () => {
       }
 
       alert("Compra realizada con éxito");
-      vaciarCarrito(); // Limpiar el carrito local
+      vaciarCarrito();
       navigate("/confirmacion-compra", { state: { items: carrito.items } });
     } catch (error) {
       console.error("Error al realizar la compra:", error);

@@ -1,4 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../contexts/AuthContext";
 
 const CarritoContext = createContext();
@@ -46,6 +48,7 @@ export const CarritoProvider = ({ children }) => {
       setItems(carritoItems);
     } catch (error) {
       console.error("Error al sincronizar el carrito:", error);
+      toast.error("Error al sincronizar el carrito.");
     }
   };
 
@@ -70,12 +73,12 @@ export const CarritoProvider = ({ children }) => {
       const stockInfo = await response.json();
       const productoStock = stockInfo.find((p) => p.id === producto.idLibro);
       if (!productoStock) {
-        alert(`El producto "${producto.nombre}" no está disponible.`);
+        toast.error(`El producto "${producto.nombre}" no está disponible.`);
         return false;
       }
 
       if (!productoStock.disponible || productoStock.stock < cantidad) {
-        alert(
+        toast.error(
           `El producto "${producto.nombre}" no tiene suficiente stock disponible.`
         );
         return false;
@@ -84,6 +87,7 @@ export const CarritoProvider = ({ children }) => {
       return true;
     } catch (error) {
       console.error("Error al verificar el stock:", error);
+      toast.error("Error al verificar el stock.");
       return false;
     }
   };
@@ -116,14 +120,12 @@ export const CarritoProvider = ({ children }) => {
       if (!response.ok) {
         throw new Error("Error al agregar producto al carrito en el backend.");
       }
-
-      alert(
-        `${cantidad} unidad(es) de "${producto.nombre}" añadida(s) al carrito.`
-      );
+      toast.success("Productos añadidos al carrito.");
 
       await sincronizarCarrito();
     } catch (error) {
       console.error("Error al agregar producto al carrito:", error);
+      toast.error("Error al agregar el producto al carrito.");
       sincronizarCarrito();
     }
   };
@@ -161,6 +163,7 @@ export const CarritoProvider = ({ children }) => {
       );
     } catch (error) {
       console.error("Error al actualizar la cantidad del producto:", error);
+      toast.error("Error al actualizar la cantidad.");
     }
   };
 
@@ -194,7 +197,7 @@ export const CarritoProvider = ({ children }) => {
       );
 
       if (sinStock.length > 0) {
-        alert(
+        toast.error(
           `Los siguientes productos no tienen suficiente stock: ${sinStock
             .map((p) => p.Id)
             .join(", ")}`
@@ -204,6 +207,7 @@ export const CarritoProvider = ({ children }) => {
       return true;
     } catch (error) {
       console.error("Error al validar el stock del carrito:", error);
+      toast.error("Error al validar el stock del carrito.");
       return false;
     }
   };
@@ -239,9 +243,10 @@ export const CarritoProvider = ({ children }) => {
         localStorage.setItem("carrito", JSON.stringify(newItems));
         return newItems;
       });
-      alert("Producto eliminado correctamente del carrito.");
+      toast.success("Producto eliminado correctamente del carrito.");
     } catch (error) {
       console.error("Error al eliminar el producto del carrito:", error);
+      toast.error("Error al eliminar el producto del carrito.");
     }
     sincronizarCarrito();
   };
@@ -264,12 +269,15 @@ export const CarritoProvider = ({ children }) => {
         }
         setItems([]);
         localStorage.removeItem("carrito");
+        toast.success("Tu carro ahora está vacio.");
       } catch (error) {
         console.error("Error al vaciar el carrito:", error);
+        toast.error("Error al vaciar el carrito.");
       }
     } else {
       setItems([]);
       localStorage.removeItem("carrito");
+      toast.success("Tu carro ahora está vacio.");
     }
   };
 

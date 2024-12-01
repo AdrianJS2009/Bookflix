@@ -2,7 +2,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LayoutGeneral from "./components/LayoutHeaderFooter";
-import PrivateRoute from "./components/PrivateRoute";
 import { AuthProvider } from "./contexts/AuthContext";
 import { CarritoProvider } from "./contexts/CarritoContext";
 import Carrito from "./pages/Carrito";
@@ -33,14 +32,18 @@ function App() {
               <Route path="registro" element={<Registro />} />
               <Route path="carrito" element={<Carrito />} />
               <Route path="sobre-nosotros" element={<SobreNosotros />} />
+              <Route
+                path="confirmacion-compra"
+                element={<ConfirmacionCompra />}
+              />
 
-              {/* Rutas protegidas */}
+              {/* Rutas protegidas
               <Route element={<PrivateRoute />}>
                 <Route
                   path="confirmacion-compra"
                   element={<ConfirmacionCompra />}
                 />
-              </Route>
+              </Route> */}
             </Route>
           </Routes>
           <ToastContainer />
