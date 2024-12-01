@@ -1,7 +1,4 @@
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import React, { useState } from "react";
 import Button from "../components/Button";
 import "../styles/default.css";
 import "../styles/form.css";
@@ -13,16 +10,13 @@ const Registro = () => {
   const [direccion, setDireccion] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const from = location.state?.from?.pathname || "/";
+  const [error, setError] = useState(null);
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      toast.error("Las contraseñas no coinciden.");
+      setError("Las contraseñas no coinciden.");
       return;
     }
 
@@ -46,10 +40,10 @@ const Registro = () => {
         throw new Error("Error al registrar el usuario.");
       }
 
-      toast.success("Usuario registrado correctamente.");
-      navigate(from, { replace: true });
+      alert("Usuario registrado correctamente.");
+      setError(null);
     } catch (err) {
-      toast.error(err.message || "Error al registrar el usuario.");
+      setError(err.message);
     }
   };
 
@@ -58,6 +52,7 @@ const Registro = () => {
       <main className="form-container texto-mediano">
         <h1 className="texto-grande">Registro</h1>
         <form onSubmit={handleRegister} className="form">
+          {error && <p className="error">{error}</p>}
           <div className="campo-formulario">
             <label htmlFor="nombre">Nombre</label>
             <input
