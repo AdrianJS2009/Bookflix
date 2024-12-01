@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Button from "../components/Button";
@@ -13,6 +13,7 @@ export default function Login() {
   const navigate = useNavigate();
   const { iniciarSesion } = useAuth();
 
+  const location = useLocation();
   const from = location.state?.from?.pathname || "/";
 
   const handleLogin = async (e) => {

@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Button from "../components/Button";
+
 import { useAuth } from "../contexts/AuthContext";
 import { useCarrito } from "../contexts/CarritoContext";
 import "../styles/ProductoDetalle.css";
 
 const ProductoDetalle = () => {
   const { productoId } = useParams();
+  const navigate = useNavigate();
   const { agregarAlCarrito } = useCarrito();
   const { auth } = useAuth();
 
@@ -19,6 +21,8 @@ const ProductoDetalle = () => {
   const [reseñas, setReseñas] = useState([]);
   const [textoReseña, setTextoReseña] = useState("");
   const [haReseñado, setHaReseñado] = useState(false);
+
+  const location = useLocation();
 
   useEffect(() => {
     const cargarProducto = async () => {
@@ -264,12 +268,19 @@ const ProductoDetalle = () => {
               </button>
             </div>
           ) : (
-            <div className="crearReseña">
-              <input
-                className="textoReseñaNueva"
-                placeholder="Inicia sesión para dejar tu reseña"
-                disabled
-              />
+            <div className="crearReseña sinSesion">
+              <p className="texto-mediano">
+                Si quieres dejar tu reseña,{" "}
+                <button
+                  className="btnLogin"
+                  onClick={() =>
+                    navigate("/login", { state: { from: location } })
+                  }
+                >
+                  Iniciar Sesión
+                </button>
+                .
+              </p>
             </div>
           )}
           {reseñas.length > 0 ? (
