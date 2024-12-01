@@ -41,6 +41,9 @@ public class GestionController : ControllerBase
         libro.UrlImagen = libroActualizado.UrlImagen;
         libro.Genero = libroActualizado.Genero;
         libro.Descripcion = libroActualizado.Descripcion;
+        libro.Stock = libroActualizado.Stock;
+        libro.Autor = libroActualizado.Autor;
+        libro.ISBN = libroActualizado.ISBN;
 
         _context.SaveChanges();
         return Ok(libro);
