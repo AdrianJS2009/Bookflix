@@ -1,15 +1,18 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import LayoutGeneral from "./components/LayoutHeaderFooter";
+import PrivateRoute from "./components/PrivateRoute";
 import { AuthProvider } from "./contexts/AuthContext";
 import { CarritoProvider } from "./contexts/CarritoContext";
-import LayoutGeneral from "./components/LayoutHeaderFooter";
-import Home from "./pages/Home";
-import Catalogo from "./pages/Catalogo";
-import ProductoDetalle from "./pages/ProductoDetalle";
-import Login from "./pages/Login";
-import Registro from "./pages/Registro";
 import Carrito from "./pages/Carrito";
-import SobreNosotros from "./pages/SobreNosotros";
+import Catalogo from "./pages/Catalogo";
 import ConfirmacionCompra from "./pages/ConfirmacionCompra";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import ProductoDetalle from "./pages/ProductoDetalle";
+import Registro from "./pages/Registro";
+import SobreNosotros from "./pages/SobreNosotros";
 
 import "./styles/default.css";
 
@@ -22,14 +25,25 @@ function App() {
             <Route path="/" element={<LayoutGeneral />}>
               <Route index element={<Home />} />
               <Route path="catalogo" element={<Catalogo />} />
-              <Route path="producto/:productoId" element={<ProductoDetalle />} />
+              <Route
+                path="producto/:productoId"
+                element={<ProductoDetalle />}
+              />
               <Route path="login" element={<Login />} />
               <Route path="registro" element={<Registro />} />
               <Route path="carrito" element={<Carrito />} />
               <Route path="sobre-nosotros" element={<SobreNosotros />} />
-              <Route path="confirmacion-compra" element={<ConfirmacionCompra />} />
+
+              {/* Rutas protegidas */}
+              <Route element={<PrivateRoute />}>
+                <Route
+                  path="confirmacion-compra"
+                  element={<ConfirmacionCompra />}
+                />
+              </Route>
             </Route>
           </Routes>
+          <ToastContainer />
         </CarritoProvider>
       </AuthProvider>
     </BrowserRouter>
