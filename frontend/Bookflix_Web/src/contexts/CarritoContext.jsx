@@ -28,7 +28,7 @@ export const CarritoProvider = ({ children }) => {
     if (!auth.token) {
       vaciarCarrito();
     }
-    
+
     try {
       const localCarrito = localStorage.getItem("carrito");
       const localItems = localCarrito ? JSON.parse(localCarrito) : [];
