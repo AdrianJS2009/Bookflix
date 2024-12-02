@@ -25,8 +25,10 @@ export const CarritoProvider = ({ children }) => {
   }, [auth.token, items]);
 
   const sincronizarCarrito = async () => {
-    if (!auth.token) return;
-
+    if (!auth.token) {
+      vaciarCarrito();
+    }
+    
     try {
       const localCarrito = localStorage.getItem("carrito");
       const localItems = localCarrito ? JSON.parse(localCarrito) : [];
