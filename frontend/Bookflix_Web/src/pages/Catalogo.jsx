@@ -3,9 +3,9 @@ import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { useCarrito } from "../contexts/CarritoContext";
-import "../styles/default.css";
 import "../styles/catalogo.css";
-import "../styles/catalogoQuerys.css"
+import "../styles/catalogoQuerys.css";
+import "../styles/default.css";
 
 const Catalogo = () => {
   const navigate = useNavigate();
@@ -38,8 +38,9 @@ const Catalogo = () => {
     }
 
     try {
-      let url = `https://localhost:7182/api/Libro/ListarLibros?pagina=${page + 1
-        }&tamanoPagina=${itemsPerPage}`;
+      let url = `https://localhost:7182/api/Libro/ListarLibros?pagina=${
+        page + 1
+      }&tamanoPagina=${itemsPerPage}`;
       if (nombre) url += `&textoBusqueda=${encodeURIComponent(nombre)}`;
       if (genero) url += `&genero=${encodeURIComponent(genero)}`;
       if (ordenarPor)
@@ -78,8 +79,8 @@ const Catalogo = () => {
   const handleItemsPerPageChange = (event) => {
     const newItemsPerPage = parseInt(event.target.value, 10);
     setItemsPerPage(newItemsPerPage);
-    setCurrentPage(0); // Reinicia la paginación al cambiar el tamaño de página
-    fetchLibros(0); // Fuerza un nuevo fetch para reflejar el cambio
+    setCurrentPage(0);
+    fetchLibros(0);
   };
 
   const handleSearchInputChange = (event) => {
@@ -95,7 +96,7 @@ const Catalogo = () => {
     if (libro && cantidad > 0 && cantidad <= libro.stock) {
       console.log("libro antes de agregar:", libro);
       console.log("Cantidad seleccionada:", cantidad);
-  
+
       agregarAlCarrito(
         {
           idLibro: libro.idLibro,
@@ -163,7 +164,7 @@ const Catalogo = () => {
               value={precioOrden}
               onChange={(e) => {
                 setPrecioOrden(e.target.value);
-                setAlfabeticoOrden(""); // Reset alphabetical sorting
+                setAlfabeticoOrden("");
               }}
               className="filtro-select"
             >
@@ -217,20 +218,23 @@ const Catalogo = () => {
                     className="imgItemCatalogo"
                   />
                 </div>
-                <div 
+                <div
                   className="catalogoItemButtons"
                   onClick={() => handleProductoClick(libro.idLibro)}
                 >
-                  <h2 className="titulo">{Array.from(libro.nombre).length > 10 ? Array.from(libro.nombre).slice(0, 50).join("") + '...' : libro.nombre}</h2>
+                  <h2 className="titulo">
+                    {Array.from(libro.nombre).length > 10
+                      ? Array.from(libro.nombre).slice(0, 50).join("") + "..."
+                      : libro.nombre}
+                  </h2>
                   <p className="precio">{libro.autor}</p>
                   <p className="precio">{(libro.precio / 100).toFixed(2)} €</p>
-                  
                 </div>
                 <Button
-                    label="Añadir a la cesta"
-                    styleType="btnAñadir"
-                    onClick={() => handleAgregar(libro)}
-                  />
+                  label="Añadir a la cesta"
+                  styleType="btnAñadir"
+                  onClick={() => handleAgregar(libro)}
+                />
               </div>
             ))}
           </div>
