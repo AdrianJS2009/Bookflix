@@ -84,8 +84,8 @@ const Carrito = () => {
     }
   };
 
-  const handleEliminarItem = (libroId) => {
-    eliminarItem(libroId);
+  const handleEliminarItem = (idLibro) => {
+    eliminarItem(idLibro);
   };
 
   return (
@@ -110,7 +110,7 @@ const Carrito = () => {
                     <button
                       className="masCantidad"
                       onClick={() =>
-                        actualizarCantidad(item.libroId, item.cantidad - 1)
+                        actualizarCantidad(item.idLibro, item.cantidad - 1)
                       }
                     >
                       -
@@ -124,7 +124,7 @@ const Carrito = () => {
                     <button
                       className="menosCantidad"
                       onClick={() =>
-                        actualizarCantidad(item.libroId, item.cantidad + 1)
+                        actualizarCantidad(item.idLibro, item.cantidad + 1)
                       }
                     >
                       +
@@ -137,7 +137,7 @@ const Carrito = () => {
                   </p>
                   <button
                     className="botonEliminar"
-                    onClick={() => handleEliminarItem(item.libroId)}
+                    onClick={() => handleEliminarItem(item.idLibro)}
                   >
                     Eliminar
                   </button>

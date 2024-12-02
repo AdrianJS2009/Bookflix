@@ -116,7 +116,7 @@ const ProductoDetalle = () => {
       try {
         const nuevaReseña = {
           texto: textoReseña,
-          libroId: productoId,
+          idLibro: productoId,
         };
 
         console.log("Payload being sent:", nuevaReseña);

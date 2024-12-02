@@ -91,7 +91,7 @@ export const CarritoProvider = ({ children }) => {
       const data = await response.json();
       const carritoItems = Array.isArray(data?.items)
         ? data.items.map((item) => ({
-            libroId: item.libroId,
+            idLibro: item.idLibro,
             nombre: item.nombreLibro || "Sin nombre",
             cantidad: item.cantidad || 1,
             precio: item.precio || 0,
@@ -275,12 +275,12 @@ export const CarritoProvider = ({ children }) => {
     }
   };
 
-  const actualizarCantidad = async (libroId, nuevaCantidad) => {
+  const actualizarCantidad = async (idLibro, nuevaCantidad) => {
     if (nuevaCantidad < 1) return;
 
     if (!auth.token) {
       const updatedItems = items.map((item) =>
-        item.idLibro === libroId // Corrección: usar `idLibro`
+        item.idLibro === idLibro // Corrección: usar `idLibro`
           ? { ...item, cantidad: nuevaCantidad }
           : item
       );
@@ -299,7 +299,7 @@ export const CarritoProvider = ({ children }) => {
             Authorization: `Bearer ${auth.token}`,
           },
           body: JSON.stringify({
-            LibroId: libroId,
+            LibroId: idLibro,
             NuevaCantidad: nuevaCantidad,
           }),
         }
@@ -314,7 +314,7 @@ export const CarritoProvider = ({ children }) => {
 
       setItems((prevItems) =>
         prevItems.map((item) =>
-          item.idLibro === libroId // Corrección: usar `idLibro`
+          item.idLibro === idLibro // Corrección: usar `idLibro`
             ? { ...item, cantidad: nuevaCantidad }
             : item
         )
