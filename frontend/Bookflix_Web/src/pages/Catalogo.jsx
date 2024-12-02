@@ -95,7 +95,7 @@ const Catalogo = () => {
     if (libro && cantidad > 0 && cantidad <= libro.stock) {
       console.log("libro antes de agregar:", libro);
       console.log("Cantidad seleccionada:", cantidad);
-  
+
       agregarAlCarrito(
         {
           idLibro: libro.idLibro,
@@ -208,7 +208,7 @@ const Catalogo = () => {
               <div
                 key={libro.idLibro}
                 className="catalogoItem"
-                // onClick={() => handleProductoClick(libro.idLibro)}
+              // onClick={() => handleProductoClick(libro.idLibro)}
               >
                 <div className="catalogoItemContent">
                   <img
@@ -217,20 +217,32 @@ const Catalogo = () => {
                     className="imgItemCatalogo"
                   />
                 </div>
-                <div 
+                <div
                   className="catalogoItemButtons"
                   onClick={() => handleProductoClick(libro.idLibro)}
                 >
                   <h2 className="titulo">{Array.from(libro.nombre).length > 10 ? Array.from(libro.nombre).slice(0, 50).join("") + '...' : libro.nombre}</h2>
                   <p className="precio">{libro.autor}</p>
                   <p className="precio">{(libro.precio / 100).toFixed(2)} €</p>
-                  
+                  <p className="stock">
+                    {libro.stock > 0 ? (
+                      <span>
+                        <span className="existencias">⬤</span> En stock
+                      </span>
+                    ) : (
+                      <span>
+                        <span className="agotado">⬤</span> Agotado
+                      </span>
+                    )}
+                    {"  "}
+                    <span className="estrellas">⭐{" "}{libro.promedioEstrellas}</span>
+                  </p>
                 </div>
                 <Button
-                    label="Añadir a la cesta"
-                    styleType="btnAñadir"
-                    onClick={() => handleAgregar(libro)}
-                  />
+                  label="Añadir a la cesta"
+                  styleType="btnAñadir"
+                  onClick={() => handleAgregar(libro)}
+                />
               </div>
             ))}
           </div>

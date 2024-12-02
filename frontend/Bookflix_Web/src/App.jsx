@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LayoutGeneral from "./components/LayoutHeaderFooter";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -46,7 +46,19 @@ function App() {
               </Route> */}
             </Route>
           </Routes>
-          <ToastContainer />
+          <ToastContainer
+            position="top-left"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover={false}
+            theme="dark"
+            transition={Slide}
+          />
         </CarritoProvider>
       </AuthProvider>
     </BrowserRouter>

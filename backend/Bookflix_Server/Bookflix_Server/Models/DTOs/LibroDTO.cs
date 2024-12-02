@@ -18,5 +18,7 @@
         public string ISBN { get; set; }
 
         public int Stock { get; set; }
+
+        public double PromedioEstrellas { get; set; }
     }
 }
