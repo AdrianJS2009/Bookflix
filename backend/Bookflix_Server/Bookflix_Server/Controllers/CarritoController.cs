@@ -275,5 +275,52 @@ namespace Bookflix_Server.Controllers
             return Ok(new { message = "Cantidad actualizada correctamente." });
         }
 
+        [HttpPost("Sincronizar")]
+        public async Task<IActionResult> SincronizarCarrito([FromBody] List<CarritoItemAgregarDto> items)
+        {
+
+            Console.WriteLine("Datos recibidos en SincronizarCarrito:");
+            foreach (var item in items)
+            {
+                Console.WriteLine($"LibroId: {item.LibroId}, Cantidad: {item.Cantidad}");
+            }
+
+            int idUsuario = int.Parse(ObtenerIdUsuario());
+            var usuario = await _userRepository.ObtenerPorIdAsync(idUsuario);
+
+            if (usuario == null)
+                return NotFound(new { error = "Usuario no encontrado." });
+
+            var carritoUsuario = await _carritoRepository.ObtenerOCrearCarritoPorUsuarioIdAsync(usuario.IdUser);
+
+            try
+            {
+                foreach (var item in items)
+                {
+                    var producto = await _productoRepository.ObtenerPorIdAsync(item.LibroId);
+                    if (producto == null)
+                    {
+                        return NotFound(new { error = $"El producto con ID {item.LibroId} no se encuentra disponible." });
+                    }
+
+                    if (producto.Stock < item.Cantidad)
+                    {
+                        return BadRequest(new { error = $"No hay suficiente stock para el producto con ID {item.LibroId}.", stockDisponible = producto.Stock });
+                    }
+
+                    await _carritoRepository.AgregarProductoAlCarritoAsync(carritoUsuario, item.LibroId, item.Cantidad);
+                }
+
+                await _unitOfWork.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Productos sincronizados correctamente." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "Ha habido un error de sincronización.", detalle = ex.Message });
+            }
+        }
+
+
     }
 }

@@ -26,15 +26,65 @@ export const CarritoProvider = ({ children }) => {
 
   const sincronizarCarrito = async () => {
     if (!auth.token) return;
+
     try {
+      const localCarrito = localStorage.getItem("carrito");
+      const localItems = localCarrito ? JSON.parse(localCarrito) : [];
+      console.log("Contenido del carrito local:", localItems);
+
+      if (localItems.length > 0) {
+        // Validar y mapear correctamente los datos
+        const payload = localItems
+          .filter((item) => item.idLibro && item.cantidad) // Filtrar datos válidos
+          .map((item) => ({
+            LibroId: item.idLibro,
+            Cantidad: item.cantidad,
+          }));
+
+        console.log("Datos enviados al servidor para sincronizar:", payload);
+
+        if (payload.length === 0) {
+          console.error("No hay datos válidos para sincronizar.");
+          return;
+        }
+
+        const response = await fetch(
+          "https://localhost:7182/api/Carrito/Sincronizar",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${auth.token}`,
+            },
+            body: JSON.stringify(payload),
+          }
+        );
+
+        if (!response.ok) {
+          console.error(
+            `Error al sincronizar los productos locales con el servidor. Estado: ${response.status}`
+          );
+          throw new Error("Error al sincronizar productos locales.");
+        }
+
+        toast.success("Productos locales sincronizados con tu cuenta.");
+        localStorage.removeItem("carrito");
+      }
+
+      // Obtener el carrito actualizado desde el servidor
       const response = await fetch(
         "https://localhost:7182/api/Carrito/ListarCarrito",
         {
           headers: { Authorization: `Bearer ${auth.token}` },
         }
       );
-      if (!response.ok)
-        throw new Error("No se pudo sincronizar con el servidor.");
+
+      if (!response.ok) {
+        console.error(
+          `Error al listar el carrito del servidor. Estado: ${response.status}`
+        );
+        throw new Error("No se pudo obtener el carrito del servidor.");
+      }
 
       const data = await response.json();
       const carritoItems = Array.isArray(data?.items)
@@ -63,13 +113,12 @@ export const CarritoProvider = ({ children }) => {
     }
 
     if (!auth.token) {
-      // Manejo local para usuarios no autenticados
       const existingItem = items.find(
-        (item) => item.libroId === producto.idLibro
+        (item) => item.idLibro === producto.idLibro // Corrección: usar `idLibro`
       );
       const updatedItems = existingItem
         ? items.map((item) =>
-            item.libroId === producto.idLibro
+            item.idLibro === producto.idLibro
               ? { ...item, cantidad: item.cantidad + cantidad }
               : item
           )
@@ -80,7 +129,6 @@ export const CarritoProvider = ({ children }) => {
       return;
     }
 
-    // Manejo para usuarios autenticados
     try {
       const response = await fetch(
         "https://localhost:7182/api/Carrito/agregar",
@@ -91,7 +139,7 @@ export const CarritoProvider = ({ children }) => {
             Authorization: `Bearer ${auth.token}`,
           },
           body: JSON.stringify({
-            LibroId: producto.idLibro,
+            LibroId: producto.idLibro, // Corrección: usar `idLibro`
             Cantidad: cantidad,
           }),
         }
@@ -115,15 +163,13 @@ export const CarritoProvider = ({ children }) => {
     }
 
     if (!auth.token) {
-      // Manejo local para usuarios no autenticados
-      const updatedItems = items.filter((item) => item.libroId !== productoId);
+      const updatedItems = items.filter((item) => item.idLibro !== productoId); // Corrección: usar `idLibro`
       setItems(updatedItems);
       localStorage.setItem("carrito", JSON.stringify(updatedItems));
       toast.success("Producto eliminado del carrito local.");
       return;
     }
 
-    // Manejo para usuarios autenticados
     try {
       const response = await fetch(
         `https://localhost:7182/api/Carrito/eliminar/${productoId}`,
@@ -141,8 +187,8 @@ export const CarritoProvider = ({ children }) => {
         );
       }
 
-      setItems((prevItems) =>
-        prevItems.filter((item) => item.libroId !== productoId)
+      setItems(
+        (prevItems) => prevItems.filter((item) => item.idLibro !== productoId) // Corrección: usar `idLibro`
       );
       toast.success("Producto eliminado del carrito.");
     } catch (error) {
@@ -153,14 +199,12 @@ export const CarritoProvider = ({ children }) => {
 
   const vaciarCarrito = async () => {
     if (!auth.token) {
-      // Manejo local para usuarios no autenticados
       setItems([]);
       localStorage.removeItem("carrito");
       toast.success("Carrito local vaciado.");
       return;
     }
 
-    // Manejo para usuarios autenticados
     try {
       const response = await fetch(
         "https://localhost:7182/api/Carrito/vaciar",
@@ -184,49 +228,9 @@ export const CarritoProvider = ({ children }) => {
     }
   };
 
-  const validarStock = async (producto, cantidad) => {
-    try {
-      const response = await fetch(
-        "https://localhost:7182/api/Libro/VerificarStock",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${auth.token}`,
-          },
-          body: JSON.stringify([producto.idLibro]),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Error al verificar el stock del producto.");
-      }
-
-      const stockInfo = await response.json();
-      const productoStock = stockInfo.find((p) => p.id === producto.idLibro);
-      if (!productoStock) {
-        toast.error(`El producto "${producto.nombre}" no está disponible.`);
-        return false;
-      }
-
-      if (!productoStock.disponible || productoStock.stock < cantidad) {
-        toast.error(
-          `El producto "${producto.nombre}" no tiene suficiente stock disponible.`
-        );
-        return false;
-      }
-
-      return true;
-    } catch (error) {
-      console.error("Error al verificar el stock:", error);
-      toast.error("Error al verificar el stock.");
-      return false;
-    }
-  };
-
   const validarStockCarrito = async () => {
     try {
-      const idsProductos = items.map((item) => item.libroId);
+      const idsProductos = items.map((item) => item.idLibro); // Corrección: usar `idLibro`
       const response = await fetch(
         "https://localhost:7182/api/Libro/VerificarStock",
         {
@@ -249,7 +253,7 @@ export const CarritoProvider = ({ children }) => {
       const sinStock = stockInfo.filter(
         (producto) =>
           !producto.Disponible ||
-          items.find((item) => item.libroId === producto.Id)?.cantidad >
+          items.find((item) => item.idLibro === producto.Id)?.cantidad >
             producto.Stock
       );
 
@@ -273,16 +277,16 @@ export const CarritoProvider = ({ children }) => {
     if (nuevaCantidad < 1) return;
 
     if (!auth.token) {
-      // Manejo local para usuarios no autenticados
       const updatedItems = items.map((item) =>
-        item.libroId === libroId ? { ...item, cantidad: nuevaCantidad } : item
+        item.idLibro === libroId // Corrección: usar `idLibro`
+          ? { ...item, cantidad: nuevaCantidad }
+          : item
       );
       setItems(updatedItems);
       localStorage.setItem("carrito", JSON.stringify(updatedItems));
       return;
     }
 
-    // Manejo para usuarios autenticados
     try {
       const response = await fetch(
         "https://localhost:7182/api/Carrito/ActualizarCantidad",
@@ -308,7 +312,9 @@ export const CarritoProvider = ({ children }) => {
 
       setItems((prevItems) =>
         prevItems.map((item) =>
-          item.libroId === libroId ? { ...item, cantidad: nuevaCantidad } : item
+          item.idLibro === libroId // Corrección: usar `idLibro`
+            ? { ...item, cantidad: nuevaCantidad }
+            : item
         )
       );
     } catch (error) {
