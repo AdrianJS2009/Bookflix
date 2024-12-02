@@ -1,7 +1,7 @@
 ﻿
 
 using Bookflix_Server.Data;
-using Bookflix_Server.Models;
+using Bookflix_Server.Models.DTOs;
 using Bookflix_Server.Repositories;
 using Bookflix_Server.Services;
 using Microsoft.AspNetCore.Authorization;

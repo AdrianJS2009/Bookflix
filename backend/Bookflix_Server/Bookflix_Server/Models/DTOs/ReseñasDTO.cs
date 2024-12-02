@@ -1,4 +1,4 @@
-﻿namespace Bookflix_Server.Models
+﻿namespace Bookflix_Server.Models.DTOs
 {
     public class ReseñaDTO
     {
@@ -6,7 +6,7 @@
         public int Estrellas { get; set; }
         public string Categoria { get; set; }
         public string LibroId { get; set; }
-        public DateTime FechaPublicacion { get; set; } 
-        public string Autor { get; set; } 
+        public DateTime FechaPublicacion { get; set; }
+        public string Autor { get; set; }
     }
 }

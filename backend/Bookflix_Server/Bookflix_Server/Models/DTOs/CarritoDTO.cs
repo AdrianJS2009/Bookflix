@@ -1,4 +1,4 @@
-﻿namespace Bookflix_Server.DTOs
+﻿namespace Bookflix_Server.Models.DTOs
 {
     public class CarritoDTO
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Bookflix_Server.DTOs
+namespace Bookflix_Server.Models.DTOs
 {
     public class CarritoItemAgregarDto
     {
