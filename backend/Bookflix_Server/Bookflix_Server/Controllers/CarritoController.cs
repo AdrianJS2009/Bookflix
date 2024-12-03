@@ -212,35 +212,7 @@ namespace Bookflix_Server.Controllers
         }
 
 
-        [HttpGet("historial")]
-        public async Task<IActionResult> ObtenerHistorialCompras()
-        {
-            int idUsuario = int.Parse(ObtenerIdUsuario());
-            var usuario = await _userRepository.ObtenerPorIdAsync(idUsuario);
-
-
-            if (usuario == null)
-                return NotFound(new { error = "Usuario no encontrado." });
-
-            var compras = await _compraRepository.ObtenerComprasPorUsuarioIdAsync(usuario.IdUser);
-
-            if (compras == null || !compras.Any())
-                return NotFound(new { error = "No se encontraron compras para este usuario." });
-
-            var historialComprasDto = compras.Select(compra => new CompraDTO
-            {
-                IdCompra = compra.IdCompra,
-                FechaCompra = compra.FechaCompra,
-                Detalles = compra.Detalles.Select(detalle => new CompraDetalleDTO
-                {
-                    IdLibro = detalle.IdLibro,
-                    Cantidad = detalle.Cantidad,
-                    PrecioUnitario = detalle.PrecioUnitario
-                }).ToList()
-            }).ToList();
-
-            return Ok(historialComprasDto);
-        }
+       
 
         [HttpPut("ActualizarCantidad")]
         public async Task<IActionResult> ActualizarCantidadProducto([FromBody] CarritoItemActualizarDTO datos)

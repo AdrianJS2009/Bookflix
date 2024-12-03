@@ -21,7 +21,7 @@ const ProductoDetalle = () => {
   const [reseñas, setReseñas] = useState([]);
   const [textoReseña, setTextoReseña] = useState("");
   const [haReseñado, setHaReseñado] = useState(false);
-
+  const [haComprado, setHaComprado] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -43,6 +43,14 @@ const ProductoDetalle = () => {
             (reseña) => reseña.usuario === auth.token.nombre
           );
           setHaReseñado(usuarioHaReseñado);
+
+          const responseCompra = await fetch(
+            `https://localhost:7182/api/Compra/Usuario/${auth.token.nombre}/Producto/${productoId}`
+          );
+          if (responseCompra.ok) {
+            const dataCompra = await responseCompra.json();
+            setHaComprado(dataCompra.haComprado);
+          }
         }
       } catch (err) {
         setError(err.message);
@@ -99,19 +107,17 @@ const ProductoDetalle = () => {
     }
   };
 
-  if (loading) {
-    return <p>Cargando producto...</p>;
-  }
-
-  if (error) {
-    return <p>{error}</p>;
-  }
-
-  if (!producto) {
-    return <p>Producto no encontrado.</p>;
-  }
-
   const handleCrearReseña = async () => {
+    if (!auth.token) {
+      toast.error("Debes iniciar sesión para dejar una reseña.");
+      return;
+    }
+
+    if (!haComprado) {
+      toast.error("Debes comprar el producto para dejar una reseña.");
+      return;
+    }
+
     if (textoReseña.trim()) {
       try {
         const nuevaReseña = {
@@ -257,12 +263,12 @@ const ProductoDetalle = () => {
                 value={textoReseña}
                 onChange={(e) => setTextoReseña(e.target.value)}
                 placeholder="Escribe tu reseña aquí..."
-                disabled={haReseñado}
+                disabled={haReseñado || !haComprado}
               />
               <button
                 className="btnCrearReseña"
                 onClick={handleCrearReseña}
-                disabled={haReseñado}
+                disabled={haReseñado || !haComprado}
               >
                 Crear
               </button>

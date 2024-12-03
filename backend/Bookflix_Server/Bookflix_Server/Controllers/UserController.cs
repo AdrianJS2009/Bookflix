@@ -17,13 +17,15 @@ namespace Bookflix_Server.Controllers
         private readonly IReseñasRepository _reseñaRepository;
         private readonly IProductoRepository _productoRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ICompraRepository _compraRepository;
 
-        public UserController(MyDbContext context, IReseñasRepository reseñaRepository, IProductoRepository productoRepository, IUserRepository userRepository)
+        public UserController(MyDbContext context, IReseñasRepository reseñaRepository, IProductoRepository productoRepository, IUserRepository userRepository, ICompraRepository compraRepository)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _reseñaRepository = reseñaRepository ?? throw new ArgumentNullException(nameof(reseñaRepository));
             _productoRepository = productoRepository ?? throw new ArgumentNullException(nameof(productoRepository));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            _compraRepository = compraRepository ?? throw new ArgumentException(nameof(compraRepository));
         }
 
         private string ObtenerIdUsuario()
@@ -193,6 +195,35 @@ namespace Bookflix_Server.Controllers
             });
         }
 
+        [HttpGet("historial")]
+        public async Task<IActionResult> ObtenerHistorialCompras()
+        {
+            int idUsuario = int.Parse(ObtenerIdUsuario());
+            var usuario = await _userRepository.ObtenerPorIdAsync(idUsuario);
+
+
+            if (usuario == null)
+                return NotFound(new { error = "Usuario no encontrado." });
+
+            var compras = await _compraRepository.ObtenerComprasPorUsuarioIdAsync(usuario.IdUser);
+
+            if (compras == null || !compras.Any())
+                return NotFound(new { error = "No se encontraron compras para este usuario." });
+
+            var historialComprasDto = compras.Select(compra => new CompraDTO
+            {
+                IdCompra = compra.IdCompra,
+                FechaCompra = compra.FechaCompra,
+                Detalles = compra.Detalles.Select(detalle => new CompraDetalleDTO
+                {
+                    IdLibro = detalle.IdLibro,
+                    Cantidad = detalle.Cantidad,
+                    PrecioUnitario = detalle.PrecioUnitario
+                }).ToList()
+            }).ToList();
+
+            return Ok(historialComprasDto);
+        }
 
     }
 }
