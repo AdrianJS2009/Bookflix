@@ -1,0 +1,76 @@
+.perfil-pedidos-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .perfil-container, .pedidos-container {
+    background-color: var(--blanco);
+    border-radius: 15px;
+    box-shadow: 4px 4px 10px var(--difuminado);
+    padding: 20px;
+    margin: 20px 0;
+    width: 80%;
+    max-width: 800px;
+  }
+  
+  .perfil-container h1, .pedidos-container h1 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .perfil-container form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .perfil-container label {
+    margin-bottom: 10px;
+    font-size: 1rem;
+    color: #333;
+  }
+  
+  .perfil-container input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 5px;
+  }
+  
+  .perfil-container button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    color: white;
+    background-color: var(--azul-normal);
+    margin-top: 20px;
+  }
+  
+  .perfil-container button:hover {
+    background-color: var(--azul-claro);
+    border: 1px solid var(--azul-oscuro);
+    color: var(--azul-oscuro);
+  }
+  
+  .pedidos-container ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .pedidos-container li {
+    padding: 15px;
+    background-color: var(--verde-claro);
+    border-radius: 15px;
+    margin: 10px 0;
+    box-shadow: 4px 4px 10px var(--difuminado);
+  }
+  
+  .pedidos-container p {
+    margin: 5px 0;
+    font-size: 1rem;
+    color: #333;
+  }

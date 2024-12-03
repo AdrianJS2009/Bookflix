@@ -21,7 +21,7 @@ const ProductoDetalle = () => {
   const [reseñas, setReseñas] = useState([]);
   const [textoReseña, setTextoReseña] = useState("");
   const [haReseñado, setHaReseñado] = useState(false);
-  const [haComprado, setHaComprado] = useState(false);
+  // const [haComprado, setHaComprado] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
