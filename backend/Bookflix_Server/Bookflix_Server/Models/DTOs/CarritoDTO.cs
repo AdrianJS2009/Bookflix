@@ -10,7 +10,7 @@
 
     public class CarritoItemDTO
     {
-        public int LibroId { get; set; }
+        public int IdLibro { get; set; }
         public string NombreLibro { get; set; }
         public int Cantidad { get; set; }
         public int Subtotal { get; set; }

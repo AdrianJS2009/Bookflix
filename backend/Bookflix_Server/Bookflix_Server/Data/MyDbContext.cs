@@ -63,7 +63,7 @@ namespace Bookflix_Server.Data
             modelBuilder.Entity<CompraDetalle>()
                 .HasOne(cd => cd.Libro)
                 .WithMany()
-                .HasForeignKey(cd => cd.LibroId)
+                .HasForeignKey(cd => cd.IdLibro)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

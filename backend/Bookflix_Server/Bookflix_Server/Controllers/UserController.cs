@@ -162,17 +162,17 @@ namespace Bookflix_Server.Controllers
             if (usuario == null)
                 return NotFound(new { error = "Usuario no encontrado." });
 
-            if (!int.TryParse(reseñaDto.LibroId, out int libroId))
+            if (!int.TryParse(reseñaDto.IdLibro, out int idLibro))
                 return BadRequest(new { error = "ID del libro no es válido." });
 
-            var libro = await _productoRepository.ObtenerPorIdAsync(libroId);
+            var libro = await _productoRepository.ObtenerPorIdAsync(idLibro);
             if (libro == null)
                 return NotFound(new { error = "Libro no encontrado." });
 
             var reseña = new Reseña
             {
                 UsuarioId = usuario.IdUser,
-                ProductoId = libroId, 
+                ProductoId = idLibro, 
                 Autor = !string.IsNullOrEmpty(reseñaDto.Autor)
                         ? reseñaDto.Autor
                         : $"{usuario.Nombre} {usuario.Apellidos}",

@@ -36,12 +36,12 @@ namespace Bookflix_Server.Repositories
                 throw new InvalidOperationException($"El producto con ID {idProducto} no existe.");
             }
 
-            var item = carrito.Items.FirstOrDefault(i => i.LibroId == idProducto);
+            var item = carrito.Items.FirstOrDefault(i => i.IdLibro == idProducto);
             if (item == null)
             {
                 var nuevoItem = new CarritoItem
                 {
-                    LibroId = idProducto,
+                    IdLibro = idProducto,
                     Cantidad = cantidad,
                     CarritoId = carrito.CarritoId
                 };
@@ -62,7 +62,7 @@ namespace Bookflix_Server.Repositories
             if (carrito == null)
                 throw new ArgumentNullException(nameof(carrito));
 
-            var item = carrito.Items.FirstOrDefault(i => i.LibroId == idProducto);
+            var item = carrito.Items.FirstOrDefault(i => i.IdLibro == idProducto);
             if (item == null) return false;
 
             carrito.Items.Remove(item);
@@ -88,7 +88,7 @@ namespace Bookflix_Server.Repositories
         {
             return await _context.Carritos
                 .Include(c => c.Items)
-                .AnyAsync(c => c.UserId == idUsuario && c.Items.Any(item => item.LibroId == idProducto && item.Comprado));
+                .AnyAsync(c => c.UserId == idUsuario && c.Items.Any(item => item.IdLibro == idProducto && item.Comprado));
         }
 
         public async Task ComprarCarritoAsync(Carrito carrito)
@@ -121,18 +121,18 @@ namespace Bookflix_Server.Repositories
             return carrito;
         }
 
-        public async Task<bool> ActualizarCantidadProductoAsync(Carrito carrito, int libroId, int nuevaCantidad)
+        public async Task<bool> ActualizarCantidadProductoAsync(Carrito carrito, int idLibro, int nuevaCantidad)
         {
             Console.WriteLine($"Carrito recibido: {carrito.Items.Count} items.");
 
-            var item = carrito.Items.FirstOrDefault(i => i.LibroId == libroId);
+            var item = carrito.Items.FirstOrDefault(i => i.IdLibro == idLibro);
             if (item == null)
             {
                 Console.WriteLine("Producto no encontrado en el carrito.");
                 return false;
             }
 
-            Console.WriteLine($"Producto encontrado: {item.LibroId}, actualizando la cantidad a {nuevaCantidad}.");
+            Console.WriteLine($"Producto encontrado: {item.IdLibro}, actualizando la cantidad a {nuevaCantidad}.");
             item.Cantidad = nuevaCantidad;
             _context.CarritoItems.Update(item);
             await _context.SaveChangesAsync();

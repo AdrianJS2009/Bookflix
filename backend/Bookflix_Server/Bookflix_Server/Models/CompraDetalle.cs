@@ -15,9 +15,9 @@ namespace Bookflix_Server.Models
         public Compras Compra { get; set; }
 
         [Required]
-        public int LibroId { get; set; }
+        public int IdLibro { get; set; }
 
-        [ForeignKey("LibroId")]
+        [ForeignKey("IdLibro")]
         public Libro Libro { get; set; }
 
         [Required]

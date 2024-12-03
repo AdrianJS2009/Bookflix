@@ -2,7 +2,7 @@
 {
     public class CarritoItemActualizarDTO
     {
-        public int LibroId { get; set; }
+        public int IdLibro { get; set; }
         public int NuevaCantidad { get; set; }
     }
 

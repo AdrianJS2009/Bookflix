@@ -14,9 +14,9 @@ public class CarritoItem
     public Carrito Carrito { get; set; }
 
     [Required]
-    public int LibroId { get; set; }
+    public int IdLibro { get; set; }
 
-    [ForeignKey("LibroId")]
+    [ForeignKey("IdLibro")]
     public Libro Libro { get; set; }
 
     [Required]

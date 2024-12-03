@@ -59,7 +59,7 @@ namespace Bookflix_Server.Controllers
                 UserId = carrito.UserId,
                 Items = carrito.Items.Select(item => new CarritoItemDTO
                 {
-                    LibroId = item.LibroId,
+                    IdLibro = item.IdLibro,
                     NombreLibro = item.Libro.Nombre,
                     Cantidad = item.Cantidad,
                     Subtotal = item.Subtotal,
@@ -82,7 +82,7 @@ namespace Bookflix_Server.Controllers
                 if (usuario == null)
                     return NotFound(new { error = "Usuario no encontrado." });
 
-                var producto = await _productoRepository.ObtenerPorIdAsync(itemDto.LibroId);
+                var producto = await _productoRepository.ObtenerPorIdAsync(itemDto.IdLibro);
                 if (producto == null)
                 {
                     return NotFound(new { error = "El producto especificado no se encuentra disponible." });
@@ -94,7 +94,7 @@ namespace Bookflix_Server.Controllers
                 }
 
                 var carritoUsuario = await _carritoRepository.ObtenerOCrearCarritoPorUsuarioIdAsync(usuario.IdUser);
-                await _carritoRepository.AgregarProductoAlCarritoAsync(carritoUsuario, itemDto.LibroId, itemDto.Cantidad);
+                await _carritoRepository.AgregarProductoAlCarritoAsync(carritoUsuario, itemDto.IdLibro, itemDto.Cantidad);
                 await _unitOfWork.SaveChangesAsync();
 
                 return Ok(new { success = true, message = "El producto se ha añadido al carrito exitosamente." });
@@ -123,7 +123,7 @@ namespace Bookflix_Server.Controllers
            
             var carritoUsuario = await _carritoRepository.ObtenerOCrearCarritoPorUsuarioIdAsync(usuario.IdUser);
 
-            var productoEnCarrito = carritoUsuario.Items.FirstOrDefault(p => p.LibroId == idProducto);
+            var productoEnCarrito = carritoUsuario.Items.FirstOrDefault(p => p.IdLibro == idProducto);
             if (productoEnCarrito == null)
             {
                 return NotFound(new { error = "El producto no se encuentra en el carrito." });
@@ -185,17 +185,17 @@ namespace Bookflix_Server.Controllers
             {
                 if (item.Cantidad <= 0)
                 {
-                    return BadRequest(new { error = $"Cantidad inválida para el producto '{item.LibroId}'." });
+                    return BadRequest(new { error = $"Cantidad inválida para el producto '{item.IdLibro}'." });
                 }
 
-                if (!await _productoRepository.ReducirStockAsync(item.LibroId, item.Cantidad))
+                if (!await _productoRepository.ReducirStockAsync(item.IdLibro, item.Cantidad))
                 {
-                    return BadRequest(new { error = $"Stock insuficiente para el producto '{item.LibroId}'." });
+                    return BadRequest(new { error = $"Stock insuficiente para el producto '{item.IdLibro}'." });
                 }
 
                 var detalle = new CompraDetalle
                 {
-                    LibroId = item.LibroId,
+                    IdLibro = item.IdLibro,
                     Cantidad = item.Cantidad, 
                     PrecioUnitario = item.Libro.Precio
                 };
@@ -233,7 +233,7 @@ namespace Bookflix_Server.Controllers
                 FechaCompra = compra.FechaCompra,
                 Detalles = compra.Detalles.Select(detalle => new CompraDetalleDTO
                 {
-                    LibroId = detalle.LibroId,
+                    IdLibro = detalle.IdLibro,
                     Cantidad = detalle.Cantidad,
                     PrecioUnitario = detalle.PrecioUnitario
                 }).ToList()
@@ -245,7 +245,7 @@ namespace Bookflix_Server.Controllers
         [HttpPut("ActualizarCantidad")]
         public async Task<IActionResult> ActualizarCantidadProducto([FromBody] CarritoItemActualizarDTO datos)
         {
-            Console.WriteLine($"Actualizando cantidad: LibroId={datos.LibroId}, NuevaCantidad={datos.NuevaCantidad}");
+            Console.WriteLine($"Actualizando cantidad: IdLibro={datos.IdLibro}, NuevaCantidad={datos.NuevaCantidad}");
 
 
             int idUsuario = int.Parse(ObtenerIdUsuario());
@@ -264,7 +264,7 @@ namespace Bookflix_Server.Controllers
                 return NotFound(new { error = "Carrito no encontrado." });
             }
 
-            bool actualizado = await _carritoRepository.ActualizarCantidadProductoAsync(carrito, datos.LibroId, datos.NuevaCantidad);
+            bool actualizado = await _carritoRepository.ActualizarCantidadProductoAsync(carrito, datos.IdLibro, datos.NuevaCantidad);
             if (!actualizado)
             {
                 Console.WriteLine("No se pudo actualizar la cantidad.");
@@ -282,7 +282,7 @@ namespace Bookflix_Server.Controllers
             Console.WriteLine("Datos recibidos en SincronizarCarrito:");
             foreach (var item in items)
             {
-                Console.WriteLine($"LibroId: {item.LibroId}, Cantidad: {item.Cantidad}");
+                Console.WriteLine($"IdLibro: {item.IdLibro}, Cantidad: {item.Cantidad}");
             }
 
             int idUsuario = int.Parse(ObtenerIdUsuario());
@@ -297,18 +297,18 @@ namespace Bookflix_Server.Controllers
             {
                 foreach (var item in items)
                 {
-                    var producto = await _productoRepository.ObtenerPorIdAsync(item.LibroId);
+                    var producto = await _productoRepository.ObtenerPorIdAsync(item.IdLibro);
                     if (producto == null)
                     {
-                        return NotFound(new { error = $"El producto con ID {item.LibroId} no se encuentra disponible." });
+                        return NotFound(new { error = $"El producto con ID {item.IdLibro} no se encuentra disponible." });
                     }
 
                     if (producto.Stock < item.Cantidad)
                     {
-                        return BadRequest(new { error = $"No hay suficiente stock para el producto con ID {item.LibroId}.", stockDisponible = producto.Stock });
+                        return BadRequest(new { error = $"No hay suficiente stock para el producto con ID {item.IdLibro}.", stockDisponible = producto.Stock });
                     }
 
-                    await _carritoRepository.AgregarProductoAlCarritoAsync(carritoUsuario, item.LibroId, item.Cantidad);
+                    await _carritoRepository.AgregarProductoAlCarritoAsync(carritoUsuario, item.IdLibro, item.Cantidad);
                 }
 
                 await _unitOfWork.SaveChangesAsync();

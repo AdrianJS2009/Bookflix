@@ -15,19 +15,26 @@ export const CarritoProvider = ({ children }) => {
     const savedItems = localStorage.getItem("carrito");
     return savedItems ? JSON.parse(savedItems) : [];
   });
+  const [sincronizado, setSincronizado] = useState(false);
 
   useEffect(() => {
-    if (auth.token) {
+    if (auth.token && !sincronizado) {
       sincronizarCarrito();
-    } else {
+    }//  else if (!auth.token) {
+    //   localStorage.setItem("carrito", JSON.stringify(items));
+    // }
+    setSincronizado(true)
+  }, [auth.token]);
+
+  useEffect(() => {
+    if (!sincronizado) {
       localStorage.setItem("carrito", JSON.stringify(items));
     }
-  }, [auth.token, items]);
+    setSincronizado(true)
+  }, [items]);
 
   const sincronizarCarrito = async () => {
-    if (!auth.token) {
-      vaciarCarrito();
-    }
+    setSincronizado(false);
     
     try {
       const localCarrito = localStorage.getItem("carrito");
@@ -39,7 +46,7 @@ export const CarritoProvider = ({ children }) => {
         const payload = localItems
           .filter((item) => item.idLibro && item.cantidad) // Filtrar datos válidos
           .map((item) => ({
-            LibroId: item.idLibro,
+            IdLibro: item.idLibro,
             Cantidad: item.cantidad,
           }));
 
@@ -106,6 +113,8 @@ export const CarritoProvider = ({ children }) => {
   };
 
   const agregarAlCarrito = async (producto, cantidad) => {
+    setSincronizado(false);
+
     if (!producto || !cantidad) {
       console.error("Producto o cantidad no definidos en agregarAlCarrito.", {
         producto,
@@ -141,7 +150,7 @@ export const CarritoProvider = ({ children }) => {
             Authorization: `Bearer ${auth.token}`,
           },
           body: JSON.stringify({
-            LibroId: producto.idLibro, // Corrección: usar `idLibro`
+            IdLibro: producto.idLibro, // Corrección: usar `idLibro`
             Cantidad: cantidad,
           }),
         }
@@ -159,6 +168,8 @@ export const CarritoProvider = ({ children }) => {
   };
 
   const eliminarItem = async (productoId) => {
+    setSincronizado(false);
+
     if (!productoId) {
       console.error("ID de producto no definido al intentar eliminar.");
       return;
@@ -200,6 +211,8 @@ export const CarritoProvider = ({ children }) => {
   };
 
   const vaciarCarrito = async () => {
+    setSincronizado(false);
+
     if (!auth.token) {
       setItems([]);
       localStorage.removeItem("carrito");
@@ -231,6 +244,8 @@ export const CarritoProvider = ({ children }) => {
   };
 
   const validarStockCarrito = async () => {
+    setSincronizado(false);
+
     try {
       const idsProductos = items.map((item) => item.idLibro); // Corrección: usar `idLibro`
       const response = await fetch(
@@ -276,6 +291,8 @@ export const CarritoProvider = ({ children }) => {
   };
 
   const actualizarCantidad = async (idLibro, nuevaCantidad) => {
+    setSincronizado(false);
+
     if (nuevaCantidad < 1) return;
 
     if (!auth.token) {
@@ -299,7 +316,7 @@ export const CarritoProvider = ({ children }) => {
             Authorization: `Bearer ${auth.token}`,
           },
           body: JSON.stringify({
-            LibroId: idLibro,
+            IdLibro: idLibro,
             NuevaCantidad: nuevaCantidad,
           }),
         }
