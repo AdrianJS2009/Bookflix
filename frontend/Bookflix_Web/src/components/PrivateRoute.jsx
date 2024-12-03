@@ -9,5 +9,9 @@ export default function PrivateRoute() {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
+  if (user.rol !== "admin") {
+    return <Navigate to="/" replace />;
+  }
+
   return <Outlet />;
 }

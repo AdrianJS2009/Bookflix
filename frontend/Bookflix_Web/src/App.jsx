@@ -4,6 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import LayoutGeneral from "./components/LayoutHeaderFooter";
 import { AuthProvider } from "./contexts/AuthContext";
 import { CarritoProvider } from "./contexts/CarritoContext";
+import Administrador from "./pages/Administrador";
 import Carrito from "./pages/Carrito";
 import Catalogo from "./pages/Catalogo";
 import ConfirmacionCompra from "./pages/ConfirmacionCompra";
@@ -31,6 +32,7 @@ function App() {
               <Route path="login" element={<Login />} />
               <Route path="registro" element={<Registro />} />
               <Route path="carrito" element={<Carrito />} />
+              <Route path="/admin" element={<Administrador />} />
               <Route path="sobre-nosotros" element={<SobreNosotros />} />
               <Route
                 path="confirmacion-compra"
