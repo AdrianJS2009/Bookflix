@@ -3,9 +3,9 @@ import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { useCarrito } from "../contexts/CarritoContext";
-import "../styles/default.css";
 import "../styles/catalogo.css";
-import "../styles/catalogoQuerys.css"
+import "../styles/catalogoQuerys.css";
+import "../styles/default.css";
 
 const Catalogo = () => {
   const navigate = useNavigate();
@@ -38,8 +38,9 @@ const Catalogo = () => {
     }
 
     try {
-      let url = `https://localhost:7182/api/Libro/ListarLibros?pagina=${page + 1
-        }&tamanoPagina=${itemsPerPage}`;
+      let url = `https://localhost:7182/api/Libro/ListarLibros?pagina=${
+        page + 1
+      }&tamanoPagina=${itemsPerPage}`;
       if (nombre) url += `&textoBusqueda=${encodeURIComponent(nombre)}`;
       if (genero) url += `&genero=${encodeURIComponent(genero)}`;
       if (ordenarPor)
@@ -56,7 +57,7 @@ const Catalogo = () => {
       }
 
       const data = await response.json();
-      console.log("Respuesta recibida:", data); // Depuración
+      console.log("Respuesta recibida:", data);
 
       setLibros(data.libros || []);
       setPageCount(data.totalPaginas || 0);
@@ -78,8 +79,8 @@ const Catalogo = () => {
   const handleItemsPerPageChange = (event) => {
     const newItemsPerPage = parseInt(event.target.value, 10);
     setItemsPerPage(newItemsPerPage);
-    setCurrentPage(0); // Reinicia la paginación al cambiar el tamaño de página
-    fetchLibros(0); // Fuerza un nuevo fetch para reflejar el cambio
+    setCurrentPage(0);
+    fetchLibros(0);
   };
 
   const handleSearchInputChange = (event) => {
@@ -163,7 +164,7 @@ const Catalogo = () => {
               value={precioOrden}
               onChange={(e) => {
                 setPrecioOrden(e.target.value);
-                setAlfabeticoOrden(""); // Reset alphabetical sorting
+                setAlfabeticoOrden("");
               }}
               className="filtro-select"
             >
@@ -176,7 +177,7 @@ const Catalogo = () => {
               value={alfabeticoOrden}
               onChange={(e) => {
                 setAlfabeticoOrden(e.target.value);
-                setPrecioOrden(""); // Reset price sorting
+                setPrecioOrden("");
               }}
               className="filtro-select"
             >
@@ -208,7 +209,7 @@ const Catalogo = () => {
               <div
                 key={libro.idLibro}
                 className="catalogoItem"
-              // onClick={() => handleProductoClick(libro.idLibro)}
+                // onClick={() => handleProductoClick(libro.idLibro)}
               >
                 <div className="catalogoItemContent">
                   <img
@@ -221,22 +222,13 @@ const Catalogo = () => {
                   className="catalogoItemButtons"
                   onClick={() => handleProductoClick(libro.idLibro)}
                 >
-                  <h2 className="titulo">{Array.from(libro.nombre).length > 10 ? Array.from(libro.nombre).slice(0, 50).join("") + '...' : libro.nombre}</h2>
+                  <h2 className="titulo">
+                    {Array.from(libro.nombre).length > 10
+                      ? Array.from(libro.nombre).slice(0, 50).join("") + "..."
+                      : libro.nombre}
+                  </h2>
                   <p className="precio">{libro.autor}</p>
                   <p className="precio">{(libro.precio / 100).toFixed(2)} €</p>
-                  <p className="stock">
-                    {libro.stock > 0 ? (
-                      <span>
-                        <span className="existencias">⬤</span> En stock
-                      </span>
-                    ) : (
-                      <span>
-                        <span className="agotado">⬤</span> Agotado
-                      </span>
-                    )}
-                    {"  "}
-                    <span className="estrellas">⭐{" "}{libro.promedioEstrellas}</span>
-                  </p>
                 </div>
                 <Button
                   label="Añadir a la cesta"

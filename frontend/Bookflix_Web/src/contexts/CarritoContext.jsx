@@ -20,22 +20,22 @@ export const CarritoProvider = ({ children }) => {
   useEffect(() => {
     if (auth.token && !sincronizado) {
       sincronizarCarrito();
-    }//  else if (!auth.token) {
+    } //  else if (!auth.token) {
     //   localStorage.setItem("carrito", JSON.stringify(items));
     // }
-    setSincronizado(true)
+    setSincronizado(true);
   }, [auth.token]);
 
   useEffect(() => {
     if (!sincronizado) {
       localStorage.setItem("carrito", JSON.stringify(items));
     }
-    setSincronizado(true)
+    setSincronizado(true);
   }, [items]);
 
   const sincronizarCarrito = async () => {
     setSincronizado(false);
-    
+
     try {
       const localCarrito = localStorage.getItem("carrito");
       const localItems = localCarrito ? JSON.parse(localCarrito) : [];
