@@ -84,10 +84,10 @@ public class GestionController : ControllerBase
     public IActionResult EliminarUsuario(int id)
     {
         var usuario = _context.Users.Find(id);
-        if (usuario == null) return NotFound();
+        if (usuario == null) return NotFound(new { error = "Usuario no encontrado." });
 
         _context.Users.Remove(usuario);
         _context.SaveChanges();
-        return NoContent();
+        return Ok(new { message = "Usuario eliminado correctamente." });
     }
 }

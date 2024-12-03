@@ -69,11 +69,18 @@ export default function Administrador() {
       isShowingUsers ? "usuario" : "producto"
     }?`;
     if (window.confirm(confirmMessage)) {
+      const token = sessionStorage.getItem("token"); // O usa tu método de almacenamiento preferido
       const endpoint = isShowingUsers
-        ? `/api/gestion/usuarios/${id}`
-        : `/api/gestion/libros/${id}`;
+        ? `https://localhost:7182/api/gestion/usuarios/${id}`
+        : `https://localhost:7182/api/gestion/libros/${id}`;
       try {
-        const response = await fetch(endpoint, { method: "DELETE" });
+        const response = await fetch(endpoint, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (response.ok) {
           if (isShowingUsers) {
             setUsuarios((prev) => prev.filter((user) => user.idUser !== id));
@@ -83,56 +90,61 @@ export default function Administrador() {
             );
           }
         } else {
-          console.error("Error deleting item");
+          const errorData = await response.json().catch(() => null);
+          console.error(
+            "Error:",
+            errorData?.error || "No se pudo eliminar el elemento."
+          );
         }
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error:", error.message);
       }
     }
   };
 
   const handleCreateOrEdit = async (item) => {
-    const endpoint = item.id
-      ? isShowingUsers
-        ? `/api/gestion/usuarios/${item.id}`
-        : `/api/gestion/libros/${item.idLibro}`
-      : isShowingUsers
-      ? "/api/gestion/usuarios"
-      : "/api/gestion/libros";
-    const method = item.id ? "PUT" : "POST";
+    const token = sessionStorage.getItem("token"); // Asegúrate de tener el token.
+    const isEdit = !!item.idUser; // Determinar si es una edición.
+    const endpoint = isEdit
+      ? `https://localhost:7182/api/gestion/usuarios/${item.idUser}`
+      : `https://localhost:7182/api/gestion/usuarios`;
+    const method = isEdit ? "PUT" : "POST";
+
     try {
       const response = await fetch(endpoint, {
         method,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(item),
       });
+
       if (response.ok) {
         const updatedItem = await response.json();
         if (isShowingUsers) {
           setUsuarios((prev) => {
-            if (item.id) {
-              return prev.map((u) => (u.idUser === item.id ? updatedItem : u));
-            } else {
-              return [...prev, updatedItem];
-            }
-          });
-        } else {
-          setProductos((prev) => {
-            if (item.idLibro) {
-              return prev.map((p) =>
-                p.idLibro === item.idLibro ? updatedItem : p
+            if (isEdit) {
+              // Editar un usuario
+              return prev.map((u) =>
+                u.idUser === updatedItem.idUser ? updatedItem : u
               );
             } else {
+              // Crear un usuario nuevo
               return [...prev, updatedItem];
             }
           });
         }
         setIsModalOpen(false);
       } else {
-        console.error("Error saving item");
+        const errorData = await response.json().catch(() => null);
+        console.error(
+          "Error:",
+          errorData?.error || "No se pudo guardar el elemento."
+        );
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error:", error.message);
     }
   };
 
@@ -230,84 +242,63 @@ export default function Administrador() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              handleCreateOrEdit(
-                isShowingUsers ? selectedUser : selectedProduct
-              );
+              handleCreateOrEdit(selectedUser);
             }}
           >
-            {isShowingUsers ? (
-              <>
-                <input
-                  type="text"
-                  value={selectedUser?.nombre || ""}
-                  placeholder="Nombre"
-                  onChange={(e) =>
-                    setSelectedUser({ ...selectedUser, nombre: e.target.value })
-                  }
-                />
-                <input
-                  type="email"
-                  value={selectedUser?.email || ""}
-                  placeholder="Email"
-                  onChange={(e) =>
-                    setSelectedUser({ ...selectedUser, email: e.target.value })
-                  }
-                />
-                <input
-                  type="text"
-                  value={selectedUser?.rol || ""}
-                  placeholder="Rol"
-                  onChange={(e) =>
-                    setSelectedUser({ ...selectedUser, rol: e.target.value })
-                  }
-                />
-              </>
-            ) : (
-              <>
-                <input
-                  type="text"
-                  value={selectedProduct?.nombre || ""}
-                  placeholder="Nombre"
-                  onChange={(e) =>
-                    setSelectedProduct({
-                      ...selectedProduct,
-                      nombre: e.target.value,
-                    })
-                  }
-                />
-                <textarea
-                  value={selectedProduct?.descripcion || ""}
-                  placeholder="Descripción"
-                  onChange={(e) =>
-                    setSelectedProduct({
-                      ...selectedProduct,
-                      descripcion: e.target.value,
-                    })
-                  }
-                ></textarea>
-                <input
-                  type="number"
-                  value={selectedProduct?.precio || ""}
-                  placeholder="Precio"
-                  onChange={(e) =>
-                    setSelectedProduct({
-                      ...selectedProduct,
-                      precio: e.target.value,
-                    })
-                  }
-                />
-                <input
-                  type="number"
-                  value={selectedProduct?.stock || ""}
-                  placeholder="Stock"
-                  onChange={(e) =>
-                    setSelectedProduct({
-                      ...selectedProduct,
-                      stock: e.target.value,
-                    })
-                  }
-                />
-              </>
+            <input
+              type="text"
+              value={selectedUser?.nombre || ""}
+              placeholder="Nombre"
+              required
+              onChange={(e) =>
+                setSelectedUser({ ...selectedUser, nombre: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              value={selectedUser?.apellidos || ""}
+              placeholder="Apellidos"
+              required
+              onChange={(e) =>
+                setSelectedUser({ ...selectedUser, apellidos: e.target.value })
+              }
+            />
+            <input
+              type="email"
+              value={selectedUser?.email || ""}
+              placeholder="Email"
+              required
+              onChange={(e) =>
+                setSelectedUser({ ...selectedUser, email: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              value={selectedUser?.direccion || ""}
+              placeholder="Direccion"
+              onChange={(e) =>
+                setSelectedUser({ ...selectedUser, direccion: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              value={selectedUser?.rol || "usuario"}
+              placeholder="Rol"
+              required
+              onChange={(e) =>
+                setSelectedUser({ ...selectedUser, rol: e.target.value })
+              }
+            />
+            {!selectedUser?.idUser && (
+              <input
+                type="password"
+                value={selectedUser?.password || ""}
+                placeholder="Password"
+                required
+                onChange={(e) =>
+                  setSelectedUser({ ...selectedUser, password: e.target.value })
+                }
+              />
             )}
             <button type="submit">Guardar</button>
             <button type="button" onClick={() => setIsModalOpen(false)}>
