@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import ProductoDetalle from "./pages/ProductoDetalle";
 import Registro from "./pages/Registro";
 import SobreNosotros from "./pages/SobreNosotros";
+// import Perfil from "./pages/Perfil";
 
 import "./styles/default.css";
 
@@ -34,6 +35,7 @@ function App() {
               <Route path="carrito" element={<Carrito />} />
               <Route path="/admin" element={<Administrador />} />
               <Route path="sobre-nosotros" element={<SobreNosotros />} />
+              {/* {<Route path="perfil" element={<Perfil />} /> } */}
               <Route
                 path="confirmacion-compra"
                 element={<ConfirmacionCompra />}
