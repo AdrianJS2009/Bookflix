@@ -27,12 +27,12 @@
     color: #555;
   }
   
-  ul {
+  ul.listaAdmin {
     list-style-type: none;
     padding: 0;
   }
   
-  ul li {
+  ul.listaAdmin li.itemListaAdmin {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -40,11 +40,11 @@
     border-bottom: 1px solid #ddd;
   }
   
-  ul li img {
+  ul.listaAdmin li.itemListaAdmin img {
     margin-right: 10px;
   }
   
-  ul li .book-title {
+  ul.listaAdmin li.itemListaAdmin .book-title {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -53,11 +53,11 @@
     vertical-align: middle;
   }
   
-  ul li button {
+  ul.listaAdmin li.itemListaAdmin button {
     margin-left: 10px;
   }
   
-  .modal {
+  .modalAdmin {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -68,24 +68,24 @@
     z-index: 1000;
   }
   
-  .modal h2 {
+  .modalAdmin h2 {
     margin-top: 0;
   }
   
-  .modal form {
+  .modalAdmin form {
     display: flex;
     flex-direction: column;
   }
   
-  .modal form input,
-  .modal form textarea {
+  .modalAdmin form input,
+  .modalAdmin form textarea {
     margin-bottom: 10px;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
   }
   
-  .modal form button {
+  .modalAdmin form button {
     padding: 10px;
     border: none;
     background: #007bff;
@@ -94,11 +94,11 @@
     border-radius: 4px;
   }
   
-  .modal form button[type="button"] {
+  .modalAdmin form button[type="button"] {
     background: #6c757d;
   }
   
-  .modal form button:hover {
+  .modalAdmin form button:hover {
     opacity: 0.9;
   }
   
@@ -108,4 +108,13 @@
   
   nav a:hover, footer a:hover {
     text-decoration: underline; 
+  }
+
+  ul.pagination {
+    margin: 10px 0;
+    justify-self: center;
+  }
+
+  main.admin-page {
+    min-height: calc(100vh - 80px);
   }

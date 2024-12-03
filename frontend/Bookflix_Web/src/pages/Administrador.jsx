@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import Button from "../components/Button";
+import { Link } from "react-router-dom";
 import "../styles/admin.css";
 import "../styles/default.css";
 
@@ -23,19 +24,16 @@ export default function Administrador() {
       };
 
       const endpoint = isShowingUsers
-        ? `https://localhost:7182/api/user/listar?pagina=${
-            page + 1
-          }&tamanoPagina=${itemsPerPage}`
-        : `https://localhost:7182/api/libro/ListarLibros?ascendente=true&pagina=${
-            page + 1
-          }&tamanoPagina=${itemsPerPage}`;
+        ? `https://localhost:7182/api/user/listar?pagina=${page + 1
+        }&tamanoPagina=${itemsPerPage}`
+        : `https://localhost:7182/api/libro/ListarLibros?ascendente=true&pagina=${page + 1
+        }&tamanoPagina=${itemsPerPage}`;
 
       const response = await fetch(endpoint, { headers });
 
       if (!response.ok) {
         throw new Error(
-          `Error ${response.status}: ${
-            isShowingUsers ? "Usuarios" : "Productos"
+          `Error ${response.status}: ${isShowingUsers ? "Usuarios" : "Productos"
           }`
         );
       }
@@ -65,9 +63,8 @@ export default function Administrador() {
   };
 
   const handleDelete = async (id) => {
-    const confirmMessage = `¿Estás seguro de que deseas eliminar este ${
-      isShowingUsers ? "usuario" : "producto"
-    }?`;
+    const confirmMessage = `¿Estás seguro de que deseas eliminar este ${isShowingUsers ? "usuario" : "producto"
+      }?`;
     if (window.confirm(confirmMessage)) {
       const endpoint = isShowingUsers
         ? `/api/gestion/usuarios/${id}`
@@ -97,8 +94,8 @@ export default function Administrador() {
         ? `/api/gestion/usuarios/${item.id}`
         : `/api/gestion/libros/${item.idLibro}`
       : isShowingUsers
-      ? "/api/gestion/usuarios"
-      : "/api/gestion/libros";
+        ? "/api/gestion/usuarios"
+        : "/api/gestion/libros";
     const method = item.id ? "PUT" : "POST";
     try {
       const response = await fetch(endpoint, {
@@ -137,7 +134,7 @@ export default function Administrador() {
   };
 
   return (
-    <div className="admin-page">
+    <main className="admin-page">
       <h1>Administrador</h1>
       <div className="toggle-buttons">
         <Button
@@ -158,11 +155,12 @@ export default function Administrador() {
           styleType="btnAñadir"
           label={isShowingUsers ? "Nuevo Usuario" : "Nuevo Producto"}
         />
-        <ul>
+        <ul className="listaAdmin">
           {isShowingUsers
             ? usuarios.map((usuario) => (
-                <li key={usuario.idUser}>
-                  {usuario.nombre} ({usuario.email}) - {usuario.rol}
+              <li key={usuario.idUser} className="itemListaAdmin">
+                <strong>Nombre:</strong> {usuario.nombre} <strong>Correo:</strong> {usuario.email}<strong>Rol:</strong> {usuario.rol}
+                <div>
                   <Button
                     onClick={() => handleDelete(usuario.idUser)}
                     label="Eliminar"
@@ -176,17 +174,24 @@ export default function Administrador() {
                     label="Editar"
                     styleType="btnComprar"
                   />
-                </li>
-              ))
+                </div>
+
+              </li>
+            ))
             : productos.map((producto) => (
-                <li key={producto.idLibro}>
-                  <img
-                    src={producto.urlImagen}
-                    alt={producto.nombre}
-                    width="50"
-                  />
-                  {producto.nombre} ({(producto.precio / 100).toFixed(2)}€) -
-                  Stock: {producto.stock}
+              <li key={producto.idLibro}>
+                <img
+                  src={producto.urlImagen}
+                  alt={producto.nombre}
+                  width="50"
+                />
+                <Link to={`/producto/${producto.idLibro}`}>{Array.from(producto.nombre).length > 10
+                  ? Array.from(producto.nombre).slice(0, 50).join("") + "..."
+                  : producto.nombre} </Link>
+                
+                ({(producto.precio / 100).toFixed(2)}€) -
+                Stock: {producto.stock}
+                <div>
                   <Button
                     onClick={() => handleDelete(producto.idLibro)}
                     label="Eliminar"
@@ -200,8 +205,10 @@ export default function Administrador() {
                     label="Editar"
                     styleType="btnComprar"
                   />
-                </li>
-              ))}
+                </div>
+
+              </li>
+            ))}
         </ul>
         <ReactPaginate
           previousLabel={"Anterior"}
@@ -217,15 +224,15 @@ export default function Administrador() {
         />
       </section>
       {isModalOpen && (
-        <div className="modal">
+        <div className="modalAdmin">
           <h2>
             {isShowingUsers
               ? selectedUser
                 ? "Editar Usuario"
                 : "Crear Usuario"
               : selectedProduct
-              ? "Editar Producto"
-              : "Crear Producto"}
+                ? "Editar Producto"
+                : "Crear Producto"}
           </h2>
           <form
             onSubmit={(e) => {
@@ -316,6 +323,6 @@ export default function Administrador() {
           </form>
         </div>
       )}
-    </div>
+    </main>
   );
 }
