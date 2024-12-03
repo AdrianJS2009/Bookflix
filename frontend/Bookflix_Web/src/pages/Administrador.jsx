@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Button from "../components/Button";
+import "../styles/default.css";
+import "../styles/admin.css";
 
 export default function Administrador() {
   const [usuarios, setUsuarios] = useState([]);
   const [productos, setProductos] = useState([]);
-  const [isShowingUsers, setIsShowingUsers] = useState(true); // Toggle between Users and Products
+  const [isShowingUsers, setIsShowingUsers] = useState(true);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -12,25 +14,43 @@ export default function Administrador() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const usersResponse = await fetch("/api/user/listar");
-        const productsResponse = await fetch("/api/gestion/libros");
-        if (usersResponse.ok && productsResponse.ok) {
-          setUsuarios(await usersResponse.json());
-          setProductos(await productsResponse.json());
+        const headers = {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        };
+
+        // Usa la URL completa del backend si no tienes configurado un proxy
+        const endpoint = isShowingUsers
+          ? "https://localhost:7182/api/user/listar"
+          : "https://localhost:7182/api/libro/ListarLibros?ascendente=true&pagina=1&tamanoPagina=10";
+
+        const response = await fetch(endpoint, { headers });
+
+        if (!response.ok) {
+          throw new Error(
+            `Error ${response.status}: ${isShowingUsers ? "Usuarios" : "Productos"
+            }`
+          );
+        }
+
+        const data = await response.json();
+
+        if (isShowingUsers) {
+          setUsuarios(data);
         } else {
-          console.error("Error fetching data");
+          setProductos(data.libros || []);
         }
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error al obtener datos:", error.message);
       }
     }
+
     fetchData();
-  }, []);
+  }, [isShowingUsers]);
 
   const handleDelete = async (id) => {
-    const confirmMessage = `¿Estás seguro de que deseas eliminar este ${
-      isShowingUsers ? "usuario" : "producto"
-    }?`;
+    const confirmMessage = `¿Estás seguro de que deseas eliminar este ${isShowingUsers ? "usuario" : "producto"
+      }?`;
     if (window.confirm(confirmMessage)) {
       const endpoint = isShowingUsers
         ? `/api/gestion/usuarios/${id}`
@@ -58,8 +78,8 @@ export default function Administrador() {
         ? `/api/gestion/usuarios/${item.id}`
         : `/api/gestion/libros/${item.id}`
       : isShowingUsers
-      ? "/api/gestion/usuarios"
-      : "/api/gestion/libros";
+        ? "/api/gestion/usuarios"
+        : "/api/gestion/libros";
     const method = item.id ? "PUT" : "POST";
     try {
       const response = await fetch(endpoint, {
@@ -99,54 +119,65 @@ export default function Administrador() {
     <div className="admin-page">
       <h1>Administrador</h1>
       <div className="toggle-buttons">
-        <Button onClick={() => setIsShowingUsers(true)}>Usuarios</Button>
-        <Button onClick={() => setIsShowingUsers(false)}>Productos</Button>
+        <Button 
+          onClick={() => setIsShowingUsers(true)}
+          label="Usuarios"
+          styleType="btnAñadir"
+        />
+        <Button
+          onClick={() => setIsShowingUsers(false)}
+          label="Productos"
+          styleType="btnComprar"
+        />
       </div>
       <section>
         <h2>{isShowingUsers ? "Usuarios" : "Productos"}</h2>
-        <Button onClick={() => setIsModalOpen(true)}>
-          {isShowingUsers ? "Nuevo Usuario" : "Nuevo Producto"}
-        </Button>
+        <Button onClick={() => setIsModalOpen(true)} styleType="btnAñadir"
+          label={isShowingUsers ? "Nuevo Usuario" : "Nuevo Producto"}
+        />
         <ul>
           {isShowingUsers
             ? usuarios.map((usuario) => (
-                <li key={usuario.id}>
-                  {usuario.nombre} ({usuario.email}) - {usuario.rol}
-                  <Button onClick={() => handleDelete(usuario.id)}>
-                    Eliminar
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setSelectedUser(usuario);
-                      setIsModalOpen(true);
-                    }}
-                  >
-                    Editar
-                  </Button>
-                </li>
-              ))
+              <li key={usuario.id}>
+                {usuario.nombre} ({usuario.email}) - {usuario.rol}
+                <Button
+                  onClick={() => handleDelete(usuario.id)}
+                  label="Eliminar"
+                  className="botonEliminar" 
+                />
+                <Button
+                  onClick={() => {
+                    setSelectedUser(usuario);
+                    setIsModalOpen(true);
+                  }}
+                  label="Editar"
+                  styleType="btnComprar"
+                />
+              </li>
+            ))
             : productos.map((producto) => (
-                <li key={producto.id}>
-                  <img
-                    src={producto.urlImagen}
-                    alt={producto.nombre}
-                    width="50"
-                  />
-                  {producto.nombre} ({producto.precio}€) - Stock:{" "}
-                  {producto.stock}
-                  <Button onClick={() => handleDelete(producto.id)}>
-                    Eliminar
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setSelectedProduct(producto);
-                      setIsModalOpen(true);
-                    }}
-                  >
-                    Editar
-                  </Button>
-                </li>
-              ))}
+              <li key={producto.idLibro}>
+                <img
+                  src={producto.urlImagen}
+                  alt={producto.nombre}
+                  width="50"
+                />
+                {producto.nombre} ({(producto.precio / 100).toFixed(2)}€) - Stock:{" "}
+                {producto.stock}
+                <Button onClick={() => handleDelete(producto.idLibro)}
+                  label="Eliminar"
+                  className="botonEliminar" 
+                />
+                <Button
+                  onClick={() => {
+                    setSelectedProduct(producto);
+                    setIsModalOpen(true);
+                  }}
+                  label="Editar"
+                  styleType="btnComprar" 
+                />
+              </li>
+            ))}
         </ul>
       </section>
       {isModalOpen && (
@@ -157,8 +188,8 @@ export default function Administrador() {
                 ? "Editar Usuario"
                 : "Crear Usuario"
               : selectedProduct
-              ? "Editar Producto"
-              : "Crear Producto"}
+                ? "Editar Producto"
+                : "Crear Producto"}
           </h2>
           <form
             onSubmit={(e) => {
