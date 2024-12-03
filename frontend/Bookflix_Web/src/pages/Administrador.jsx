@@ -242,63 +242,172 @@ export default function Administrador() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              handleCreateOrEdit(selectedUser);
+              handleCreateOrEdit(
+                isShowingUsers ? selectedUser : selectedProduct
+              );
             }}
           >
-            <input
-              type="text"
-              value={selectedUser?.nombre || ""}
-              placeholder="Nombre"
-              required
-              onChange={(e) =>
-                setSelectedUser({ ...selectedUser, nombre: e.target.value })
-              }
-            />
-            <input
-              type="text"
-              value={selectedUser?.apellidos || ""}
-              placeholder="Apellidos"
-              required
-              onChange={(e) =>
-                setSelectedUser({ ...selectedUser, apellidos: e.target.value })
-              }
-            />
-            <input
-              type="email"
-              value={selectedUser?.email || ""}
-              placeholder="Email"
-              required
-              onChange={(e) =>
-                setSelectedUser({ ...selectedUser, email: e.target.value })
-              }
-            />
-            <input
-              type="text"
-              value={selectedUser?.direccion || ""}
-              placeholder="Direccion"
-              onChange={(e) =>
-                setSelectedUser({ ...selectedUser, direccion: e.target.value })
-              }
-            />
-            <input
-              type="text"
-              value={selectedUser?.rol || "usuario"}
-              placeholder="Rol"
-              required
-              onChange={(e) =>
-                setSelectedUser({ ...selectedUser, rol: e.target.value })
-              }
-            />
-            {!selectedUser?.idUser && (
-              <input
-                type="password"
-                value={selectedUser?.password || ""}
-                placeholder="Password"
-                required
-                onChange={(e) =>
-                  setSelectedUser({ ...selectedUser, password: e.target.value })
-                }
-              />
+            {isShowingUsers ? (
+              <>
+                <input
+                  type="text"
+                  value={selectedUser?.nombre || ""}
+                  placeholder="Nombre"
+                  required
+                  onChange={(e) =>
+                    setSelectedUser({ ...selectedUser, nombre: e.target.value })
+                  }
+                />
+                <input
+                  type="text"
+                  value={selectedUser?.apellidos || ""}
+                  placeholder="Apellidos"
+                  required
+                  onChange={(e) =>
+                    setSelectedUser({
+                      ...selectedUser,
+                      apellidos: e.target.value,
+                    })
+                  }
+                />
+                <input
+                  type="email"
+                  value={selectedUser?.email || ""}
+                  placeholder="Email"
+                  required
+                  onChange={(e) =>
+                    setSelectedUser({ ...selectedUser, email: e.target.value })
+                  }
+                />
+                <input
+                  type="text"
+                  value={selectedUser?.direccion || ""}
+                  placeholder="Direccion"
+                  onChange={(e) =>
+                    setSelectedUser({
+                      ...selectedUser,
+                      direccion: e.target.value,
+                    })
+                  }
+                />
+                <input
+                  type="text"
+                  value={selectedUser?.rol || "usuario"}
+                  placeholder="Rol"
+                  required
+                  onChange={(e) =>
+                    setSelectedUser({ ...selectedUser, rol: e.target.value })
+                  }
+                />
+                {!selectedUser?.idUser && (
+                  <input
+                    type="password"
+                    value={selectedUser?.password || ""}
+                    placeholder="Password"
+                    required
+                    onChange={(e) =>
+                      setSelectedUser({
+                        ...selectedUser,
+                        password: e.target.value,
+                      })
+                    }
+                  />
+                )}
+              </>
+            ) : (
+              <>
+                <input
+                  type="text"
+                  value={selectedProduct?.nombre || ""}
+                  placeholder="Nombre"
+                  required
+                  onChange={(e) =>
+                    setSelectedProduct({
+                      ...selectedProduct,
+                      nombre: e.target.value,
+                    })
+                  }
+                />
+                <textarea
+                  value={selectedProduct?.descripcion || ""}
+                  placeholder="Descripción"
+                  onChange={(e) =>
+                    setSelectedProduct({
+                      ...selectedProduct,
+                      descripcion: e.target.value,
+                    })
+                  }
+                ></textarea>
+                <input
+                  type="text"
+                  value={selectedProduct?.autor || ""}
+                  placeholder="Autor"
+                  required
+                  onChange={(e) =>
+                    setSelectedProduct({
+                      ...selectedProduct,
+                      autor: e.target.value,
+                    })
+                  }
+                />
+                <input
+                  type="text"
+                  value={selectedProduct?.genero || ""}
+                  placeholder="Género"
+                  onChange={(e) =>
+                    setSelectedProduct({
+                      ...selectedProduct,
+                      genero: e.target.value,
+                    })
+                  }
+                />
+                <input
+                  type="number"
+                  value={selectedProduct?.precio || ""}
+                  placeholder="Precio"
+                  required
+                  onChange={(e) =>
+                    setSelectedProduct({
+                      ...selectedProduct,
+                      precio: parseInt(e.target.value),
+                    })
+                  }
+                />
+                <input
+                  type="number"
+                  value={selectedProduct?.stock || ""}
+                  placeholder="Stock"
+                  required
+                  onChange={(e) =>
+                    setSelectedProduct({
+                      ...selectedProduct,
+                      stock: parseInt(e.target.value),
+                    })
+                  }
+                />
+                <input
+                  type="text"
+                  value={selectedProduct?.isbn || ""}
+                  placeholder="ISBN"
+                  onChange={(e) =>
+                    setSelectedProduct({
+                      ...selectedProduct,
+                      isbn: e.target.value,
+                    })
+                  }
+                />
+                <input
+                  type="text"
+                  value={selectedProduct?.urlImagen || ""}
+                  placeholder="URL Imagen"
+                  onChange={(e) =>
+                    setSelectedProduct({
+                      ...selectedProduct,
+                      urlImagen: e.target.value,
+                    })
+                  }
+                />
+              </>
             )}
             <button type="submit">Guardar</button>
             <button type="button" onClick={() => setIsModalOpen(false)}>
