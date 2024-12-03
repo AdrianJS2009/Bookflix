@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
+import { Link } from "react-router-dom";
 import Button from "../components/Button";
 import "../styles/admin.css";
 import "../styles/default.css";
@@ -151,7 +152,7 @@ export default function Administrador() {
   };
 
   return (
-    <div className="admin-page">
+    <main className="admin-page">
       <h1>Administrador</h1>
       <div className="toggle-buttons">
         <Button
@@ -176,24 +177,28 @@ export default function Administrador() {
           styleType="btnAñadir"
           label={isShowingUsers ? "Nuevo Usuario" : "Nuevo Producto"}
         />
-        <ul>
+        <ul className="listaAdmin">
           {isShowingUsers
             ? usuarios.map((usuario) => (
-                <li key={usuario.idUser}>
-                  {usuario.nombre} ({usuario.email}) - {usuario.rol}
-                  <Button
-                    onClick={() => handleDelete(usuario.idUser)}
-                    label="Eliminar"
-                    className="botonEliminar"
-                  />
-                  <Button
-                    onClick={() => {
-                      setSelectedUser(usuario);
-                      setIsModalOpen(true);
-                    }}
-                    label="Editar"
-                    styleType="btnComprar"
-                  />
+                <li key={usuario.idUser} className="itemListaAdmin">
+                  <strong>Nombre:</strong> {usuario.nombre}{" "}
+                  <strong>Correo:</strong> {usuario.email}
+                  <strong>Rol:</strong> {usuario.rol}
+                  <div>
+                    <Button
+                      onClick={() => handleDelete(usuario.idUser)}
+                      label="Eliminar"
+                      className="botonEliminar"
+                    />
+                    <Button
+                      onClick={() => {
+                        setSelectedUser(usuario);
+                        setIsModalOpen(true);
+                      }}
+                      label="Editar"
+                      styleType="btnComprar"
+                    />
+                  </div>
                 </li>
               ))
             : productos.map((producto) => (
@@ -203,21 +208,29 @@ export default function Administrador() {
                     alt={producto.nombre}
                     width="50"
                   />
-                  {producto.nombre} ({(producto.precio / 100).toFixed(2)}€) -
-                  Stock: {producto.stock}
-                  <Button
-                    onClick={() => handleDelete(producto.idLibro)}
-                    label="Eliminar"
-                    className="botonEliminar"
-                  />
-                  <Button
-                    onClick={() => {
-                      setSelectedProduct(producto);
-                      setIsModalOpen(true);
-                    }}
-                    label="Editar"
-                    styleType="btnComprar"
-                  />
+                  <Link to={`/producto/${producto.idLibro}`}>
+                    {Array.from(producto.nombre).length > 10
+                      ? Array.from(producto.nombre).slice(0, 50).join("") +
+                        "..."
+                      : producto.nombre}{" "}
+                  </Link>
+                  ({(producto.precio / 100).toFixed(2)}€) - Stock:{" "}
+                  {producto.stock}
+                  <div>
+                    <Button
+                      onClick={() => handleDelete(producto.idLibro)}
+                      label="Eliminar"
+                      className="botonEliminar"
+                    />
+                    <Button
+                      onClick={() => {
+                        setSelectedProduct(producto);
+                        setIsModalOpen(true);
+                      }}
+                      label="Editar"
+                      styleType="btnComprar"
+                    />
+                  </div>
                 </li>
               ))}
         </ul>
@@ -235,193 +248,201 @@ export default function Administrador() {
         />
       </section>
       {isModalOpen && (
-        <div className="modal">
-          <h2>
-            {isShowingUsers
-              ? selectedUser
-                ? "Editar Usuario"
-                : "Crear Usuario"
-              : selectedProduct
-              ? "Editar Producto"
-              : "Crear Producto"}
-          </h2>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleCreateOrEdit(
-                isShowingUsers ? selectedUser : selectedProduct
-              );
-            }}
-          >
-            {isShowingUsers ? (
-              <>
-                <input
-                  type="text"
-                  value={selectedUser?.nombre || ""}
-                  placeholder="Nombre"
-                  required
-                  onChange={(e) =>
-                    setSelectedUser({ ...selectedUser, nombre: e.target.value })
-                  }
-                />
-                <input
-                  type="text"
-                  value={selectedUser?.apellidos || ""}
-                  placeholder="Apellidos"
-                  required
-                  onChange={(e) =>
-                    setSelectedUser({
-                      ...selectedUser,
-                      apellidos: e.target.value,
-                    })
-                  }
-                />
-                <input
-                  type="email"
-                  value={selectedUser?.email || ""}
-                  placeholder="Email"
-                  required
-                  onChange={(e) =>
-                    setSelectedUser({ ...selectedUser, email: e.target.value })
-                  }
-                />
-                <input
-                  type="text"
-                  value={selectedUser?.direccion || ""}
-                  placeholder="Direccion"
-                  onChange={(e) =>
-                    setSelectedUser({
-                      ...selectedUser,
-                      direccion: e.target.value,
-                    })
-                  }
-                />
-                <input
-                  type="text"
-                  value={selectedUser?.rol || "usuario"}
-                  placeholder="Rol"
-                  required
-                  onChange={(e) =>
-                    setSelectedUser({ ...selectedUser, rol: e.target.value })
-                  }
-                />
-                {!selectedUser?.idUser && (
+        <div className="modalOverlay">
+          <div className="modalAdmin">
+            <h2>
+              {isShowingUsers
+                ? selectedUser
+                  ? "Editar Usuario"
+                  : "Crear Usuario"
+                : selectedProduct
+                ? "Editar Producto"
+                : "Crear Producto"}
+            </h2>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleCreateOrEdit(
+                  isShowingUsers ? selectedUser : selectedProduct
+                );
+              }}
+            >
+              {isShowingUsers ? (
+                <>
                   <input
-                    type="password"
-                    value={selectedUser?.password || ""}
-                    placeholder="Password"
+                    type="text"
+                    value={selectedUser?.nombre || ""}
+                    placeholder="Nombre"
                     required
                     onChange={(e) =>
                       setSelectedUser({
                         ...selectedUser,
-                        password: e.target.value,
+                        nombre: e.target.value,
                       })
                     }
                   />
-                )}
-              </>
-            ) : (
-              <>
-                <input
-                  type="text"
-                  value={selectedProduct?.nombre || ""}
-                  placeholder="Nombre"
-                  required
-                  onChange={(e) =>
-                    setSelectedProduct({
-                      ...selectedProduct,
-                      nombre: e.target.value,
-                    })
-                  }
-                />
-                <textarea
-                  value={selectedProduct?.descripcion || ""}
-                  placeholder="Descripción"
-                  onChange={(e) =>
-                    setSelectedProduct({
-                      ...selectedProduct,
-                      descripcion: e.target.value,
-                    })
-                  }
-                ></textarea>
-                <input
-                  type="text"
-                  value={selectedProduct?.autor || ""}
-                  placeholder="Autor"
-                  required
-                  onChange={(e) =>
-                    setSelectedProduct({
-                      ...selectedProduct,
-                      autor: e.target.value,
-                    })
-                  }
-                />
-                <input
-                  type="text"
-                  value={selectedProduct?.genero || ""}
-                  placeholder="Género"
-                  onChange={(e) =>
-                    setSelectedProduct({
-                      ...selectedProduct,
-                      genero: e.target.value,
-                    })
-                  }
-                />
-                <input
-                  type="number"
-                  value={selectedProduct?.precio || ""}
-                  placeholder="Precio"
-                  required
-                  onChange={(e) =>
-                    setSelectedProduct({
-                      ...selectedProduct,
-                      precio: parseInt(e.target.value, 10),
-                    })
-                  }
-                />
-                <input
-                  type="number"
-                  value={selectedProduct?.stock || ""}
-                  placeholder="Stock"
-                  required
-                  onChange={(e) =>
-                    setSelectedProduct({
-                      ...selectedProduct,
-                      stock: parseInt(e.target.value, 10),
-                    })
-                  }
-                />
-                <input
-                  type="text"
-                  value={selectedProduct?.isbn || ""}
-                  placeholder="ISBN"
-                  onChange={(e) =>
-                    setSelectedProduct({
-                      ...selectedProduct,
-                      isbn: e.target.value,
-                    })
-                  }
-                />
-                <input
-                  type="text"
-                  value={selectedProduct?.urlImagen || ""}
-                  placeholder="URL Imagen"
-                  onChange={(e) =>
-                    setSelectedProduct({
-                      ...selectedProduct,
-                      urlImagen: e.target.value,
-                    })
-                  }
-                />
-              </>
-            )}
-            <button type="submit">Guardar</button>
-            <button type="button" onClick={() => setIsModalOpen(false)}>
-              Cancelar
-            </button>
-          </form>
+                  <input
+                    type="text"
+                    value={selectedUser?.apellidos || ""}
+                    placeholder="Apellidos"
+                    required
+                    onChange={(e) =>
+                      setSelectedUser({
+                        ...selectedUser,
+                        apellidos: e.target.value,
+                      })
+                    }
+                  />
+                  <input
+                    type="email"
+                    value={selectedUser?.email || ""}
+                    placeholder="Email"
+                    required
+                    onChange={(e) =>
+                      setSelectedUser({
+                        ...selectedUser,
+                        email: e.target.value,
+                      })
+                    }
+                  />
+                  <input
+                    type="text"
+                    value={selectedUser?.direccion || ""}
+                    placeholder="Direccion"
+                    onChange={(e) =>
+                      setSelectedUser({
+                        ...selectedUser,
+                        direccion: e.target.value,
+                      })
+                    }
+                  />
+                  <input
+                    type="text"
+                    value={selectedUser?.rol || "usuario"}
+                    placeholder="Rol"
+                    required
+                    onChange={(e) =>
+                      setSelectedUser({ ...selectedUser, rol: e.target.value })
+                    }
+                  />
+                  {!selectedUser?.idUser && (
+                    <input
+                      type="password"
+                      value={selectedUser?.password || ""}
+                      placeholder="Password"
+                      required
+                      onChange={(e) =>
+                        setSelectedUser({
+                          ...selectedUser,
+                          password: e.target.value,
+                        })
+                      }
+                    />
+                  )}
+                </>
+              ) : (
+                <>
+                  <input
+                    type="text"
+                    value={selectedProduct?.nombre || ""}
+                    placeholder="Nombre"
+                    required
+                    onChange={(e) =>
+                      setSelectedProduct({
+                        ...selectedProduct,
+                        nombre: e.target.value,
+                      })
+                    }
+                  />
+                  <textarea
+                    value={selectedProduct?.descripcion || ""}
+                    placeholder="Descripción"
+                    onChange={(e) =>
+                      setSelectedProduct({
+                        ...selectedProduct,
+                        descripcion: e.target.value,
+                      })
+                    }
+                  ></textarea>
+                  <input
+                    type="text"
+                    value={selectedProduct?.autor || ""}
+                    placeholder="Autor"
+                    required
+                    onChange={(e) =>
+                      setSelectedProduct({
+                        ...selectedProduct,
+                        autor: e.target.value,
+                      })
+                    }
+                  />
+                  <input
+                    type="text"
+                    value={selectedProduct?.genero || ""}
+                    placeholder="Género"
+                    onChange={(e) =>
+                      setSelectedProduct({
+                        ...selectedProduct,
+                        genero: e.target.value,
+                      })
+                    }
+                  />
+                  <input
+                    type="number"
+                    value={selectedProduct?.precio || ""}
+                    placeholder="Precio"
+                    required
+                    onChange={(e) =>
+                      setSelectedProduct({
+                        ...selectedProduct,
+                        precio: parseInt(e.target.value, 10),
+                      })
+                    }
+                  />
+                  <input
+                    type="number"
+                    value={selectedProduct?.stock || ""}
+                    placeholder="Stock"
+                    required
+                    onChange={(e) =>
+                      setSelectedProduct({
+                        ...selectedProduct,
+                        stock: parseInt(e.target.value, 10),
+                      })
+                    }
+                  />
+                  <input
+                    type="text"
+                    value={selectedProduct?.isbn || ""}
+                    placeholder="ISBN"
+                    onChange={(e) =>
+                      setSelectedProduct({
+                        ...selectedProduct,
+                        isbn: e.target.value,
+                      })
+                    }
+                  />
+                  <input
+                    type="text"
+                    value={selectedProduct?.urlImagen || ""}
+                    placeholder="URL Imagen"
+                    onChange={(e) =>
+                      setSelectedProduct({
+                        ...selectedProduct,
+                        urlImagen: e.target.value,
+                      })
+                    }
+                  />
+                </>
+              )}
+              <button type="submit">Guardar</button>
+              <button type="button" onClick={() => setIsModalOpen(false)}>
+                Cancelar
+              </button>
+            </form>
+          </div>
         </div>
       )}
-    </div>
+    </main>
   );
 }
