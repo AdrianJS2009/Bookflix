@@ -1,133 +1,241 @@
+/* Estilos generales */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2 {
+  color: #0056b3; /* Azul */
+}
+
+h1 {
+  font-size: 2.2em;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.8em;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #28a745; /* Verde */
+  padding-bottom: 10px;
+}
+
+/* Sección de la página de administrador */
 .admin-page {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-  }
-  
-  h1 {
-    text-align: center;
-    color: #333;
-  }
-  
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.toggle-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+button {
+  cursor: pointer;
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-size: 1.1em;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.btnAñadir {
+  background-color: #28a745; /* Verde */
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btnComprar {
+  background-color: #0056b3; /* Azul */
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btnAñadir:hover, .btnComprar:hover {
+  background-color: #4caf50; /* Verde claro */
+}
+
+.botonEliminar {
+  background-color: #dc3545; /* Rojo */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.botonEliminar:hover {
+  background-color: #c82333; /* Rojo oscuro */
+}
+
+/* Lista de usuarios y productos */
+.listaAdmin {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.itemListaAdmin {
+  background-color: #fff;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.itemListaAdmin img {
+  border-radius: 8px;
+  width: 50px;
+  height: 50px;
+}
+
+.itemListaAdmin div {
+  display: flex;
+  gap: 15px;
+}
+
+.itemListaAdmin a {
+  color: #0056b3; /* Azul */
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.itemListaAdmin a:hover {
+  text-decoration: underline;
+}
+
+/* Modal */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalAdmin {
+  background-color: white;
+  padding: 40px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modalAdmin h2 {
+  font-size: 1.8em;
+  color: #0056b3; /* Azul */
+  margin-bottom: 20px;
+}
+
+.modalAdmin form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modalAdmin input,
+.modalAdmin textarea {
+  padding: 15px;
+  font-size: 1em;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.modalAdmin input:focus,
+.modalAdmin textarea:focus {
+  border-color: #0056b3; /* Azul */
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 86, 179, 0.3);
+}
+
+.modalAdmin button {
+  padding: 15px;
+  font-size: 1.2em;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modalAdmin button[type="submit"] {
+  background-color: #28a745; /* Verde */
+  color: white;
+}
+
+.modalAdmin button[type="submit"]:hover {
+  background-color: #4caf50; /* Verde claro */
+}
+
+.modalAdmin button[type="button"] {
+  background-color: #dc3545; /* Rojo */
+  color: white;
+}
+
+.modalAdmin button[type="button"]:hover {
+  background-color: #c82333; /* Rojo oscuro */
+}
+
+/* Paginación */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.pagination a {
+  padding: 12px 20px;
+  border-radius: 8px;
+  background-color: #f1f1f1;
+  text-decoration: none;
+  color: #0056b3; /* Azul */
+  border: 1px solid #ccc;
+  transition: background-color 0.3s ease;
+}
+
+.pagination .active a {
+  background-color: #0056b3; /* Azul */
+  color: white;
+}
+
+.pagination a:hover {
+  background-color: #e9ecef;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
   .toggle-buttons {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-  }
-  
-  .toggle-buttons button {
-    margin: 0 10px;
-  }
-  
-  section {
-    margin-top: 20px;
-  }
-  
-  section h2 {
-    text-align: center;
-    color: #555;
-  }
-  
-  ul.listaAdmin {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  ul.listaAdmin li.itemListaAdmin {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  ul.listaAdmin li.itemListaAdmin img {
-    margin-right: 10px;
-  }
-  
-  ul.listaAdmin li.itemListaAdmin .book-title {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 200px; 
-    display: inline-block;
-    vertical-align: middle;
-  }
-  
-  ul.listaAdmin li.itemListaAdmin button {
-    margin-left: 10px;
-  }
-  
-  .modalAdmin {
-    border-radius: 10px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-  }
-  .modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  .modalAdmin h2 {
-    margin-bottom: 20px ;
-  }
-  
-  .modalAdmin form {
-    display: flex;
     flex-direction: column;
-  }
-  
-  .modalAdmin form input,
-  .modalAdmin form textarea {
-    margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  .modalAdmin form button {
-    padding: 10px;
-    border: none;
-    background: var(--azul-normal);
-    color: white;
-    cursor: pointer;
-    border-radius: 4px;
-    margin: 2px;
-  }
-  
-  .modalAdmin form button[type="button"] {
-    background: var(--verde-normal)
-  }
-  
-  .modalAdmin form button:hover {
-    opacity: 0.9;
-  }
-  
-  nav a, footer a {
-    text-decoration: none;
-  }
-  
-  nav a:hover, footer a:hover {
-    text-decoration: underline; 
+    gap: 15px;
   }
 
-  ul.pagination {
-    margin: 10px 0;
-    justify-self: center;
+  .itemListaAdmin {
+    flex-direction: column;
+    gap: 15px;
   }
 
-  main.admin-page {
-    min-height: calc(100vh - 80px);
+  .itemListaAdmin div {
+    justify-content: center;
+    gap: 10px;
   }
+
+  .modalAdmin {
+    padding: 20px;
+  }
+}
+
