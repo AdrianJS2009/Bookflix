@@ -30,21 +30,38 @@ namespace Bookflix_Server.Controllers
 
         private string ObtenerIdUsuario()
         {
-            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value; 
+            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         }
 
         [HttpGet("listar")]
-        public async Task<ActionResult<IEnumerable<User>>> ListarUsuarios()
+        public async Task<IActionResult> ListarUsuarios(int pagina = 1, int tamanoPagina = 10)
         {
-            var usuarios = await _context.Users.ToListAsync();
-            return Ok(usuarios);
+            if (pagina <= 0 || tamanoPagina <= 0)
+                return BadRequest(new { error = "Parámetros de paginación inválidos." });
+
+            var query = _context.Users.AsQueryable();
+
+            var totalUsuarios = await query.CountAsync();
+            var totalPaginas = (int)Math.Ceiling(totalUsuarios / (double)tamanoPagina);
+
+            var usuarios = await query
+                .Skip((pagina - 1) * tamanoPagina)
+                .Take(tamanoPagina)
+                .ToListAsync();
+
+            return Ok(new
+            {
+                usuarios,
+                totalUsuarios,
+                totalPaginas
+            });
         }
 
         [HttpGet("perfil")]
         [AllowAnonymous]
         public async Task<ActionResult<User>> ObtenerPerfilUsuario()
         {
-            
+
             int idUsuario = int.Parse(ObtenerIdUsuario());
             var usuario = await _context.Users.FirstOrDefaultAsync(u => u.IdUser == idUsuario);
 
@@ -56,7 +73,7 @@ namespace Bookflix_Server.Controllers
             return Ok(usuario);
         }
 
-       
+
         [HttpPost("crear")]
         [AllowAnonymous]
         public async Task<ActionResult<User>> CrearUsuario([FromBody] UserDTO datosUsuario)
@@ -64,7 +81,7 @@ namespace Bookflix_Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(new { error = "Los datos proporcionados para el usuario no son válidos." });
 
-      
+
             var usuarioExistente = await _context.Users.FirstOrDefaultAsync(u => u.Email == datosUsuario.Email);
             if (usuarioExistente != null)
             {
@@ -84,11 +101,11 @@ namespace Bookflix_Server.Controllers
             _context.Users.Add(usuario);
             await _context.SaveChangesAsync();
 
-          
+
             var carrito = new Carrito
             {
                 UserId = usuario.IdUser,
-                Items = new List<CarritoItem>() 
+                Items = new List<CarritoItem>()
             };
 
             _context.Carritos.Add(carrito);
@@ -138,7 +155,7 @@ namespace Bookflix_Server.Controllers
         [Authorize]
         public async Task<IActionResult> EliminarCuentaUsuario()
         {
-            int idUsuario = int.Parse(ObtenerIdUsuario()); 
+            int idUsuario = int.Parse(ObtenerIdUsuario());
             var usuario = await _context.Users.FirstOrDefaultAsync(u => u.IdUser == idUsuario);
 
             if (usuario == null)
@@ -174,12 +191,12 @@ namespace Bookflix_Server.Controllers
             var reseña = new Reseña
             {
                 UsuarioId = usuario.IdUser,
-                ProductoId = idLibro, 
+                ProductoId = idLibro,
                 Autor = !string.IsNullOrEmpty(reseñaDto.Autor)
                         ? reseñaDto.Autor
                         : $"{usuario.Nombre} {usuario.Apellidos}",
                 Texto = reseñaDto.Texto,
-                FechaPublicacion = reseñaDto.FechaPublicacion != default ? reseñaDto.FechaPublicacion : DateTime.UtcNow, 
+                FechaPublicacion = reseñaDto.FechaPublicacion != default ? reseñaDto.FechaPublicacion : DateTime.UtcNow,
                 Categoria = reseñaDto.Categoria,
             };
 
