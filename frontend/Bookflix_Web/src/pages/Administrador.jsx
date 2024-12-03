@@ -43,11 +43,9 @@ export default function Administrador() {
       const data = await response.json();
 
       if (isShowingUsers) {
-        console.log("Usuarios Data:", data);
         setUsuarios(data.usuarios || []);
         setPageCount(data.totalPaginas || 0);
       } else {
-        console.log("Productos Data:", data);
         setProductos(data.libros || []);
         setPageCount(data.totalPaginas || 0);
       }
@@ -69,7 +67,7 @@ export default function Administrador() {
       isShowingUsers ? "usuario" : "producto"
     }?`;
     if (window.confirm(confirmMessage)) {
-      const token = sessionStorage.getItem("token"); // O usa tu método de almacenamiento preferido
+      const token = sessionStorage.getItem("token");
       const endpoint = isShowingUsers
         ? `https://localhost:7182/api/gestion/usuarios/${id}`
         : `https://localhost:7182/api/gestion/libros/${id}`;
@@ -90,11 +88,7 @@ export default function Administrador() {
             );
           }
         } else {
-          const errorData = await response.json().catch(() => null);
-          console.error(
-            "Error:",
-            errorData?.error || "No se pudo eliminar el elemento."
-          );
+          console.error("No se pudo eliminar el elemento.");
         }
       } catch (error) {
         console.error("Error:", error.message);
@@ -103,11 +97,15 @@ export default function Administrador() {
   };
 
   const handleCreateOrEdit = async (item) => {
-    const token = sessionStorage.getItem("token"); // Asegúrate de tener el token.
-    const isEdit = !!item.idUser; // Determinar si es una edición.
+    const token = sessionStorage.getItem("token");
+    const isEdit = isShowingUsers ? !!item.idUser : !!item.idLibro;
     const endpoint = isEdit
-      ? `https://localhost:7182/api/gestion/usuarios/${item.idUser}`
-      : `https://localhost:7182/api/gestion/usuarios`;
+      ? isShowingUsers
+        ? `https://localhost:7182/api/gestion/usuarios/${item.idUser}`
+        : `https://localhost:7182/api/gestion/libros/${item.idLibro}`
+      : isShowingUsers
+      ? `https://localhost:7182/api/gestion/usuarios`
+      : `https://localhost:7182/api/gestion/libros`;
     const method = isEdit ? "PUT" : "POST";
 
     try {
@@ -125,23 +123,27 @@ export default function Administrador() {
         if (isShowingUsers) {
           setUsuarios((prev) => {
             if (isEdit) {
-              // Editar un usuario
               return prev.map((u) =>
                 u.idUser === updatedItem.idUser ? updatedItem : u
               );
             } else {
-              // Crear un usuario nuevo
+              return [...prev, updatedItem];
+            }
+          });
+        } else {
+          setProductos((prev) => {
+            if (isEdit) {
+              return prev.map((p) =>
+                p.idLibro === updatedItem.idLibro ? updatedItem : p
+              );
+            } else {
               return [...prev, updatedItem];
             }
           });
         }
         setIsModalOpen(false);
       } else {
-        const errorData = await response.json().catch(() => null);
-        console.error(
-          "Error:",
-          errorData?.error || "No se pudo guardar el elemento."
-        );
+        console.error("No se pudo guardar el elemento.");
       }
     } catch (error) {
       console.error("Error:", error.message);
@@ -166,7 +168,11 @@ export default function Administrador() {
       <section>
         <h2>{isShowingUsers ? "Usuarios" : "Productos"}</h2>
         <Button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setSelectedUser(null);
+            setSelectedProduct(null);
+            setIsModalOpen(true);
+          }}
           styleType="btnAñadir"
           label={isShowingUsers ? "Nuevo Usuario" : "Nuevo Producto"}
         />
@@ -369,7 +375,7 @@ export default function Administrador() {
                   onChange={(e) =>
                     setSelectedProduct({
                       ...selectedProduct,
-                      precio: parseInt(e.target.value),
+                      precio: parseInt(e.target.value, 10),
                     })
                   }
                 />
@@ -381,7 +387,7 @@ export default function Administrador() {
                   onChange={(e) =>
                     setSelectedProduct({
                       ...selectedProduct,
-                      stock: parseInt(e.target.value),
+                      stock: parseInt(e.target.value, 10),
                     })
                   }
                 />
