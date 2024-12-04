@@ -168,15 +168,18 @@ export default function Administrador() {
       </div>
       <section>
         <h2>{isShowingUsers ? "Usuarios" : "Productos"}</h2>
-        <Button
-          onClick={() => {
-            setSelectedUser(null);
-            setSelectedProduct(null);
-            setIsModalOpen(true);
-          }}
-          styleType="btnAñadir"
-          label={isShowingUsers ? "Nuevo Usuario" : "Nuevo Producto"}
-        />
+        {!isShowingUsers && (
+          <Button
+            onClick={() => {
+              setSelectedUser(null);
+              setSelectedProduct(null);
+              setIsModalOpen(true);
+            }}
+            styleType="btnAñadir"
+            label="Nuevo Producto"
+          />
+        )}
+        
         <ul className="listaAdmin">
           {isShowingUsers
             ? usuarios.map((usuario) => (
@@ -185,11 +188,6 @@ export default function Administrador() {
                   <strong>Correo:</strong> {usuario.email}
                   <strong>Rol:</strong> {usuario.rol}
                   <div>
-                    <Button
-                      onClick={() => handleDelete(usuario.idUser)}
-                      label="Eliminar"
-                      className="botonEliminar"
-                    />
                     <Button
                       onClick={() => {
                         setSelectedUser(usuario);
@@ -202,7 +200,7 @@ export default function Administrador() {
                 </li>
               ))
             : productos.map((producto) => (
-                <li key={producto.idLibro}>
+                <li key={producto.idLibro}  className="itemListaAdmin">
                   <img
                     src={producto.urlImagen}
                     alt={producto.nombre}
