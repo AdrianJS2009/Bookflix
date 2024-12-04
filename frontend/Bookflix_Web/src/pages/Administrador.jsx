@@ -193,7 +193,7 @@ export default function Administrador() {
                         setSelectedUser(usuario);
                         setIsModalOpen(true);
                       }}
-                      label="Editar"
+                      label="Cambiar rol"
                       styleType="btnComprar"
                     />
                   </div>
@@ -246,7 +246,7 @@ export default function Administrador() {
             <h2>
               {isShowingUsers
                 ? selectedUser
-                  ? "Editar Usuario"
+                  ? "Cambiar rol"
                   : "Crear Usuario"
                 : selectedProduct
                 ? "Editar Producto"
@@ -262,53 +262,6 @@ export default function Administrador() {
             >
               {isShowingUsers ? (
                 <>
-                  <input
-                    type="text"
-                    value={selectedUser?.nombre || ""}
-                    placeholder="Nombre"
-                    required
-                    onChange={(e) =>
-                      setSelectedUser({
-                        ...selectedUser,
-                        nombre: e.target.value,
-                      })
-                    }
-                  />
-                  <input
-                    type="text"
-                    value={selectedUser?.apellidos || ""}
-                    placeholder="Apellidos"
-                    required
-                    onChange={(e) =>
-                      setSelectedUser({
-                        ...selectedUser,
-                        apellidos: e.target.value,
-                      })
-                    }
-                  />
-                  <input
-                    type="email"
-                    value={selectedUser?.email || ""}
-                    placeholder="Email"
-                    required
-                    onChange={(e) =>
-                      setSelectedUser({
-                        ...selectedUser,
-                        email: e.target.value,
-                      })
-                    }
-                  />
-                  <input
-                    type="text"
-                    value={selectedUser?.direccion || ""}
-                    placeholder="Direccion"
-                    onChange={(e) =>
-                      setSelectedUser({
-                        ...selectedUser,
-                        direccion: e.target.value,
-                      })
-                    }
-                  />
                   <input
                     type="text"
                     value={selectedUser?.rol || "usuario"}
@@ -335,6 +288,7 @@ export default function Administrador() {
                 </>
               ) : (
                 <>
+                Nombre:
                   <input
                     type="text"
                     value={selectedProduct?.nombre || ""}
@@ -347,6 +301,7 @@ export default function Administrador() {
                       })
                     }
                   />
+                  Descripción:
                   <textarea
                     value={selectedProduct?.descripcion || ""}
                     placeholder="Descripción"
@@ -357,6 +312,7 @@ export default function Administrador() {
                       })
                     }
                   ></textarea>
+                  Autor:
                   <input
                     type="text"
                     value={selectedProduct?.autor || ""}
@@ -369,6 +325,7 @@ export default function Administrador() {
                       })
                     }
                   />
+                  Género
                   <input
                     type="text"
                     value={selectedProduct?.genero || ""}
@@ -380,6 +337,7 @@ export default function Administrador() {
                       })
                     }
                   />
+                  Precio
                   <input
                     type="number"
                     value={selectedProduct?.precio || ""}
@@ -392,6 +350,7 @@ export default function Administrador() {
                       })
                     }
                   />
+                  Stock:
                   <input
                     type="number"
                     value={selectedProduct?.stock || ""}
@@ -404,6 +363,7 @@ export default function Administrador() {
                       })
                     }
                   />
+                  ISBN:
                   <input
                     type="text"
                     value={selectedProduct?.isbn || ""}
@@ -415,6 +375,7 @@ export default function Administrador() {
                       })
                     }
                   />
+                  Imagen:
                   <input
                     type="file"
                     accept="image/*"
