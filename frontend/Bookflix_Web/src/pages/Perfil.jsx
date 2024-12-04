@@ -1,27 +1,26 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import "../styles/PerfilPedidos.css";
+import "../styles/default.css";
 
 const Perfil = () => {
-  const { auth, cerrarSesion } = useAuth();
+  const { auth} = useAuth();
   const [userData, setUserData] = useState(null);
   const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
 
-  // Si no hay token, redirigir al login
   useEffect(() => {
     if (!auth.token) {
       navigate("/login");
     }
   }, [auth, navigate]);
 
-  // Si el token está presente, obtenemos los datos del usuario y el historial de pedidos
   useEffect(() => {
     if (auth.token) {
-      // Obtener datos del usuario
       fetch("https://localhost:7182/api/User/perfil", {
         headers: {
-          "Authorization": `Bearer ${auth.token}`, // Enviamos el token en los headers
+          "Authorization": `Bearer ${auth.token}`, 
         },
       })
         .then((response) => response.json())
@@ -32,10 +31,9 @@ const Perfil = () => {
           console.error("Error al obtener los datos del usuario:", error);
         });
 
-      // Obtener el historial de compras
       fetch("https://localhost:7182/api/User/historial", {
         headers: {
-          "Authorization": `Bearer ${auth.token}`, // Enviamos el token en los headers
+          "Authorization": `Bearer ${auth.token}`, 
         },
       })
         .then((response) => response.json())
@@ -49,7 +47,7 @@ const Perfil = () => {
   }, [auth.token]);
 
   if (!auth.token) {
-    return <p>Cargando...</p>; // O redirige a login si no hay token
+    return <p>Cargando...</p>; 
   }
 
   return (

@@ -58,16 +58,28 @@ namespace Bookflix_Server.Controllers
         }
 
         [HttpGet("perfil")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<ActionResult<User>> ObtenerPerfilUsuario()
         {
-
             int idUsuario = int.Parse(ObtenerIdUsuario());
             var usuario = await _context.Users.FirstOrDefaultAsync(u => u.IdUser == idUsuario);
 
             if (usuario == null)
             {
                 return NotFound(new { error = "Usuario no encontrado." });
+            }
+
+            // Verificar si el usuario tiene un carrito asociado
+            var carrito = await _context.Carritos.FirstOrDefaultAsync(c => c.UserId == usuario.IdUser);
+            if (carrito == null)
+            {
+                carrito = new Carrito
+                {
+                    UserId = usuario.IdUser,
+                    Items = new List<CarritoItem>()
+                };
+                _context.Carritos.Add(carrito);
+                await _context.SaveChangesAsync();
             }
 
             return Ok(usuario);
@@ -80,7 +92,6 @@ namespace Bookflix_Server.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(new { error = "Los datos proporcionados para el usuario no son válidos." });
-
 
             var usuarioExistente = await _context.Users.FirstOrDefaultAsync(u => u.Email == datosUsuario.Email);
             if (usuarioExistente != null)
@@ -101,7 +112,7 @@ namespace Bookflix_Server.Controllers
             _context.Users.Add(usuario);
             await _context.SaveChangesAsync();
 
-
+            // Crear carrito asociado al usuario
             var carrito = new Carrito
             {
                 UserId = usuario.IdUser,
@@ -113,6 +124,7 @@ namespace Bookflix_Server.Controllers
 
             return CreatedAtAction(nameof(ObtenerPerfilUsuario), new { correo = usuario.Email }, usuario);
         }
+
 
 
         [HttpPut("actualizar")]
@@ -235,7 +247,7 @@ namespace Bookflix_Server.Controllers
                 {
                     IdLibro = detalle.IdLibro,
                     Cantidad = detalle.Cantidad,
-                    PrecioUnitario = detalle.PrecioUnitario
+                    PrecioUnitario = detalle.PrecioUnitario 
                 }).ToList()
             }).ToList();
 

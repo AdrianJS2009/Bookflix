@@ -293,6 +293,33 @@ namespace Bookflix_Server.Controllers
             }
         }
 
+        [HttpPost("verificar-o-crear")]
+        public async Task<IActionResult> VerificarOCrearCarrito()
+        {
+            int idUsuario = int.Parse(ObtenerIdUsuario());
+            var usuario = await _userRepository.ObtenerPorIdAsync(idUsuario);
+
+            if (usuario == null)
+            {
+                return NotFound(new { error = "Usuario no encontrado." });
+            }
+
+            // Verificar o crear carrito
+            var carrito = await _carritoRepository.ObtenerOCrearCarritoPorUsuarioIdAsync(usuario.IdUser);
+
+            if (carrito == null)
+            {
+                return StatusCode(500, new { error = "No se pudo crear el carrito para el usuario." });
+            }
+
+            return Ok(new
+            {
+                success = true,
+                message = "Carrito verificado o creado exitosamente.",
+                carritoId = carrito.CarritoId
+            });
+        }
+
 
     }
 }
