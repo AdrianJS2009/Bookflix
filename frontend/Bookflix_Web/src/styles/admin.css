@@ -124,6 +124,7 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .modalAdmin {
@@ -135,6 +136,7 @@ button {
   max-height: 80%;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   overflow-y: scroll;
+  z-index: 1001;
 }
 
 .modalAdmin h2 {

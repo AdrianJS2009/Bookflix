@@ -2,14 +2,14 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function PrivateRoute() {
-  const { user } = useAuth();
+  const { auth, rol } = useAuth();
   const location = useLocation();
 
-  if (!user) {
+  if (!auth) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
-
-  if (user.rol !== "admin") {
+  console.log("rol",rol);
+  if (rol !== "admin") {
     return <Navigate to="/" replace />;
   }
 

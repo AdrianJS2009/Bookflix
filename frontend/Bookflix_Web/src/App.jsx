@@ -14,6 +14,7 @@ import Perfil from "./pages/Perfil";
 import ProductoDetalle from "./pages/ProductoDetalle";
 import Registro from "./pages/Registro";
 import SobreNosotros from "./pages/SobreNosotros";
+import PrivateRoute from "./components/PrivateRoute";
 
 import "./styles/default.css";
 
@@ -33,7 +34,7 @@ function App() {
               <Route path="login" element={<Login />} />
               <Route path="registro" element={<Registro />} />
               <Route path="carrito" element={<Carrito />} />
-              <Route path="/admin" element={<Administrador />} />
+             
               <Route path="sobre-nosotros" element={<SobreNosotros />} />
               <Route path="/perfil" element={<Perfil />} />
               <Route
@@ -41,13 +42,10 @@ function App() {
                 element={<ConfirmacionCompra />}
               />
 
-              {/* Rutas protegidas
+              
               <Route element={<PrivateRoute />}>
-                <Route
-                  path="confirmacion-compra"
-                  element={<ConfirmacionCompra />}
-                />
-              </Route> */}
+              <Route path="/admin" element={<Administrador />} />
+              </Route>
             </Route>
           </Routes>
           <ToastContainer

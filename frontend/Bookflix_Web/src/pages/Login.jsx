@@ -11,7 +11,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { iniciarSesion } = useAuth();
+  const { iniciarSesion, setAuthenticated } = useAuth();
 
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -21,6 +21,7 @@ export default function Login() {
     try {
       await iniciarSesion(email, password);
       toast.success("¡Bienvenido a Bookflix!");
+      setAuthenticated(true);
       navigate(from, { replace: true });
     } catch (error) {
       toast.error("Error al iniciar sesión: " + error.message);

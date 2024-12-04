@@ -10,33 +10,63 @@ export const useCarrito = () => {
 };
 
 export const CarritoProvider = ({ children }) => {
-  const { auth } = useAuth();
+  const { auth, isAuthenticated,setAuthenticated } = useAuth();
   const [items, setItems] = useState(() => {
     const savedItems = localStorage.getItem("carrito");
     return savedItems ? JSON.parse(savedItems) : [];
   });
-  const [sincronizado, setSincronizado] = useState(false);
+
+const leerCarritoBackend = async () => {
+    
+
+  try {
+
+    // Obtener el carrito actualizado desde el servidor
+    const response = await fetch(
+      "https://localhost:7182/api/Carrito/ListarCarrito",
+      {
+        headers: { Authorization: `Bearer ${auth.token}` },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Error al listar el carrito del servidor.");
+    }
+
+    const data = await response.json();
+    const carritoItems = Array.isArray(data?.items)
+      ? data.items.map((item) => ({
+          idLibro: item.idLibro,
+          nombre: item.nombreLibro || "Sin nombre",
+          cantidad: item.cantidad || 1,
+          precio: item.precio || 0,
+          urlImagen: item.urlImagen || "placeholder.jpg",
+        }))
+      : [];
+    setItems(carritoItems);
+  } catch (error) {
+    console.error("Error al sincronizar el carrito:", error);
+    toast.error("Error al sincronizar el carrito.");
+  }
+};
 
   // Efecto para sincronizar el carrito local con el servidor cuando hay un token
   useEffect(() => {
-    if (auth.token && !sincronizado) {
+    if (isAuthenticated) {
       sincronizarCarrito();
-    } else if (!auth.token) {
-      localStorage.setItem("carrito", JSON.stringify(items));
-    }
-  }, [auth.token, sincronizado]);
+      setAuthenticated(false);
 
-  // Guardamos los cambios en el carrito cuando se actualiza
-  useEffect(() => {
-    if (items.length > 0 && !sincronizado) {
-      localStorage.setItem("carrito", JSON.stringify(items));
-      setSincronizado(true);
+    } 
+    else{
+      leerCarritoBackend();
     }
-  }, [items]);
+  }, [isAuthenticated]);
+
+
 
   // Función para sincronizar el carrito con el servidor
   const sincronizarCarrito = async () => {
-    setSincronizado(false);
+  
 
     try {
       const localCarrito = localStorage.getItem("carrito");
@@ -104,9 +134,11 @@ export const CarritoProvider = ({ children }) => {
     }
   };
 
+ 
+
   // Agregar producto al carrito
   const agregarAlCarrito = async (producto, cantidad) => {
-    setSincronizado(false);
+    /* setSincronizado(false); */
 
     if (!producto || !cantidad) {
       console.error("Producto o cantidad no definidos en agregarAlCarrito.", {
@@ -138,6 +170,7 @@ export const CarritoProvider = ({ children }) => {
       }
       return;
     }
+   
 
     try {
       const response = await fetch(
@@ -160,7 +193,9 @@ export const CarritoProvider = ({ children }) => {
       }
 
       toast.success("Producto añadido al carrito.");
-      await sincronizarCarrito();
+      
+      
+    await leerCarritoBackend();
     } catch (error) {
       console.error("Error al agregar producto al carrito:", error);
       toast.error("Error al agregar el producto al carrito.");
@@ -169,7 +204,7 @@ export const CarritoProvider = ({ children }) => {
 
   // Eliminar item del carrito
   const eliminarItem = async (productoId) => {
-    setSincronizado(false);
+    /* setSincronizado(false); */
 
     if (!productoId) {
       console.error("ID de producto no definido al intentar eliminar.");
@@ -211,17 +246,11 @@ export const CarritoProvider = ({ children }) => {
     }
   };
 
-  // Vaciar carrito local
-  const vaciarCarritoLocal = async () => {
-    setItems([]);
-    localStorage.removeItem("carrito");
-    toast.success("Carrito local vaciado.");
-    return;
-  };
+
 
   // Vaciar carrito en el servidor
   const vaciarCarrito = async () => {
-    setSincronizado(false);
+  
 
     if (!auth.token) {
       setItems([]);
@@ -255,7 +284,7 @@ export const CarritoProvider = ({ children }) => {
 
   // Verificar stock del carrito
   const validarStockCarrito = async () => {
-    setSincronizado(false);
+   /*  setSincronizado(false); */
 
     try {
       const idsProductos = items.map((item) => item.idLibro);
@@ -303,7 +332,7 @@ export const CarritoProvider = ({ children }) => {
 
   // Actualizar la cantidad de un producto en el carrito
   const actualizarCantidad = async (idLibro, nuevaCantidad) => {
-    setSincronizado(false);
+    /* setSincronizado(false); */
 
     if (nuevaCantidad < 1) return;
 

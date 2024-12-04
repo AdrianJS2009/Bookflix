@@ -4,9 +4,12 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({token: sessionStorage.getItem("token") || null,});
-
+  const [isAuthenticated, setAuthenticated] = useState(false);
+  const [rol, setRol] = useState("admin");
+  console.log("rol",rol)
   const iniciarSesion = async (email, password) => {
     try {
+     
       const response = await fetch("https://localhost:7182/api/Auth/login", {
         method: "POST",
         headers: {
@@ -23,6 +26,11 @@ export const AuthProvider = ({ children }) => {
 
       if (token) {
         setAuth({ token });
+        const decoded = JSON.parse(atob(token.split(".")[1])); 
+        const roleDecoded = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+        console.log("roleDecoded",roleDecoded);
+        setRol(roleDecoded);
+
         sessionStorage.setItem("token", token);
       } else {
         throw new Error("Token no recibido del servidor");
@@ -39,7 +47,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ auth, iniciarSesion, cerrarSesion }}>
+    <AuthContext.Provider value={{ auth, iniciarSesion, cerrarSesion, setAuthenticated, isAuthenticated, rol }}>
       {children}
     </AuthContext.Provider>
   );
