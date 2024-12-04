@@ -202,7 +202,7 @@ export default function Administrador() {
                 </li>
               ))
             : productos.map((producto) => (
-                <li key={producto.idLibro}>
+                <li key={producto.idLibro} className="itemListaAdmin">
                   <img
                     src={producto.urlImagen}
                     alt={producto.nombre}
