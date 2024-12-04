@@ -421,29 +421,8 @@ public class SeederLibros
             },
         };
 
-        List<User> users = new List<User>
-        {
-            new User
-            {
-                Nombre = "Usuario",
-                Apellidos = "Regular",
-                Email = "a@a",
-                Direccion = "Dirección Usuario",
-                Password = "a"
-                //,Rol = "Usuario"
-            },
-            new User
-            {
-                Nombre = "Admin",
-                Apellidos = "Administrador",
-                Email = "admin@a",
-                Direccion = "Dirección Admin",
-                Password = "a",
-                Rol = "admin"
-            }
-        };
+       
         _context.Libros.AddRange(libros);
-        _context.Users.AddRange(users);
         await _context.SaveChangesAsync();
     }
 }
