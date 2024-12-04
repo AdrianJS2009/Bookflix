@@ -39,6 +39,10 @@ const Header = () => {
     setMenuOpen(false);
     vaciarCarrito();
   };
+
+  const handleAbrirPerfil = () => {
+    setMenuOpen(false);
+  }
   
 
   return (
@@ -115,7 +119,7 @@ const Header = () => {
           >
             <h2 className="texto-mediano-bold">Opciones de usuario</h2>
             <div className={classes.modalActions}>
-              <NavLink to="/perfil" activeClassName="active-link">Perfil & Pedidos</NavLink>
+              <NavLink to="perfil" onClick={handleAbrirPerfil} activeClassName="active-link">Perfil & Pedidos</NavLink>
               <button onClick={handleLogout}>Cerrar sesión</button>
               <button onClick={toggleModal}>Cerrar</button>
             </div>

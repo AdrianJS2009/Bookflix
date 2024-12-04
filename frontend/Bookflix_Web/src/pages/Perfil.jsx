@@ -56,6 +56,7 @@ export default function PerfilPedidos() {
         <form onSubmit={handleSubmit}>
           <label>
             Nombre:
+            <br />
             <input
               type="text"
               name="nombre"
@@ -65,6 +66,7 @@ export default function PerfilPedidos() {
           </label>
           <label>
             Email:
+            <br />
             <input
               type="email"
               name="email"
@@ -74,6 +76,7 @@ export default function PerfilPedidos() {
           </label>
           <label>
             Dirección:
+            <br />
             <input
               type="text"
               name="direccion"

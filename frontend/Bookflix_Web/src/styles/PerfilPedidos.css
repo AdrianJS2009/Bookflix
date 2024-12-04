@@ -14,6 +14,7 @@
     margin: 20px 0;
     width: 80%;
     max-width: 800px;
+    box-sizing: border-box;
   }
   
   .perfil-container h1, .pedidos-container h1 {
@@ -24,6 +25,7 @@
   .perfil-container form {
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
   }
   
   .perfil-container label {
@@ -34,9 +36,11 @@
   
   .perfil-container input {
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--difuminado);
     border-radius: 5px;
     margin-top: 5px;
+    width: 100%;
+    box-sizing: border-box;
   }
   
   .perfil-container button {
