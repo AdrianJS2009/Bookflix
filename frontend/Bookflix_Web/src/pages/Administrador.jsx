@@ -24,19 +24,16 @@ export default function Administrador() {
       };
 
       const endpoint = isShowingUsers
-        ? `https://localhost:7182/api/user/listar?pagina=${
-            page + 1
-          }&tamanoPagina=${itemsPerPage}`
-        : `https://localhost:7182/api/libro/ListarLibros?ascendente=true&pagina=${
-            page + 1
-          }&tamanoPagina=${itemsPerPage}`;
+        ? `https://localhost:7182/api/user/listar?pagina=${page + 1
+        }&tamanoPagina=${itemsPerPage}`
+        : `https://localhost:7182/api/libro/ListarLibros?ascendente=true&pagina=${page + 1
+        }&tamanoPagina=${itemsPerPage}`;
 
       const response = await fetch(endpoint, { headers });
 
       if (!response.ok) {
         throw new Error(
-          `Error ${response.status}: ${
-            isShowingUsers ? "Usuarios" : "Productos"
+          `Error ${response.status}: ${isShowingUsers ? "Usuarios" : "Productos"
           }`
         );
       }
@@ -63,10 +60,23 @@ export default function Administrador() {
     setCurrentPage(event.selected);
   };
 
+  const handlerEditarRol = (e, idUser) => {
+    const token = sessionStorage.getItem("token");
+    const currentUser = 1; // Cambia por la lógica para obtener el ID del usuario actual
+    if (currentUser === idUser) {
+      alert("No puedes editarte a ti mismo.");
+      return;
+    }
+
+    setSelectedUser((prev) => ({
+      ...prev,
+      rol: e.target.value,
+    }));
+  };
+
   const handleDelete = async (id) => {
-    const confirmMessage = `¿Estás seguro de que deseas eliminar este ${
-      isShowingUsers ? "usuario" : "producto"
-    }?`;
+    const confirmMessage = `¿Estás seguro de que deseas eliminar este ${isShowingUsers ? "usuario" : "producto"
+      }?`;
     if (window.confirm(confirmMessage)) {
       const token = sessionStorage.getItem("token");
       const endpoint = isShowingUsers
@@ -105,8 +115,8 @@ export default function Administrador() {
         ? `https://localhost:7182/api/gestion/usuarios/${item.idUser}`
         : `https://localhost:7182/api/gestion/libros/${item.idLibro}`
       : isShowingUsers
-      ? `https://localhost:7182/api/gestion/usuarios`
-      : `https://localhost:7182/api/gestion/libros`;
+        ? `https://localhost:7182/api/gestion/usuarios`
+        : `https://localhost:7182/api/gestion/libros`;
     const method = isEdit ? "PUT" : "POST";
 
     try {
@@ -179,60 +189,60 @@ export default function Administrador() {
             label="Nuevo Producto"
           />
         )}
-        
+
         <ul className="listaAdmin">
           {isShowingUsers
             ? usuarios.map((usuario) => (
-                <li key={usuario.idUser} className="itemListaAdmin">
-                  <strong>Nombre:</strong> {usuario.nombre}{" "}
-                  <strong>Correo:</strong> {usuario.email}
-                  <strong>Rol:</strong> {usuario.rol}
-                  <div>
-                    <Button
-                      onClick={() => {
-                        setSelectedUser(usuario);
-                        setIsModalOpen(true);
-                      }}
-                      label="Cambiar rol"
-                      styleType="btnComprar"
-                    />
-                  </div>
-                  <div>
-                    <Button
-                      onClick={() => handleDelete(usuario.idUser)}
-                      label="Eliminar"
-                      className="botonEliminar"
-                    />
-                  </div>
-                </li>
-              ))
-            : productos.map((producto) => (
-                <li key={producto.idLibro}  className="itemListaAdmin">
-                  <img
-                    src={producto.urlImagen}
-                    alt={producto.nombre}
-                    width="50"
+              <li key={usuario.idUser} className="itemListaAdmin">
+                <strong>Nombre:</strong> {usuario.nombre}{" "}
+                <strong>Correo:</strong> {usuario.email}
+                <strong>Rol:</strong> {usuario.rol}
+                <div>
+                  <Button
+                    onClick={() => {
+                      setSelectedUser(usuario);
+                      setIsModalOpen(true);
+                    }}
+                    label="Cambiar rol"
+                    styleType="btnComprar"
                   />
-                  <Link to={`/producto/${producto.idLibro}`}>
-                    {Array.from(producto.nombre).length > 10
-                      ? Array.from(producto.nombre).slice(0, 50).join("") +
-                        "..."
-                      : producto.nombre}{" "}
-                  </Link>
-                  ({(producto.precio / 100).toFixed(2)}€) - Stock:{" "}
-                  {producto.stock}
-                  <div>
-                    <Button
-                      onClick={() => {
-                        setSelectedProduct(producto);
-                        setIsModalOpen(true);
-                      }}
-                      label="Editar"
-                      styleType="btnComprar"
-                    />
-                  </div>
-                </li>
-              ))}
+                </div>
+                <div>
+                  <Button
+                    onClick={() => handleDelete(usuario.idUser)}
+                    label="Eliminar"
+                    className="botonEliminar"
+                  />
+                </div>
+              </li>
+            ))
+            : productos.map((producto) => (
+              <li key={producto.idLibro} className="itemListaAdmin">
+                <img
+                  src={producto.urlImagen}
+                  alt={producto.nombre}
+                  width="50"
+                />
+                <Link to={`/producto/${producto.idLibro}`}>
+                  {Array.from(producto.nombre).length > 10
+                    ? Array.from(producto.nombre).slice(0, 50).join("") +
+                    "..."
+                    : producto.nombre}{" "}
+                </Link>
+                ({(producto.precio / 100).toFixed(2)}€) - Stock:{" "}
+                {producto.stock}
+                <div>
+                  <Button
+                    onClick={() => {
+                      setSelectedProduct(producto);
+                      setIsModalOpen(true);
+                    }}
+                    label="Editar"
+                    styleType="btnComprar"
+                  />
+                </div>
+              </li>
+            ))}
         </ul>
         <ReactPaginate
           previousLabel={"Anterior"}
@@ -256,8 +266,8 @@ export default function Administrador() {
                   ? "Cambiar rol"
                   : "Crear Usuario"
                 : selectedProduct
-                ? "Editar Producto"
-                : "Crear Producto"}
+                  ? "Editar Producto"
+                  : "Crear Producto"}
             </h2>
             <form
               onSubmit={(e) => {
@@ -274,9 +284,7 @@ export default function Administrador() {
                     value={selectedUser?.rol || "usuario"}
                     placeholder="Rol"
                     required
-                    onChange={(e) =>
-                      setSelectedUser({ ...selectedUser, rol: e.target.value })
-                    }
+                    onChange={(e) => handlerEditarRol(e, selectedUser?.idUser)}
                   />
                   {!selectedUser?.idUser && (
                     <input
@@ -295,7 +303,7 @@ export default function Administrador() {
                 </>
               ) : (
                 <>
-                Nombre:
+                  Nombre:
                   <input
                     type="text"
                     value={selectedProduct?.nombre || ""}
