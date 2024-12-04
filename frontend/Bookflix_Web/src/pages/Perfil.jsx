@@ -1,104 +1,87 @@
-import React, { useEffect, useState } from "react";
-import "../styles/perfilPedidos.css";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
-export default function PerfilPedidos() {
-  const [userData, setUserData] = useState({
-    nombre: "",
-    email: "",
-    direccion: "",
-  });
-  const [pedidos, setPedidos] = useState([]);
+const Perfil = () => {
+  const { auth, cerrarSesion } = useAuth();
+  const [userData, setUserData] = useState(null);
+  const [orders, setOrders] = useState([]);
+  const navigate = useNavigate();
 
+  // Si no hay token, redirigir al login
   useEffect(() => {
-    fetch("https://localhost:7182/api/User/perfil")
-      .then((response) => response.json())
-      .then((data) => setUserData(data))
-      .catch((error) =>
-        console.error("Error al obtener datos del usuario:", error)
-      );
+    if (!auth.token) {
+      navigate("/login");
+    }
+  }, [auth, navigate]);
 
-    fetch("https://localhost:7182/api/User/historial")
-      .then((response) => response.json())
-      .then((data) => setPedidos(data))
-      .catch((error) =>
-        console.error("Error al obtener historial de pedidos:", error)
-      );
-  }, []);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUserData({ ...userData, [name]: value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    fetch("https://localhost:7182/api/User/actualizar", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Datos actualizados:", data);
+  // Si el token está presente, obtenemos los datos del usuario y el historial de pedidos
+  useEffect(() => {
+    if (auth.token) {
+      // Obtener datos del usuario
+      fetch("https://localhost:7182/api/User/perfil", {
+        headers: {
+          "Authorization": `Bearer ${auth.token}`, // Enviamos el token en los headers
+        },
       })
-      .catch((error) =>
-        console.error("Error al actualizar datos del usuario:", error)
-      );
-  };
+        .then((response) => response.json())
+        .then((data) => {
+          setUserData(data);
+        })
+        .catch((error) => {
+          console.error("Error al obtener los datos del usuario:", error);
+        });
+
+      // Obtener el historial de compras
+      fetch("https://localhost:7182/api/User/historial", {
+        headers: {
+          "Authorization": `Bearer ${auth.token}`, // Enviamos el token en los headers
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setOrders(data);
+        })
+        .catch((error) => {
+          console.error("Error al obtener el historial de compras:", error);
+        });
+    }
+  }, [auth.token]);
+
+  if (!auth.token) {
+    return <p>Cargando...</p>; // O redirige a login si no hay token
+  }
 
   return (
-    <div className="perfil-pedidos-container">
-      <div className="perfil-container">
-        <h1>Perfil</h1>
-        <form onSubmit={handleSubmit}>
-          <label>
-            Nombre:
-            <br />
-            <input
-              type="text"
-              name="nombre"
-              value={userData.nombre}
-              onChange={handleChange}
-            />
-          </label>
-          <label>
-            Email:
-            <br />
-            <input
-              type="email"
-              name="email"
-              value={userData.email}
-              onChange={handleChange}
-            />
-          </label>
-          <label>
-            Dirección:
-            <br />
-            <input
-              type="text"
-              name="direccion"
-              value={userData.direccion}
-              onChange={handleChange}
-            />
-          </label>
-          <button type="submit">Guardar cambios</button>
-        </form>
-      </div>
-      <div className="pedidos-container">
-        <h1>Mis Pedidos</h1>
+    <div>
+      <h1>Perfil de Usuario</h1>
+      {userData ? (
+        <div>
+          <h2>Datos del Usuario</h2>
+          <p><strong>Nombre:</strong> {userData.name}</p>
+          <p><strong>Email:</strong> {userData.email}</p>
+
+        </div>
+      ) : (
+        <p>Cargando datos del usuario...</p>
+      )}
+
+      <h2>Historial de Compras</h2>
+      {orders.length > 0 ? (
         <ul>
-          {pedidos.map((pedido) => (
-            <li key={pedido.id}>
-              <p>Producto: {pedido.producto}</p>
-              <p>Fecha: {pedido.fecha}</p>
-              <p>Estado: {pedido.estado}</p>
+          {orders.map((order) => (
+            <li key={order.id}>
+              <p><strong>Pedido ID:</strong> {order.id}</p>
+              <p><strong>Fecha:</strong> {order.fecha}</p>
+              <p><strong>Total:</strong> {order.total}</p>
             </li>
           ))}
         </ul>
-      </div>
+      ) : (
+        <p>No tienes pedidos realizados.</p>
+      )}
     </div>
   );
-}
+};
+
+export default Perfil;
