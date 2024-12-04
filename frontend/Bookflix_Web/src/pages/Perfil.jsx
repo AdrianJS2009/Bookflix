@@ -1,26 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import './perfilPedidos.css';
+import React, { useEffect, useState } from "react";
+import "../styles/perfilPedidos.css";
 
 export default function PerfilPedidos() {
   const [userData, setUserData] = useState({
-    nombre: '',
-    email: '',
-    direccion: '',
+    nombre: "",
+    email: "",
+    direccion: "",
   });
   const [pedidos, setPedidos] = useState([]);
 
   useEffect(() => {
-    // Obtener datos del usuario
-    fetch('https://localhost:7182/api/User/perfil')
-      .then(response => response.json())
-      .then(data => setUserData(data))
-      .catch(error => console.error('Error al obtener datos del usuario:', error));
+    fetch("https://localhost:7182/api/User/perfil")
+      .then((response) => response.json())
+      .then((data) => setUserData(data))
+      .catch((error) =>
+        console.error("Error al obtener datos del usuario:", error)
+      );
 
-    // Obtener historial de pedidos
-    fetch('https://localhost:7182/api/User/historial')
-      .then(response => response.json())
-      .then(data => setPedidos(data))
-      .catch(error => console.error('Error al obtener historial de pedidos:', error));
+    fetch("https://localhost:7182/api/User/historial")
+      .then((response) => response.json())
+      .then((data) => setPedidos(data))
+      .catch((error) =>
+        console.error("Error al obtener historial de pedidos:", error)
+      );
   }, []);
 
   const handleChange = (e) => {
@@ -30,20 +32,21 @@ export default function PerfilPedidos() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Actualizar datos del usuario
-    fetch('https://localhost:7182/api/User/actualizar', {
-      method: 'POST',
+
+    fetch("https://localhost:7182/api/User/actualizar", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(userData),
     })
-      .then(response => response.json())
-      .then(data => {
-        // Manejar la respuesta de la actualización
-        console.log('Datos actualizados:', data);
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Datos actualizados:", data);
       })
-      .catch(error => console.error('Error al actualizar datos del usuario:', error));
+      .catch((error) =>
+        console.error("Error al actualizar datos del usuario:", error)
+      );
   };
 
   return (
