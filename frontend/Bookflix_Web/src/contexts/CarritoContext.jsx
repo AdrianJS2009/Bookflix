@@ -17,6 +17,7 @@ export const CarritoProvider = ({ children }) => {
   });
   const [sincronizado, setSincronizado] = useState(false);
 
+  // Efecto para sincronizar el carrito local con el servidor cuando hay un token
   useEffect(() => {
     if (auth.token && !sincronizado) {
       sincronizarCarrito();
@@ -25,6 +26,7 @@ export const CarritoProvider = ({ children }) => {
     }
   }, [auth.token, sincronizado]);
 
+  // Guardamos los cambios en el carrito cuando se actualiza
   useEffect(() => {
     if (items.length > 0 && !sincronizado) {
       localStorage.setItem("carrito", JSON.stringify(items));
@@ -32,24 +34,21 @@ export const CarritoProvider = ({ children }) => {
     }
   }, [items]);
 
+  // Función para sincronizar el carrito con el servidor
   const sincronizarCarrito = async () => {
     setSincronizado(false);
 
     try {
       const localCarrito = localStorage.getItem("carrito");
       const localItems = localCarrito ? JSON.parse(localCarrito) : [];
-      console.log("Contenido del carrito local:", localItems);
 
       if (localItems.length > 0) {
-        // Validar y mapear correctamente los datos
         const payload = localItems
-          .filter((item) => item.idLibro && item.cantidad) // Filtrar datos válidos
+          .filter((item) => item.idLibro && item.cantidad) // Validamos los datos
           .map((item) => ({
             IdLibro: item.idLibro,
             Cantidad: item.cantidad,
           }));
-
-        console.log("Datos enviados al servidor para sincronizar:", payload);
 
         if (payload.length === 0) {
           console.error("No hay datos válidos para sincronizar.");
@@ -69,9 +68,6 @@ export const CarritoProvider = ({ children }) => {
         );
 
         if (!response.ok) {
-          console.error(
-            `Error al sincronizar los productos locales con el servidor. Estado: ${response.status}`
-          );
           throw new Error("Error al sincronizar productos locales.");
         }
 
@@ -88,21 +84,18 @@ export const CarritoProvider = ({ children }) => {
       );
 
       if (!response.ok) {
-        console.error(
-          `Error al listar el carrito del servidor. Estado: ${response.status}`
-        );
-        throw new Error("No se pudo obtener el carrito del servidor.");
+        throw new Error("Error al listar el carrito del servidor.");
       }
 
       const data = await response.json();
       const carritoItems = Array.isArray(data?.items)
         ? data.items.map((item) => ({
-          idLibro: item.idLibro,
-          nombre: item.nombreLibro || "Sin nombre",
-          cantidad: item.cantidad || 1,
-          precio: item.precio || 0,
-          urlImagen: item.urlImagen || "placeholder.jpg",
-        }))
+            idLibro: item.idLibro,
+            nombre: item.nombreLibro || "Sin nombre",
+            cantidad: item.cantidad || 1,
+            precio: item.precio || 0,
+            urlImagen: item.urlImagen || "placeholder.jpg",
+          }))
         : [];
       setItems(carritoItems);
     } catch (error) {
@@ -111,9 +104,10 @@ export const CarritoProvider = ({ children }) => {
     }
   };
 
+  // Agregar producto al carrito
   const agregarAlCarrito = async (producto, cantidad) => {
     setSincronizado(false);
-  
+
     if (!producto || !cantidad) {
       console.error("Producto o cantidad no definidos en agregarAlCarrito.", {
         producto,
@@ -121,12 +115,12 @@ export const CarritoProvider = ({ children }) => {
       });
       return;
     }
-  
+
     if (!auth.token) {
       const existingItem = items.find(
         (item) => item.idLibro === producto.idLibro
       );
-  
+
       if (existingItem) {
         const updatedItems = items.map((item) =>
           item.idLibro === producto.idLibro
@@ -144,7 +138,7 @@ export const CarritoProvider = ({ children }) => {
       }
       return;
     }
-  
+
     try {
       const response = await fetch(
         "https://localhost:7182/api/Carrito/agregar",
@@ -160,11 +154,11 @@ export const CarritoProvider = ({ children }) => {
           }),
         }
       );
-  
+
       if (!response.ok) {
         throw new Error("Error al agregar producto al carrito en el backend.");
       }
-      
+
       toast.success("Producto añadido al carrito.");
       await sincronizarCarrito();
     } catch (error) {
@@ -173,6 +167,7 @@ export const CarritoProvider = ({ children }) => {
     }
   };
 
+  // Eliminar item del carrito
   const eliminarItem = async (productoId) => {
     setSincronizado(false);
 
@@ -182,7 +177,7 @@ export const CarritoProvider = ({ children }) => {
     }
 
     if (!auth.token) {
-      const updatedItems = items.filter((item) => item.idLibro !== productoId); // Corrección: usar `idLibro`
+      const updatedItems = items.filter((item) => item.idLibro !== productoId);
       setItems(updatedItems);
       localStorage.setItem("carrito", JSON.stringify(updatedItems));
       toast.success("Producto eliminado del carrito local.");
@@ -207,7 +202,7 @@ export const CarritoProvider = ({ children }) => {
       }
 
       setItems(
-        (prevItems) => prevItems.filter((item) => item.idLibro !== productoId) // Corrección: usar `idLibro`
+        (prevItems) => prevItems.filter((item) => item.idLibro !== productoId)
       );
       toast.success("Producto eliminado del carrito.");
     } catch (error) {
@@ -215,13 +210,16 @@ export const CarritoProvider = ({ children }) => {
       toast.error("Error al eliminar el producto del carrito.");
     }
   };
+
+  // Vaciar carrito local
   const vaciarCarritoLocal = async () => {
     setItems([]);
     localStorage.removeItem("carrito");
     toast.success("Carrito local vaciado.");
     return;
-  }
+  };
 
+  // Vaciar carrito en el servidor
   const vaciarCarrito = async () => {
     setSincronizado(false);
 
@@ -255,11 +253,12 @@ export const CarritoProvider = ({ children }) => {
     }
   };
 
+  // Verificar stock del carrito
   const validarStockCarrito = async () => {
     setSincronizado(false);
 
     try {
-      const idsProductos = items.map((item) => item.idLibro); // Corrección: usar `idLibro`
+      const idsProductos = items.map((item) => item.idLibro);
       const response = await fetch(
         "https://localhost:7182/api/Libro/VerificarStock",
         {
@@ -302,6 +301,7 @@ export const CarritoProvider = ({ children }) => {
     }
   };
 
+  // Actualizar la cantidad de un producto en el carrito
   const actualizarCantidad = async (idLibro, nuevaCantidad) => {
     setSincronizado(false);
 
@@ -309,7 +309,7 @@ export const CarritoProvider = ({ children }) => {
 
     if (!auth.token) {
       const updatedItems = items.map((item) =>
-        item.idLibro === idLibro // Corrección: usar `idLibro`
+        item.idLibro === idLibro
           ? { ...item, cantidad: nuevaCantidad }
           : item
       );
@@ -343,7 +343,7 @@ export const CarritoProvider = ({ children }) => {
 
       setItems((prevItems) =>
         prevItems.map((item) =>
-          item.idLibro === idLibro // Corrección: usar `idLibro`
+          item.idLibro === idLibro
             ? { ...item, cantidad: nuevaCantidad }
             : item
         )
