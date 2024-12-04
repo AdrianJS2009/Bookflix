@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Rating } from '@mui/material';
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,6 +24,7 @@ const ProductoDetalle = () => {
   const [haReseñado, setHaReseñado] = useState(false);
   // const [haComprado, setHaComprado] = useState(false);
   const location = useLocation();
+  const [rating, setRating] = useState(0);
 
   useEffect(() => {
     const cargarProducto = async () => {
@@ -148,6 +150,7 @@ const ProductoDetalle = () => {
             texto: textoReseña,
             usuario: data.nombreUsuario,
             fecha: data.fechaPublicacion,
+            estrellas: rating
           },
           ...prevReseñas,
         ]);
@@ -259,6 +262,16 @@ const ProductoDetalle = () => {
                 placeholder="Escribe tu reseña aquí..."
                 disabled={haReseñado}
               />
+
+              <Rating
+                className="reviewEstrellas"
+                name="reseña-rating"
+                value={rating}
+                onChange={(e, newValue) => setRating(newValue)}
+                disabled={haReseñado}
+                precision={1}
+              />
+
               <button
                 className="btnCrearReseña"
                 onClick={handleCrearReseña}
@@ -283,11 +296,13 @@ const ProductoDetalle = () => {
               </p>
             </div>
           )}
+
           {reseñas.length > 0 ? (
             reseñas.map((reseña, index) => (
               <div key={index} className="reseña">
                 <p>Usuario: {reseña.autor}</p>
                 <p>Fecha: {new Date(reseña.fecha).toLocaleDateString()}</p>
+                <Rating value={reseña.rating} readOnly />
                 <p>{reseña.texto}</p>
               </div>
             ))
@@ -295,6 +310,7 @@ const ProductoDetalle = () => {
             <p>No hay reseñas para este producto.</p>
           )}
         </div>
+
       </main>
     </>
   );

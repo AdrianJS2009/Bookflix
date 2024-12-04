@@ -188,3 +188,16 @@ p.sin-reviews {
   font-style: italic;
   color: #666;
 }
+
+.reviewEstrellas {
+  margin-top: 7px;
+  scale: 1.2;
+}
+
+div.reseñas {
+  margin-bottom: 20px;
+  text-align: center;
+}
+div.reseñas p {
+  margin: 10px 0;
+}
