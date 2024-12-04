@@ -197,6 +197,13 @@ export default function Administrador() {
                       styleType="btnComprar"
                     />
                   </div>
+                  <div>
+                    <Button
+                      onClick={() => handleDelete(usuario.idUser)}
+                      label="Eliminar"
+                      className="botonEliminar"
+                    />
+                  </div>
                 </li>
               ))
             : productos.map((producto) => (
