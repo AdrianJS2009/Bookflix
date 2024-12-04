@@ -218,11 +218,6 @@ export default function Administrador() {
                   {producto.stock}
                   <div>
                     <Button
-                      onClick={() => handleDelete(producto.idLibro)}
-                      label="Eliminar"
-                      className="botonEliminar"
-                    />
-                    <Button
                       onClick={() => {
                         setSelectedProduct(producto);
                         setIsModalOpen(true);
@@ -423,15 +418,21 @@ export default function Administrador() {
                     }
                   />
                   <input
-                    type="text"
-                    value={selectedProduct?.urlImagen || ""}
-                    placeholder="URL Imagen"
-                    onChange={(e) =>
-                      setSelectedProduct({
-                        ...selectedProduct,
-                        urlImagen: e.target.value,
-                      })
-                    }
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setSelectedProduct({
+                            ...selectedProduct,
+                            urlImagen: reader.result,
+                          });
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
                   />
                 </>
               )}
