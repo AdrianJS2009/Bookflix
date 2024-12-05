@@ -246,19 +246,15 @@ const leerCarritoBackend = async () => {
     }
   };
 
-
-
-  // Vaciar carrito en el servidor
-  const vaciarCarrito = async () => {
-  
-
-    if (!auth.token) {
+  const vaciarCarritoLocal = async () => {
       setItems([]);
       localStorage.removeItem("carrito");
       toast.success("Carrito local vaciado.");
       return;
-    }
+  };
 
+  // Vaciar carrito en el servidor
+  const vaciarCarrito = async () => {
     try {
       const response = await fetch(
         "https://localhost:7182/api/Carrito/vaciar",
@@ -390,6 +386,7 @@ const leerCarritoBackend = async () => {
         agregarAlCarrito,
         eliminarItem,
         vaciarCarrito,
+        vaciarCarritoLocal,
         validarStockCarrito,
         actualizarCantidad,
       }}

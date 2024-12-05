@@ -7,7 +7,7 @@ import classes from "./styles/Header.module.css";
 const Header = () => {
   const [userName, setUserName] = useState("Usuario");
   const [menuOpen, setMenuOpen] = useState(false);
-  const { items, vaciarCarrito } = useCarrito();
+  const { items, vaciarCarritoLocal } = useCarrito();
   const { auth, cerrarSesion } = useAuth();
 
   const cartCount = Array.isArray(items)
@@ -48,7 +48,7 @@ const Header = () => {
   const handleLogout = () => {
     cerrarSesion();
     setMenuOpen(false);
-    vaciarCarrito();
+    vaciarCarritoLocal();
   };
 
   const handleAbrirPerfil = () => {

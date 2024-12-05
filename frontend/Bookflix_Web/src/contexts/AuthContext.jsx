@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const cerrarSesion = () => {
-    setAuth({ token: null });
+    setAuth({token:null});
     sessionStorage.removeItem("token");
   };
 
