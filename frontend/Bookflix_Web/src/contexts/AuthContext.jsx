@@ -3,13 +3,24 @@ import { createContext, useContext, useState } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [auth, setAuth] = useState({token: sessionStorage.getItem("token") || null,});
+  const [auth, setAuth] = useState({ token: sessionStorage.getItem("token") || null, });
   const [isAuthenticated, setAuthenticated] = useState(false);
-  const [rol, setRol] = useState("admin");
-  console.log("rol",rol)
+  const [rol, setRol] = useState(() => {
+    try {
+      // Decodificar el token y convertir el payload a un objeto
+      const payload = JSON.parse(atob(auth?.token?.split(".")[1]));
+      return payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || "usuario";
+    } catch (error) {
+      console.error("Error al decodificar el token:", error);
+      return "usuario";  // Valor por defecto en caso de error
+    }
+  });
+
+  console.log("rol", rol);
+
   const iniciarSesion = async (email, password) => {
     try {
-     
+
       const response = await fetch("https://localhost:7182/api/Auth/login", {
         method: "POST",
         headers: {
@@ -26,9 +37,9 @@ export const AuthProvider = ({ children }) => {
 
       if (token) {
         setAuth({ token });
-        const decoded = JSON.parse(atob(token.split(".")[1])); 
+        const decoded = JSON.parse(atob(token.split(".")[1]));
         const roleDecoded = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
-        console.log("roleDecoded",roleDecoded);
+        console.log("roleDecoded", roleDecoded);
         setRol(roleDecoded);
 
         sessionStorage.setItem("token", token);
