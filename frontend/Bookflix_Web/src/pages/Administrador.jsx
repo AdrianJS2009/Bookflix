@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { Link } from "react-router-dom";
 import Button from "../components/Button";
+import {jwtDecode} from "jwt-decode";
 import "../styles/admin.css";
 import "../styles/default.css";
 
@@ -15,6 +16,17 @@ export default function Administrador() {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.classList.add("body-no-scroll");
+    } else {
+      document.body.classList.remove("body-no-scroll");
+    }
+    return () => {
+      document.body.classList.remove("body-no-scroll");
+    };
+  }, [isModalOpen]);
 
   const fetchData = async (page) => {
     try {
@@ -62,7 +74,14 @@ export default function Administrador() {
 
   const handlerEditarRol = (e, idUser) => {
     const token = sessionStorage.getItem("token");
-    const currentUser = 1; // Cambia por la lógica para obtener el ID del usuario actual
+
+    if (!token) {
+      console.error("No se encontró un token.");
+      return;
+    }
+    try {
+      const decodedToken = jwtDecode(token);
+    const currentUser = decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
     if (currentUser === idUser) {
       alert("No puedes editarte a ti mismo.");
       return;
@@ -72,6 +91,9 @@ export default function Administrador() {
       ...prev,
       rol: e.target.value,
     }));
+    } catch {
+    console.error("Error al decodificar el token:", error);
+  }
   };
 
   const handleDelete = async (id) => {
@@ -185,6 +207,7 @@ export default function Administrador() {
               setSelectedProduct(null);
               setIsModalOpen(true);
             }}
+            className="añadirProducto"
             styleType="btnAñadir"
             label="Nuevo Producto"
           />

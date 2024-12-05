@@ -34,6 +34,17 @@ const Header = () => {
 
   const toggleModal = () => setMenuOpen(!menuOpen);
 
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.classList.add("body-no-scroll");
+    } else {
+      document.body.classList.remove("body-no-scroll");
+    }
+    return () => {
+      document.body.classList.remove("body-no-scroll");
+    };
+  }, [menuOpen]);
+
   const handleLogout = () => {
     cerrarSesion();
     setMenuOpen(false);

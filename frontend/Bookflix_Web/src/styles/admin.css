@@ -25,6 +25,7 @@ h2 {
 
 /* Sección de la página de administrador */
 .admin-page {
+  min-height: calc(100vh - 80px);
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
@@ -50,6 +51,10 @@ button {
   background-color: #28a745; /* Verde */
   color: white;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.añadirProducto {
+  margin: 10px 0;
 }
 
 .btnComprar {
@@ -118,25 +123,31 @@ button {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
+  height: 100%;
+  background: var(--difuminado);
   z-index: 1000;
 }
 
+/* Modal */
 .modalAdmin {
-  background-color: white;
-  padding: 40px;
-  border-radius: 12px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  background: var(--blanco);
+  padding: 20px;
   width: 90%;
   max-width: 500px;
-  max-height: 80%;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  overflow-y: scroll;
-  z-index: 1001;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 8px var(--difuminado);
+  border-radius: 8px;
+}
+
+.body-no-scroll {
+  overflow: hidden;
 }
 
 .modalAdmin h2 {
