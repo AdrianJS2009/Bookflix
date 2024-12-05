@@ -1,4 +1,4 @@
-﻿namespace Bookflix_Server.Models
+﻿namespace Bookflix_Server.Models.DTOs
 {
     public class LoginDto
     {

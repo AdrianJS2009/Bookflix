@@ -1,4 +1,4 @@
-﻿namespace Bookflix_Server.Models
+﻿namespace Bookflix_Server.Models.DTOs
 {
     public class LibroDTO
     {
@@ -18,5 +18,7 @@
         public string ISBN { get; set; }
 
         public int Stock { get; set; }
+
+        public double PromedioEstrellas { get; set; }
     }
 }

@@ -7,7 +7,7 @@ import classes from "./styles/Header.module.css";
 const Header = () => {
   const [userName, setUserName] = useState("Usuario");
   const [menuOpen, setMenuOpen] = useState(false);
-  const { items } = useCarrito();
+  const { items, vaciarCarrito } = useCarrito();
   const { auth, cerrarSesion } = useAuth();
 
   const cartCount = Array.isArray(items)
@@ -34,10 +34,26 @@ const Header = () => {
 
   const toggleModal = () => setMenuOpen(!menuOpen);
 
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.classList.add("body-no-scroll");
+    } else {
+      document.body.classList.remove("body-no-scroll");
+    }
+    return () => {
+      document.body.classList.remove("body-no-scroll");
+    };
+  }, [menuOpen]);
+
   const handleLogout = () => {
     cerrarSesion();
     setMenuOpen(false);
+    vaciarCarrito();
   };
+
+  const handleAbrirPerfil = () => {
+    setMenuOpen(false);
+  }
   
 
   return (
@@ -114,7 +130,7 @@ const Header = () => {
           >
             <h2 className="texto-mediano-bold">Opciones de usuario</h2>
             <div className={classes.modalActions}>
-              <NavLink to="/perfil" activeClassName="active-link">Perfil & Pedidos</NavLink>
+              <NavLink to="perfil" onClick={handleAbrirPerfil} activeClassName="active-link">Perfil & Pedidos</NavLink>
               <button onClick={handleLogout}>Cerrar sesión</button>
               <button onClick={toggleModal}>Cerrar</button>
             </div>

@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Button from "../components/Button";
 import "../styles/default.css";
 import "../styles/form.css";
@@ -12,11 +15,14 @@ const Registro = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(null);
 
+  const navigate = useNavigate();
+  const from = location.state?.from?.pathname || "/";
+
   const handleRegister = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setError("Las contraseñas no coinciden.");
+      toast.error("Las contraseñas no coinciden.");
       return;
     }
 
@@ -40,7 +46,8 @@ const Registro = () => {
         throw new Error("Error al registrar el usuario.");
       }
 
-      alert("Usuario registrado correctamente.");
+      toast.success("Usuario registrado correctamente.");
+      navigate(from, { replace: true });
       setError(null);
     } catch (err) {
       setError(err.message);

@@ -2,7 +2,8 @@ import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { useAuth } from "../contexts/AuthContext";
 import { useCarrito } from "../contexts/CarritoContext";
-import "../styles/Carrito.css";
+import "../styles/carrito.css";
+import { toast } from "react-toastify";
 
 const Carrito = () => {
   const {
@@ -10,7 +11,7 @@ const Carrito = () => {
     vaciarCarrito,
     eliminarItem,
     actualizarCantidad,
-  } = useCarrito(); 
+  } = useCarrito();
   const { auth } = useAuth();
   const navigate = useNavigate();
 
@@ -28,7 +29,7 @@ const Carrito = () => {
 
   const handleCompra = async () => {
     if (!auth.token) {
-      alert("Inicia sesión para realizar la compra");
+      toast.error("Inicia sesión para realizar la compra");
       return;
     }
 
@@ -43,7 +44,7 @@ const Carrito = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        alert(
+        toast.error(
           `Error al obtener el carrito: ${errorData.error || "Desconocido"}`
         );
         return;
@@ -51,7 +52,7 @@ const Carrito = () => {
 
       const carrito = await response.json();
       if (!carrito.items || carrito.items.length === 0) {
-        alert("Tu carrito está vacío");
+        toast.error("Tu carrito está vacío");
         return;
       }
 
@@ -66,23 +67,22 @@ const Carrito = () => {
 
       if (!compraResponse.ok) {
         const errorData = await compraResponse.json();
-        alert(
+        toast.error(
           `Error al realizar la compra: ${errorData.error || "Desconocido"}`
         );
         return;
       }
-
-      alert("Compra realizada con éxito");
-      vaciarCarrito(); // Limpiar el carrito local
+      toast.success("Compra realizada con éxito");
+      vaciarCarrito();
       navigate("/confirmacion-compra", { state: { items: carrito.items } });
     } catch (error) {
       console.error("Error al realizar la compra:", error);
-      alert("Ocurrió un error al realizar la compra. Inténtalo nuevamente.");
+      toast.error("Ocurrió un error al realizar la compra. Inténtalo nuevamente.");
     }
   };
 
-  const handleEliminarItem = (libroId) => {
-    eliminarItem(libroId);
+  const handleEliminarItem = (idLibro) => {
+    eliminarItem(idLibro);
   };
 
   return (
@@ -107,7 +107,7 @@ const Carrito = () => {
                     <button
                       className="masCantidad"
                       onClick={() =>
-                        actualizarCantidad(item.libroId, item.cantidad - 1)
+                        actualizarCantidad(item.idLibro, item.cantidad - 1)
                       }
                     >
                       -
@@ -121,7 +121,7 @@ const Carrito = () => {
                     <button
                       className="menosCantidad"
                       onClick={() =>
-                        actualizarCantidad(item.libroId, item.cantidad + 1)
+                        actualizarCantidad(item.idLibro, item.cantidad + 1)
                       }
                     >
                       +
@@ -134,7 +134,7 @@ const Carrito = () => {
                   </p>
                   <button
                     className="botonEliminar"
-                    onClick={() => handleEliminarItem(item.libroId)}
+                    onClick={() => handleEliminarItem(item.idLibro)}
                   >
                     Eliminar
                   </button>

@@ -1,5 +1,7 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Button from "../components/Button";
 import "../styles/ConfirmacionCompra.css";
 
@@ -9,14 +11,17 @@ const ConfirmacionCompra = () => {
   const { items, total } = location.state || { items: [], total: 0 };
 
   const handleDescargarLibro = (nombreLibro) => {
-    alert(`Descargando el libro: ${nombreLibro}`);
+    toast.success(`Descargando el libro: ${nombreLibro}`);
   };
 
   const handleVolverAlCatalogo = () => {
     navigate("/catalogo");
   };
 
-  const totalPrecio = items.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
+  const totalPrecio = items.reduce(
+    (sum, item) => sum + item.precio * item.cantidad,
+    0
+  );
   const totalItems = items.reduce((sum, item) => sum + item.cantidad, 0);
 
   return (

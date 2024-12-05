@@ -1,11 +1,11 @@
-﻿using Bookflix_Server.Models;
-using Bookflix_Server.Repositories;
+﻿using Bookflix_Server.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using Bookflix_Server.Models.DTOs;
 
 
 namespace Bookflix_Server.Controllers

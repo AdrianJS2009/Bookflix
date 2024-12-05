@@ -1,7 +1,7 @@
 ﻿
 
 using Bookflix_Server.Data;
-using Bookflix_Server.Models;
+using Bookflix_Server.Models.DTOs;
 using Bookflix_Server.Repositories;
 using Bookflix_Server.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -145,26 +145,30 @@ namespace Bookflix_Server.Controllers
                 var libros = await librosQuery
                     .Skip((pagina - 1) * tamanoPagina)
                     .Take(tamanoPagina)
-                    .Select(l => new LibroDTO
-                    {
-                        IdLibro = l.IdLibro,
-                        Nombre = l.Nombre,
-                        Precio = l.Precio,
-                        UrlImagen = l.UrlImagen,
-                        Genero = l.Genero,
-                        Descripcion = l.Descripcion,
-                        Autor = l.Autor,
-                        ISBN = l.ISBN,
-                        Stock = l.Stock
-                    })
                     .ToListAsync();
+
+                var librosDto = libros.Select(l => new LibroDTO
+                {
+                    IdLibro = l.IdLibro,
+                    Nombre = l.Nombre,
+                    Precio = l.Precio,
+                    UrlImagen = l.UrlImagen,
+                    Genero = l.Genero,
+                    Descripcion = l.Descripcion,
+                    Autor = l.Autor,
+                    ISBN = l.ISBN,
+                    Stock = l.Stock,
+                    PromedioEstrellas = l.PromedioEstrellas
+                }).ToList();
+
 
                 return Ok(new
                 {
-                    libros = libros,
+                    libros = librosDto,
                     totalLibros = totalLibros,
                     totalPaginas = totalPaginas
                 });
+
             }
             catch (Exception ex)
             {

@@ -1,12 +1,17 @@
-import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Rating } from '@mui/material';
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Button from "../components/Button";
+
 import { useAuth } from "../contexts/AuthContext";
 import { useCarrito } from "../contexts/CarritoContext";
 import "../styles/ProductoDetalle.css";
 
 const ProductoDetalle = () => {
   const { productoId } = useParams();
+  const navigate = useNavigate();
   const { agregarAlCarrito } = useCarrito();
   const { auth } = useAuth();
 
@@ -17,6 +22,9 @@ const ProductoDetalle = () => {
   const [reseñas, setReseñas] = useState([]);
   const [textoReseña, setTextoReseña] = useState("");
   const [haReseñado, setHaReseñado] = useState(false);
+  // const [haComprado, setHaComprado] = useState(false);
+  const location = useLocation();
+  const [rating, setRating] = useState(0);
 
   useEffect(() => {
     const cargarProducto = async () => {
@@ -110,7 +118,7 @@ const ProductoDetalle = () => {
       try {
         const nuevaReseña = {
           texto: textoReseña,
-          libroId: productoId,
+          idLibro: productoId,
         };
 
         console.log("Payload being sent:", nuevaReseña);
@@ -142,16 +150,18 @@ const ProductoDetalle = () => {
             texto: textoReseña,
             usuario: data.nombreUsuario,
             fecha: data.fechaPublicacion,
+            estrellas: rating
           },
           ...prevReseñas,
         ]);
         setTextoReseña("");
         setHaReseñado(true);
+        toast.success("¡Gracias por tu opinión!.");
       } catch (error) {
-        console.error("Error al crear la reseña:", error);
+        toast.error(error.message || "No se ha podido crear la reseña.");
       }
     } else {
-      alert("Escribe una reseña antes de enviar");
+      toast.warn("Tienes que escribir algo para enviar una reseña.");
     }
   };
 
@@ -189,11 +199,9 @@ const ProductoDetalle = () => {
             </p>
             <p className="generoLibro">
               Género:{" "}
-              <Link to={`/catalogo?genero=${producto.genero}`}>
-                <span className="genero">
-                  {producto.genero || "Sin género"}
-                </span>
-              </Link>
+              <span className="genero">
+                {producto.genero || "Sin género"}
+              </span>
             </p>
             <p className="isbn texto-pequeño">ISBN: {producto.isbn || "N/A"}</p>
           </div>
@@ -252,6 +260,16 @@ const ProductoDetalle = () => {
                 placeholder="Escribe tu reseña aquí..."
                 disabled={haReseñado}
               />
+
+              <Rating
+                className="reviewEstrellas"
+                name="reseña-rating"
+                value={rating}
+                onChange={(e, newValue) => setRating(newValue)}
+                disabled={haReseñado}
+                precision={1}
+              />
+
               <button
                 className="btnCrearReseña"
                 onClick={handleCrearReseña}
@@ -261,19 +279,28 @@ const ProductoDetalle = () => {
               </button>
             </div>
           ) : (
-            <div className="crearReseña">
-              <input
-                className="textoReseñaNueva"
-                placeholder="Inicia sesión para dejar tu reseña"
-                disabled
-              />
+            <div className="crearReseña sinSesion">
+              <p className="texto-mediano">
+                Si quieres dejar tu reseña,{" "}
+                <button
+                  className="btnLogin"
+                  onClick={() =>
+                    navigate("/login", { state: { from: location } })
+                  }
+                >
+                  Iniciar Sesión
+                </button>
+                .
+              </p>
             </div>
           )}
+
           {reseñas.length > 0 ? (
             reseñas.map((reseña, index) => (
               <div key={index} className="reseña">
                 <p>Usuario: {reseña.autor}</p>
                 <p>Fecha: {new Date(reseña.fecha).toLocaleDateString()}</p>
+                <Rating value={reseña.rating} readOnly />
                 <p>{reseña.texto}</p>
               </div>
             ))
@@ -281,6 +308,7 @@ const ProductoDetalle = () => {
             <p>No hay reseñas para este producto.</p>
           )}
         </div>
+
       </main>
     </>
   );

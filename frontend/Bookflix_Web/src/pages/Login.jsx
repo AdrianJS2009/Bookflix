@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Button from "../components/Button";
 import { useAuth } from "../contexts/AuthContext";
 import "../styles/default.css";
@@ -9,14 +11,20 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { iniciarSesion } = useAuth();
+  const { iniciarSesion, setAuthenticated } = useAuth();
+
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       await iniciarSesion(email, password);
-      navigate("/");
+      toast.success("¡Bienvenido a Bookflix!");
+      setAuthenticated(true);
+      navigate(from, { replace: true });
     } catch (error) {
-      alert("Error al iniciar sesión: " + error.message);
+      toast.error("Error al iniciar sesión: " + error.message);
     }
   };
 
