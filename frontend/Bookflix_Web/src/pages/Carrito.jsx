@@ -3,6 +3,7 @@ import Button from "../components/Button";
 import { useAuth } from "../contexts/AuthContext";
 import { useCarrito } from "../contexts/CarritoContext";
 import "../styles/Carrito.css";
+import { toast } from "react-toastify";
 
 const Carrito = () => {
   const {
@@ -74,8 +75,7 @@ const Carrito = () => {
         );
         return;
       }
-
-      alert("Compra realizada con éxito");
+      toast.success("Compra realizada con éxito");
       vaciarCarrito();
       navigate("/confirmacion-compra", { state: { items: carrito.items } });
     } catch (error) {

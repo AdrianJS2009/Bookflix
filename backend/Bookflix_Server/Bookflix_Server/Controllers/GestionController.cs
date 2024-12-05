@@ -49,33 +49,27 @@ public class GestionController : ControllerBase
         return Ok(libro);
     }
 
-    // Crear un nuevo usuario
-    [HttpPost("usuarios")]
-    public IActionResult CrearUsuario([FromBody] User usuario)
-    {
-        if (ModelState.IsValid)
-        {
-            _context.Users.Add(usuario);
-            _context.SaveChanges();
-            return Ok(usuario);
-        }
-        return BadRequest(ModelState);
-    }
-
     // Editar un usuario existente
     [HttpPut("usuarios/{id}")]
-    public IActionResult EditarUsuario(int id, [FromBody] User usuarioActualizado)
+    public IActionResult CambiarRol(int id)
     {
         var usuario = _context.Users.Find(id);
         if (usuario == null) return NotFound();
+        
+        if (usuario.Rol.Equals("admin"))
+        {
+            usuario.Rol = "usuario";
 
-        usuario.Nombre = usuarioActualizado.Nombre;
-        usuario.Apellidos = usuarioActualizado.Apellidos;
-        usuario.Email = usuarioActualizado.Email;
-        usuario.Direccion = usuarioActualizado.Direccion;
-        usuario.Rol = usuarioActualizado.Rol;
+        } else if (usuario.Rol.Equals("usuario"))
+        {
+            usuario.Rol = "admin";
 
-        _context.SaveChanges();
+        } else
+        {
+            usuario.Rol = "usuario";
+        }
+
+            _context.SaveChanges();
         return Ok(usuario);
     }
 

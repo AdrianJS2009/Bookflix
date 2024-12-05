@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { Link } from "react-router-dom";
 import Button from "../components/Button";
-import {jwtDecode} from "jwt-decode";
 import "../styles/admin.css";
 import "../styles/default.css";
+import { useAuth } from "../contexts/AuthContext";
+import { toast } from "react-toastify";
 
 export default function Administrador() {
+  const { auth } = useAuth();
   const [usuarios, setUsuarios] = useState([]);
   const [productos, setProductos] = useState([]);
   const [isShowingUsers, setIsShowingUsers] = useState(true);
@@ -72,56 +74,58 @@ export default function Administrador() {
     setCurrentPage(event.selected);
   };
 
-  const handlerEditarRol = (e, idUser) => {
-    const token = sessionStorage.getItem("token");
-
-    if (!token) {
-      console.error("No se encontró un token.");
+  const handlerEditarRol = async (idUser) => {
+    if (!auth.token) {
+      toast.error("No se encontró un token.");
       return;
     }
+  
     try {
-      const decodedToken = jwtDecode(token);
-    const currentUser = decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
-    if (currentUser === idUser) {
-      alert("No puedes editarte a ti mismo.");
-      return;
+      const decoded = JSON.parse(atob(auth.token.split(".")[1]));
+      const currentUser = parseInt(decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]);
+  
+      // Verificar que no se modifique el propio usuario
+      if (currentUser === idUser) {
+        toast.info("No puedes cambiar tu propio rol.");
+        return;
+      }
+  
+      const response = await fetch(`https://localhost:7182/api/Gestion/usuarios/${idUser}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.token}`,
+        },
+      });
+  
+      if (response.ok) {
+        toast.success("Rol actualizado exitosamente.");
+        fetchData(currentPage);
+    
+      } else {
+        toast.error("Error al actualizar el rol.");
+      }
+    } catch (error) {
+      console.error("Error al decodificar el token:", error);
     }
-
-    setSelectedUser((prev) => ({
-      ...prev,
-      rol: e.target.value,
-    }));
-    } catch {
-    console.error("Error al decodificar el token:", error);
-  }
   };
+  
 
   const handleDelete = async (id) => {
-    const confirmMessage = `¿Estás seguro de que deseas eliminar este ${isShowingUsers ? "usuario" : "producto"
-      }?`;
+    const confirmMessage = `¿Estás seguro de que deseas eliminar este usuario?`;
     if (window.confirm(confirmMessage)) {
-      const token = sessionStorage.getItem("token");
-      const endpoint = isShowingUsers
-        ? `https://localhost:7182/api/gestion/usuarios/${id}`
-        : `https://localhost:7182/api/gestion/libros/${id}`;
       try {
-        const response = await fetch(endpoint, {
+        const response = await fetch(`https://localhost:7182/api/gestion/usuarios/${id}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${auth.token}`,
           },
         });
         if (response.ok) {
-          if (isShowingUsers) {
-            setUsuarios((prev) => prev.filter((user) => user.idUser !== id));
-          } else {
-            setProductos((prev) =>
-              prev.filter((product) => product.idLibro !== id)
-            );
-          }
+          setUsuarios((prev) => prev.filter((user) => user.idUser !== id));
         } else {
-          console.error("No se pudo eliminar el elemento.");
+          console.error("No se pudo eliminar el usuario.");
         }
       } catch (error) {
         console.error("Error:", error.message);
@@ -130,15 +134,10 @@ export default function Administrador() {
   };
 
   const handleCreateOrEdit = async (item) => {
-    const token = sessionStorage.getItem("token");
-    const isEdit = isShowingUsers ? !!item.idUser : !!item.idLibro;
+    const isEdit = !!item.idLibro;
     const endpoint = isEdit
-      ? isShowingUsers
-        ? `https://localhost:7182/api/gestion/usuarios/${item.idUser}`
-        : `https://localhost:7182/api/gestion/libros/${item.idLibro}`
-      : isShowingUsers
-        ? `https://localhost:7182/api/gestion/usuarios`
-        : `https://localhost:7182/api/gestion/libros`;
+      ? `https://localhost:7182/api/gestion/libros/${item.idLibro}`
+      : `https://localhost:7182/api/gestion/libros`;
     const method = isEdit ? "PUT" : "POST";
 
     try {
@@ -146,34 +145,22 @@ export default function Administrador() {
         method,
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${auth.token}`,
         },
         body: JSON.stringify(item),
       });
 
       if (response.ok) {
         const updatedItem = await response.json();
-        if (isShowingUsers) {
-          setUsuarios((prev) => {
-            if (isEdit) {
-              return prev.map((u) =>
-                u.idUser === updatedItem.idUser ? updatedItem : u
-              );
-            } else {
-              return [...prev, updatedItem];
-            }
-          });
-        } else {
-          setProductos((prev) => {
-            if (isEdit) {
-              return prev.map((p) =>
-                p.idLibro === updatedItem.idLibro ? updatedItem : p
-              );
-            } else {
-              return [...prev, updatedItem];
-            }
-          });
-        }
+        setProductos((prev) => {
+          if (isEdit) {
+            return prev.map((p) =>
+              p.idLibro === updatedItem.idLibro ? updatedItem : p
+            );
+          } else {
+            return [...prev, updatedItem];
+          }
+        });
         setIsModalOpen(false);
       } else {
         console.error("No se pudo guardar el elemento.");
@@ -222,11 +209,8 @@ export default function Administrador() {
                 <strong>Rol:</strong> {usuario.rol}
                 <div>
                   <Button
-                    onClick={() => {
-                      setSelectedUser(usuario);
-                      setIsModalOpen(true);
-                    }}
-                    label="Cambiar rol"
+                    onClick={() => handlerEditarRol(usuario.idUser)}
+                    label="Toggle Rol"
                     styleType="btnComprar"
                   />
                 </div>
@@ -284,11 +268,7 @@ export default function Administrador() {
         <div className="modalOverlay">
           <div className="modalAdmin">
             <h2>
-              {isShowingUsers
-                ? selectedUser
-                  ? "Cambiar rol"
-                  : "Crear Usuario"
-                : selectedProduct
+              {selectedProduct
                   ? "Editar Producto"
                   : "Crear Producto"}
             </h2>
@@ -296,35 +276,11 @@ export default function Administrador() {
               onSubmit={(e) => {
                 e.preventDefault();
                 handleCreateOrEdit(
-                  isShowingUsers ? selectedUser : selectedProduct
+                  selectedProduct
                 );
               }}
             >
-              {isShowingUsers ? (
-                <>
-                  <input
-                    type="text"
-                    value={selectedUser?.rol || "usuario"}
-                    placeholder="Rol"
-                    required
-                    onChange={(e) => handlerEditarRol(e, selectedUser?.idUser)}
-                  />
-                  {!selectedUser?.idUser && (
-                    <input
-                      type="password"
-                      value={selectedUser?.password || ""}
-                      placeholder="Password"
-                      required
-                      onChange={(e) =>
-                        setSelectedUser({
-                          ...selectedUser,
-                          password: e.target.value,
-                        })
-                      }
-                    />
-                  )}
-                </>
-              ) : (
+              {!isShowingUsers && (
                 <>
                   Nombre:
                   <input
@@ -433,6 +389,7 @@ export default function Administrador() {
                   />
                 </>
               )}
+
               <button type="submit">Guardar</button>
               <button type="button" onClick={() => setIsModalOpen(false)}>
                 Cancelar
