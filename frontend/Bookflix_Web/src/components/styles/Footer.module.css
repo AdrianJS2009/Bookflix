@@ -6,12 +6,7 @@ footer.footer {
   z-index: 1000;
   padding: 20px 0;
 }
-@media (max-width: 768px) {
-  .listaFooter {
-    flex-direction: column;
-    align-items: center;
-  }
-}
+
 footer.footer > div {
   margin-bottom: 10px;
 }
@@ -37,4 +32,11 @@ footer.footer ul li {
 
 footer.footer p {
   margin-top: 15px;
+}
+
+@media (max-width: 768px) {
+  ul.listaFooter {
+    flex-direction: column;
+    align-items: center;
+  }
 }
