@@ -134,19 +134,61 @@ const leerCarritoBackend = async () => {
     }
   
     if (!auth.token) {
+      // Si no estamos logueados, manejo local del carrito
       const existingItem = items.find((item) => item.idLibro === producto.idLibro);
   
+      // Obtener el stock del producto sin necesidad de autenticación
+      const responseStock = await fetch(
+        "https://localhost:7182/api/Libro/VerificarStock",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify([producto.idLibro]),
+        }
+      );
+  
+      const stockData = await responseStock.json();
+      const productoStock = stockData.find((item) => item.id === producto.idLibro);
+  
+      if (productoStock && !productoStock.disponible) {
+        toast.error("Producto no disponible en stock.");
+        return;
+      }
+  
+      const cantidadMaximaBackend = productoStock ? productoStock.stock : 0;
+  
+      // Si la cantidad solicitada excede el stock, mostramos un error y ajustamos la cantidad
+      if (cantidadSolicitada > cantidadMaximaBackend) {
+        toast.error(`Solo hay ${cantidadMaximaBackend} unidades disponibles en stock.`);
+        return; // No agregamos el producto al carrito si la cantidad es mayor que el stock
+      }
+  
+      const cantidadAAgregar = cantidadSolicitada;
+  
+      // Verificar si el producto ya está en el carrito
       if (existingItem) {
+        // Si el producto ya está en el carrito, actualizamos la cantidad respetando el stock máximo
+        const cantidadTotal = existingItem.cantidad + cantidadAAgregar;
+        
+        // Si la cantidad total excede el stock máximo, mostramos un error
+        if (cantidadTotal > cantidadMaximaBackend) {
+          toast.error(`Ya has añadido la cantidad máxima en stock.`);
+          return;
+        }
+  
         const updatedItems = items.map((item) =>
           item.idLibro === producto.idLibro
-            ? { ...item, cantidad: item.cantidad + cantidadSolicitada }
+            ? { ...item, cantidad: cantidadTotal }
             : item
         );
         setItems(updatedItems);
         localStorage.setItem("carrito", JSON.stringify(updatedItems));
         toast.success("Producto añadido al carrito local.");
       } else {
-        const updatedItems = [...items, { ...producto, cantidad: cantidadSolicitada }];
+        // Si el producto no está en el carrito, lo agregamos con la cantidad correcta
+        const updatedItems = [...items, { ...producto, cantidad: cantidadAAgregar }];
         setItems(updatedItems);
         localStorage.setItem("carrito", JSON.stringify(updatedItems));
         toast.success("Producto añadido al carrito local.");
