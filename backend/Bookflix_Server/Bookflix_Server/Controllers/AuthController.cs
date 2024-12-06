@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Bookflix_Server.Models.DTOs;
 
 
+
 namespace Bookflix_Server.Controllers
 {
     [ApiController]
@@ -16,11 +17,13 @@ namespace Bookflix_Server.Controllers
     {
         private readonly IConfiguration _config;
         private readonly IUserRepository _userRepository;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public AuthController(IConfiguration config, IUserRepository userRepository)
+        public AuthController(IConfiguration config, IUserRepository userRepository, IPasswordHasher passwordHasher)
         {
             _config = config;
             _userRepository = userRepository;
+            _passwordHasher = passwordHasher;
         }
 
         private string ObtenerIdUsuario()
@@ -45,18 +48,18 @@ namespace Bookflix_Server.Controllers
 
             var usuario = await _userRepository.ObtenerPorCorreoAsync(loginDto.Email);
 
-            if (usuario == null || usuario.Password != loginDto.Password)
+            if (usuario == null || !_passwordHasher.VerifyPassword(usuario.Password, loginDto.Password))
             {
                 return Unauthorized(new { error = "Credenciales incorrectas." });
             }
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, usuario.IdUser.ToString()),
-                new Claim(ClaimTypes.Name, usuario.Nombre),
-                new Claim(ClaimTypes.Email, usuario.Email),
-                new Claim(ClaimTypes.Role, usuario.Rol)
-            };
+        new Claim(ClaimTypes.NameIdentifier, usuario.IdUser.ToString()),
+        new Claim(ClaimTypes.Name, usuario.Nombre),
+        new Claim(ClaimTypes.Email, usuario.Email),
+        new Claim(ClaimTypes.Role, usuario.Rol)
+    };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -71,6 +74,7 @@ namespace Bookflix_Server.Controllers
 
             return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
         }
+
 
         [HttpGet("read")]
         [Authorize]

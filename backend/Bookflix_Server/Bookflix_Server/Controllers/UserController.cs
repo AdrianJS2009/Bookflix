@@ -3,6 +3,7 @@ using Bookflix_Server.Models;
 using Bookflix_Server.Models.DTOs;
 using Bookflix_Server.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -18,14 +19,17 @@ namespace Bookflix_Server.Controllers
         private readonly IProductoRepository _productoRepository;
         private readonly IUserRepository _userRepository;
         private readonly ICompraRepository _compraRepository;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public UserController(MyDbContext context, IReseñasRepository reseñaRepository, IProductoRepository productoRepository, IUserRepository userRepository, ICompraRepository compraRepository)
+
+        public UserController(MyDbContext context, IReseñasRepository reseñaRepository, IProductoRepository productoRepository, IUserRepository userRepository, ICompraRepository compraRepository, IPasswordHasher passwordHasher)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _reseñaRepository = reseñaRepository ?? throw new ArgumentNullException(nameof(reseñaRepository));
             _productoRepository = productoRepository ?? throw new ArgumentNullException(nameof(productoRepository));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _compraRepository = compraRepository ?? throw new ArgumentException(nameof(compraRepository));
+            _passwordHasher = passwordHasher;
         }
 
         private string ObtenerIdUsuario()
@@ -39,7 +43,7 @@ namespace Bookflix_Server.Controllers
             if (pagina <= 0 || tamanoPagina <= 0)
                 return BadRequest(new { error = "Parámetros de paginación inválidos." });
 
-            
+
             var usuariosQuery = _context.Users.AsQueryable();
 
             var totalUsuarios = await usuariosQuery.CountAsync();
@@ -53,7 +57,7 @@ namespace Bookflix_Server.Controllers
                     u.IdUser,
                     u.Nombre,
                     u.Email,
-                    u.Rol // Excluye contraseña automáticamente
+                    u.Rol
                 })
                 .ToListAsync();
 
@@ -100,7 +104,7 @@ namespace Bookflix_Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(new { error = "Los datos proporcionados para el usuario no son válidos." });
 
-            var usuarioExistente = await _context.Users.FirstOrDefaultAsync(u => u.Email == datosUsuario.Email);
+            var usuarioExistente = await _userRepository.ObtenerPorCorreoAsync(datosUsuario.Email);
             if (usuarioExistente != null)
             {
                 return Conflict(new { error = "El correo electrónico ya está en uso." });
@@ -113,20 +117,14 @@ namespace Bookflix_Server.Controllers
                 Email = datosUsuario.Email,
                 Direccion = datosUsuario.Direccion,
                 Rol = datosUsuario.Rol,
-                Password = datosUsuario.Password
+                Password = _passwordHasher.HashPassword(datosUsuario.Password)
             };
 
-            _context.Users.Add(usuario);
-            await _context.SaveChangesAsync();
 
-            var carrito = new Carrito
-            {
-                UserId = usuario.IdUser,
-                Items = new List<CarritoItem>()
-            };
+            Console.WriteLine($"Hash generado para el usuario {usuario.Email}: {usuario.Password}");
 
-            _context.Carritos.Add(carrito);
-            await _context.SaveChangesAsync();
+
+            await _userRepository.AgregarUsuarioAsync(usuario);
 
             return CreatedAtAction(nameof(ObtenerPerfilUsuario), new { correo = usuario.Email }, new
             {
@@ -157,10 +155,16 @@ namespace Bookflix_Server.Controllers
                 return BadRequest(new { error = "Los datos proporcionados para el usuario no son válidos." });
             }
 
+
             usuario.Nombre = datosUsuario.Nombre;
             usuario.Apellidos = datosUsuario.Apellidos;
             usuario.Direccion = datosUsuario.Direccion;
-            usuario.Password = datosUsuario.Password;
+
+
+            if (!string.IsNullOrEmpty(datosUsuario.Password))
+            {
+                usuario.Password = _passwordHasher.HashPassword(datosUsuario.Password);
+            }
 
             _context.Entry(usuario).State = EntityState.Modified;
 
@@ -175,6 +179,7 @@ namespace Bookflix_Server.Controllers
 
             return NoContent();
         }
+
 
         [HttpDelete("eliminar")]
         [Authorize]
@@ -261,7 +266,7 @@ namespace Bookflix_Server.Controllers
                 {
                     IdLibro = detalle.IdLibro,
                     Cantidad = detalle.Cantidad,
-                    PrecioUnitario = detalle.PrecioUnitario 
+                    PrecioUnitario = detalle.PrecioUnitario
                 }).ToList()
             }).ToList();
 

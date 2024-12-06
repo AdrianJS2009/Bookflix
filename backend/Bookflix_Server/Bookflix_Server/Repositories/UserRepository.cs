@@ -29,10 +29,10 @@ namespace Bookflix_Server.Repositories
             if (usuario == null)
                 throw new ArgumentNullException(nameof(usuario));
 
+
             await _context.Users.AddAsync(usuario);
             await _context.SaveChangesAsync();
         }
-
 
         public async Task ActualizarUsuarioAsync(User usuario)
         {
