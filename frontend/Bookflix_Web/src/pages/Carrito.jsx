@@ -4,6 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useCarrito } from "../contexts/CarritoContext";
 import "../styles/carrito.css";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 const Carrito = () => {
   const {
@@ -103,7 +104,9 @@ const Carrito = () => {
                     alt={`Imagen de ${item.nombre || "Producto"}`}
                     className="imagen-carrito"
                   />
-                  <p>{item.nombre || "Sin nombre"}</p>
+                  <Link to={`/producto/${item.idLibro}`}>
+                    <p>{item.nombre || "Sin nombre"}</p>
+                  </Link>
                   <div className="cantidad">
                     <button
                       className="masCantidad"

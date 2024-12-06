@@ -10,48 +10,48 @@ export const useCarrito = () => {
 };
 
 export const CarritoProvider = ({ children }) => {
-  const { auth, isAuthenticated,setAuthenticated } = useAuth();
+  const { auth, isAuthenticated, setAuthenticated } = useAuth();
   const [items, setItems] = useState(() => {
     const savedItems = localStorage.getItem("carrito");
     return savedItems ? JSON.parse(savedItems) : [];
   });
 
-const leerCarritoBackend = async () => {
-  try {
-    const response = await fetch(
-      "https://localhost:7182/api/Carrito/ListarCarrito",
-      {
-        headers: { Authorization: `Bearer ${auth.token}` },
+  const leerCarritoBackend = async () => {
+    try {
+      const response = await fetch(
+        "https://localhost:7182/api/Carrito/ListarCarrito",
+        {
+          headers: { Authorization: `Bearer ${auth.token}` },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error al listar el carrito del servidor.");
       }
-    );
 
-    if (!response.ok) {
-      throw new Error("Error al listar el carrito del servidor.");
-    }
-
-    const data = await response.json();
-    const carritoItems = Array.isArray(data?.items)
-      ? data.items.map((item) => ({
+      const data = await response.json();
+      const carritoItems = Array.isArray(data?.items)
+        ? data.items.map((item) => ({
           idLibro: item.idLibro,
           nombre: item.nombreLibro || "Sin nombre",
           cantidad: item.cantidad || 1,
           precio: item.precio || 0,
           urlImagen: item.urlImagen || "placeholder.jpg",
         }))
-      : [];
-    setItems(carritoItems);
-  } catch (error) {
-    console.error("Error al sincronizar el carrito:", error);
-    toast.error("Error al sincronizar el carrito.");
-  }
-};
+        : [];
+      setItems(carritoItems);
+    } catch (error) {
+      console.error("Error al sincronizar el carrito:", error);
+      toast.error("Error al sincronizar el carrito.");
+    }
+  };
   useEffect(() => {
     if (isAuthenticated) {
       sincronizarCarrito();
       setAuthenticated(false);
 
-    } 
-    else{
+    }
+    else {
       leerCarritoBackend();
     }
   }, [isAuthenticated]);
@@ -110,12 +110,12 @@ const leerCarritoBackend = async () => {
       const data = await response.json();
       const carritoItems = Array.isArray(data?.items)
         ? data.items.map((item) => ({
-            idLibro: item.idLibro,
-            nombre: item.nombreLibro || "Sin nombre",
-            cantidad: item.cantidad || 1,
-            precio: item.precio || 0,
-            urlImagen: item.urlImagen || "placeholder.jpg",
-          }))
+          idLibro: item.idLibro,
+          nombre: item.nombreLibro || "Sin nombre",
+          cantidad: item.cantidad || 1,
+          precio: item.precio || 0,
+          urlImagen: item.urlImagen || "placeholder.jpg",
+        }))
         : [];
       setItems(carritoItems);
     } catch (error) {
@@ -132,70 +132,68 @@ const leerCarritoBackend = async () => {
       });
       return;
     }
-  
+
     if (!auth.token) {
-      // Si no estamos logueados, manejo local del carrito
       const existingItem = items.find((item) => item.idLibro === producto.idLibro);
-  
-      // Obtener el stock del producto sin necesidad de autenticación
-      const responseStock = await fetch(
-        "https://localhost:7182/api/Libro/VerificarStock",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify([producto.idLibro]),
+
+      try {
+        const responseStock = await fetch(
+          "https://localhost:7182/api/Libro/VerificarStock",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify([producto.idLibro]),
+          }
+        );
+
+        if (!responseStock.ok) {
+          throw new Error("Error al verificar el stock.");
         }
-      );
-  
-      const stockData = await responseStock.json();
-      const productoStock = stockData.find((item) => item.id === producto.idLibro);
-  
-      if (productoStock && !productoStock.disponible) {
-        toast.error("Producto no disponible en stock.");
-        return;
-      }
-  
-      const cantidadMaximaBackend = productoStock ? productoStock.stock : 0;
-  
-      // Si la cantidad solicitada excede el stock, mostramos un error y ajustamos la cantidad
-      if (cantidadSolicitada > cantidadMaximaBackend) {
-        toast.error(`Solo hay ${cantidadMaximaBackend} unidades disponibles en stock.`);
-        return; // No agregamos el producto al carrito si la cantidad es mayor que el stock
-      }
-  
-      const cantidadAAgregar = cantidadSolicitada;
-  
-      // Verificar si el producto ya está en el carrito
-      if (existingItem) {
-        // Si el producto ya está en el carrito, actualizamos la cantidad respetando el stock máximo
-        const cantidadTotal = existingItem.cantidad + cantidadAAgregar;
-        
-        // Si la cantidad total excede el stock máximo, mostramos un error
-        if (cantidadTotal > cantidadMaximaBackend) {
-          toast.error(`Ya has añadido la cantidad máxima en stock.`);
+
+        const stockData = await responseStock.json();
+        const productoStock = stockData.find((item) => item.id === producto.idLibro);
+
+        if (productoStock && !productoStock.disponible) {
+          toast.error("Producto no disponible en stock.");
           return;
         }
-  
-        const updatedItems = items.map((item) =>
-          item.idLibro === producto.idLibro
-            ? { ...item, cantidad: cantidadTotal }
-            : item
+
+        const cantidadMaximaBackend = productoStock ? productoStock.stock : 0;
+
+        const cantidadAAgregar = Math.min(
+          cantidadSolicitada,
+          cantidadMaximaBackend - (existingItem?.cantidad || 0)
         );
-        setItems(updatedItems);
-        localStorage.setItem("carrito", JSON.stringify(updatedItems));
-        toast.success("Producto añadido al carrito local.");
-      } else {
-        // Si el producto no está en el carrito, lo agregamos con la cantidad correcta
-        const updatedItems = [...items, { ...producto, cantidad: cantidadAAgregar }];
-        setItems(updatedItems);
-        localStorage.setItem("carrito", JSON.stringify(updatedItems));
-        toast.success("Producto añadido al carrito local.");
+
+        if (cantidadAAgregar <= 0) {
+          toast.error("Ya has añadido la cantidad máxima en stock.");
+          return;
+        }
+
+        if (existingItem) {
+          const updatedItems = items.map((item) =>
+            item.idLibro === producto.idLibro
+              ? { ...item, cantidad: item.cantidad + cantidadAAgregar }
+              : item
+          );
+          setItems(updatedItems);
+          localStorage.setItem("carrito", JSON.stringify(updatedItems));
+          toast.success("Producto añadido al carrito local.");
+        } else {
+          const updatedItems = [...items, { ...producto, cantidad: cantidadAAgregar }];
+          setItems(updatedItems);
+          localStorage.setItem("carrito", JSON.stringify(updatedItems));
+          toast.success("Producto añadido al carrito local.");
+        }
+      } catch (error) {
+        console.error("Error al verificar stock:", error);
+        toast.error("Error al verificar stock del producto.");
       }
       return;
     }
-  
+
     try {
       const responseCarrito = await fetch("https://localhost:7182/api/Carrito/ListarCarrito", {
         method: "GET",
@@ -204,11 +202,11 @@ const leerCarritoBackend = async () => {
           Authorization: `Bearer ${auth.token}`,
         },
       });
-  
+
       if (!responseCarrito.ok) {
         throw new Error("Error al obtener el carrito.");
       }
-  
+
       const carritoActual = await responseCarrito.json();
 
       const responseStock = await fetch(
@@ -222,63 +220,58 @@ const leerCarritoBackend = async () => {
           body: JSON.stringify([producto.idLibro]),
         }
       );
-  
+
+      if (!responseStock.ok) {
+        throw new Error("Error al verificar el stock.");
+      }
+
       const stockData = await responseStock.json();
       const productoStock = stockData.find((item) => item.id === producto.idLibro);
-  
+
       if (productoStock && !productoStock.disponible) {
         toast.error("Producto no disponible en stock.");
         return;
       }
-  
+
       const cantidadMaximaBackend = productoStock ? productoStock.stock : 0;
-
       const existingCarritoItem = carritoActual.items.find((item) => item.idLibro === producto.idLibro);
-  
-      let cantidadAAgregar = cantidadSolicitada;
-      if (existingCarritoItem) {
-        const cantidadTotal = existingCarritoItem.cantidad + cantidadSolicitada;
-  
-        if (cantidadTotal > cantidadMaximaBackend) {
-          cantidadAAgregar = cantidadMaximaBackend - existingCarritoItem.cantidad;
-        } else {
-          cantidadAAgregar = cantidadSolicitada;
-        }
-      } else if (cantidadSolicitada > cantidadMaximaBackend) {
-        cantidadAAgregar = cantidadMaximaBackend;
+
+      const cantidadAAgregar = Math.min(
+        cantidadSolicitada,
+        cantidadMaximaBackend - (existingCarritoItem?.cantidad || 0)
+      );
+
+      if (cantidadAAgregar <= 0) {
+        toast.error("Ya has añadido la cantidad máxima en stock.");
+        return;
       }
 
-      if (cantidadAAgregar > 0) {
-        const nuevoItem = {
-          idLibro: producto.idLibro,
-          cantidad: cantidadAAgregar,
-        };
-  
-        const responseAgregar = await fetch("https://localhost:7182/api/Carrito/agregar", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${auth.token}`,
-          },
-          body: JSON.stringify(nuevoItem),
-        });
-  
-        if (!responseAgregar.ok) {
-          throw new Error("Error al agregar el producto al carrito.");
-        }
-  
-        toast.success("Producto añadido al carrito.");
-        leerCarritoBackend();
-      } else {
-        toast.error("No hay suficiente stock disponible.");
+      const nuevoItem = {
+        idLibro: producto.idLibro,
+        cantidad: cantidadAAgregar,
+      };
+
+      const responseAgregar = await fetch("https://localhost:7182/api/Carrito/agregar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.token}`,
+        },
+        body: JSON.stringify(nuevoItem),
+      });
+
+      if (!responseAgregar.ok) {
+        throw new Error("Error al agregar el producto al carrito.");
       }
+
+      toast.success("Producto añadido al carrito.");
+      leerCarritoBackend();
     } catch (error) {
       console.error("Error al agregar producto al carrito:", error);
       toast.error("Error al agregar producto al carrito.");
       leerCarritoBackend();
     }
   };
-  
 
   const eliminarItem = async (productoId) => {
 
@@ -323,10 +316,10 @@ const leerCarritoBackend = async () => {
   };
 
   const vaciarCarritoLocal = async () => {
-      setItems([]);
-      localStorage.removeItem("carrito");
-      toast.success("Carrito local vaciado.");
-      return;
+    setItems([]);
+    localStorage.removeItem("carrito");
+    toast.success("Carrito local vaciado.");
+    return;
   };
 
   const vaciarCarrito = async () => {
@@ -399,22 +392,69 @@ const leerCarritoBackend = async () => {
   };
 
   const actualizarCantidad = async (idLibro, nuevaCantidad) => {
-
-    if (nuevaCantidad < 1) return;
-
-    if (!auth.token) {
-      const updatedItems = items.map((item) =>
-        item.idLibro === idLibro
-          ? { ...item, cantidad: nuevaCantidad }
-          : item
-      );
-      setItems(updatedItems);
-      localStorage.setItem("carrito", JSON.stringify(updatedItems));
+    if (nuevaCantidad < 1) {
+      toast.warning("La cantidad debe ser al menos 1.");
       return;
     }
 
     try {
-      const response = await fetch(
+      const responseStock = await fetch(
+        "https://localhost:7182/api/Libro/VerificarStock",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(auth.token && { Authorization: `Bearer ${auth.token}` }),
+          },
+          body: JSON.stringify([idLibro]),
+        }
+      );
+
+      if (!responseStock.ok) {
+        throw new Error("Error al verificar el stock del producto.");
+      }
+
+      const stockData = await responseStock.json();
+      const productoStock = stockData.find((item) => item.id === idLibro);
+
+      if (!productoStock || !productoStock.disponible) {
+        toast.error("Producto no disponible en stock.");
+        return;
+      }
+
+      const cantidadMaximaBackend = productoStock.stock;
+
+      if (!auth.token) {
+        const existingItem = items.find((item) => item.idLibro === idLibro);
+
+        if (!existingItem) {
+          toast.error("El producto no está en el carrito.");
+          return;
+        }
+
+        if (nuevaCantidad > cantidadMaximaBackend) {
+          toast.warning(`Ya tienes la cantidad máxima disponible en stock: ${cantidadMaximaBackend}.`);
+          return;
+        }
+
+        const updatedItems = items.map((item) =>
+          item.idLibro === idLibro
+            ? { ...item, cantidad: nuevaCantidad }
+            : item
+        );
+
+        setItems(updatedItems);
+        localStorage.setItem("carrito", JSON.stringify(updatedItems));
+        toast.success("Cantidad actualizada en el carrito local.");
+        return;
+      }
+
+      if (nuevaCantidad > cantidadMaximaBackend) {
+        toast.warning(`Ya tienes la cantidad máxima disponible en stock: ${cantidadMaximaBackend}.`);
+        return;
+      }
+
+      const responseActualizar = await fetch(
         "https://localhost:7182/api/Carrito/ActualizarCantidad",
         {
           method: "PUT",
@@ -429,11 +469,9 @@ const leerCarritoBackend = async () => {
         }
       );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.error || "Error desconocido al actualizar la cantidad."
-        );
+      if (!responseActualizar.ok) {
+        const errorData = await responseActualizar.json();
+        throw new Error(errorData.error || "Error desconocido al actualizar la cantidad.");
       }
 
       setItems((prevItems) =>
@@ -443,6 +481,8 @@ const leerCarritoBackend = async () => {
             : item
         )
       );
+
+      toast.success("Cantidad actualizada en el carrito.");
     } catch (error) {
       console.error("Error al actualizar la cantidad del producto:", error);
       toast.error("Error al actualizar la cantidad.");
