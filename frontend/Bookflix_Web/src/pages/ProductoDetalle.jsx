@@ -113,58 +113,74 @@ const ProductoDetalle = () => {
     return <p>Producto no encontrado.</p>;
   }
 
-  const handleCrearReseña = async () => {
-    if (textoReseña.trim()) {
-      try {
-        const nuevaReseña = {
-          texto: textoReseña,
-          idLibro: productoId,
-          estrellas: parseInt(rating),
-        };
-
-        console.log("Payload being sent:", nuevaReseña);
-
-        const response = await fetch(
-          `https://localhost:7182/api/User/publicar`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${auth.token}`,
-            },
-            body: JSON.stringify(nuevaReseña),
-          }
-        );
-
-        console.log("Response status:", response.status);
-        console.log("Response headers:", response.headers);
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error("Error response from server:", errorText);
-          throw new Error("No se pudo sincronizar con el servidor.");
-        }
-
-        const data = await response.json();
-        setReseñas((prevReseñas) => [
-          {
-            texto: textoReseña,
-            usuario: data.nombreUsuario,
-            fecha: data.fechaPublicacion,
-            estrellas: parseInt(rating),
-          },
-          ...prevReseñas,
-        ]);
-        setTextoReseña("");
-        setHaReseñado(true);
-        toast.success("¡Gracias por tu opinión!.");
-      } catch (error) {
-        toast.error(error.message || "No se ha podido crear la reseña.");
+  const cargarProducto = async () => {
+    console.log("Recargando datos del producto tras compra.");
+    try {
+      const response = await fetch(`https://localhost:7182/api/Libro/Detalle/${productoId}`);
+      if (!response.ok) {
+        throw new Error("Error al cargar el producto.");
       }
-    } else {
-      toast.warn("Tienes que escribir algo para enviar una reseña.");
+      const data = await response.json();
+      console.log("Producto cargado:", data);
+      setProducto(data);
+      setReseñas(data.reseñas || []);
+      if (auth.token) {
+        const usuarioHaReseñado = data.reseñas.some(
+          (reseña) => reseña.usuario === auth.token
+        );
+        setHaReseñado(usuarioHaReseñado);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
+  
+  const handleCrearReseña = async () => {
+  if (textoReseña.trim()) {
+    try {
+      const nuevaReseña = {
+        texto: textoReseña,
+        idLibro: productoId,
+        estrellas: parseInt(rating),
+      };
+
+      console.log("Payload being sent:", nuevaReseña);
+
+      // Enviar la nueva reseña al servidor
+      const response = await fetch(`https://localhost:7182/api/User/publicar`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.token}`,
+        },
+        body: JSON.stringify(nuevaReseña),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Error response from server:", errorText);
+        throw new Error("No se pudo sincronizar con el servidor.");
+      }
+
+      // Si la reseña se publica correctamente, recarga las reseñas del producto
+      const data = await response.json();
+      toast.success("¡Gracias por tu opinión!");
+
+      // Recargar las reseñas desde el servidor
+      cargarProducto();
+      setTextoReseña("");
+      setHaReseñado(true);
+
+    } catch (error) {
+      toast.error(error.message || "No se ha podido crear la reseña.");
+    }
+  } else {
+    toast.warn("Tienes que escribir algo para enviar una reseña.");
+  }
+};
+
 
   if (loading) {
     return <p>Cargando producto...</p>;
@@ -299,8 +315,8 @@ const ProductoDetalle = () => {
           {reseñas.length > 0 ? (
             reseñas.map((reseña, index) => (
               <div key={index} className="reseña">
-                <p>Usuario: {reseña.usuario}</p>
-                <p>Fecha: {new Date(reseña.fecha).toLocaleDateString()}</p>
+                <p>Usuario: {reseña.autor}</p>
+                <p>Fecha: {new Date(reseña.fechaPublicacion).toLocaleDateString()}</p>
                 <Rating value={reseña.estrellas} readOnly />
                 <p>{reseña.texto}</p>
               </div>
