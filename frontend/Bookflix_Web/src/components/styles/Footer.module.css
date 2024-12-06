@@ -6,7 +6,12 @@ footer.footer {
   z-index: 1000;
   padding: 20px 0;
 }
-
+@media (max-width: 768px) {
+  footer.footer {
+    display: block;
+    justify-items: center;
+  }
+}
 footer.footer > div {
   margin-bottom: 10px;
 }
