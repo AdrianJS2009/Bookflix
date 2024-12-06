@@ -1,5 +1,5 @@
+import { Rating } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { Rating } from '@mui/material';
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -28,21 +28,17 @@ const ProductoDetalle = () => {
 
   useEffect(() => {
     const cargarProducto = async () => {
-      console.log("Recargando datos del producto tras compra.");
       try {
         const response = await fetch(
           `https://localhost:7182/api/Libro/Detalle/${productoId}`
         );
-        if (!response.ok) {
-          throw new Error("Error al cargar el producto.");
-        }
         const data = await response.json();
-        console.log("Producto cargado:", data);
         setProducto(data);
         setReseñas(data.reseñas || []);
+
         if (auth.token) {
           const usuarioHaReseñado = data.reseñas.some(
-            (reseña) => reseña.usuario === auth.token
+            (reseña) => reseña.autor === auth.nombre
           );
           setHaReseñado(usuarioHaReseñado);
         }
@@ -61,8 +57,14 @@ const ProductoDetalle = () => {
       if (auth.token) {
         try {
           const decoded = JSON.parse(atob(auth.token.split(".")[1]));
-          const currentUser = parseInt(decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]);
-          const response = await fetch(`https://localhost:7182/api/User/verificar-compra?idUsuario=${currentUser}&idLibro=${productoId}`);
+          const currentUser = parseInt(
+            decoded[
+              "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+            ]
+          );
+          const response = await fetch(
+            `https://localhost:7182/api/User/verificar-compra?idUsuario=${currentUser}&idLibro=${productoId}`
+          );
           if (response.ok) {
             setHaComprado(true);
           } else {
@@ -77,7 +79,6 @@ const ProductoDetalle = () => {
 
     verificarCompra();
   }, [productoId, auth.token]);
-
 
   const manejarCambio = (e) => {
     const nuevoValor = e.target.value;
@@ -139,7 +140,9 @@ const ProductoDetalle = () => {
   const cargarProducto = async () => {
     console.log("Recargando datos del producto tras compra.");
     try {
-      const response = await fetch(`https://localhost:7182/api/Libro/Detalle/${productoId}`);
+      const response = await fetch(
+        `https://localhost:7182/api/Libro/Detalle/${productoId}`
+      );
       if (!response.ok) {
         throw new Error("Error al cargar el producto.");
       }
@@ -171,14 +174,17 @@ const ProductoDetalle = () => {
 
         console.log("Payload being sent:", nuevaReseña);
 
-        const response = await fetch(`https://localhost:7182/api/User/publicar`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${auth.token}`,
-          },
-          body: JSON.stringify(nuevaReseña),
-        });
+        const response = await fetch(
+          `https://localhost:7182/api/User/publicar`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${auth.token}`,
+            },
+            body: JSON.stringify(nuevaReseña),
+          }
+        );
 
         if (!response.ok) {
           const errorText = await response.text();
@@ -192,7 +198,6 @@ const ProductoDetalle = () => {
         cargarProducto();
         setTextoReseña("");
         setHaReseñado(true);
-
       } catch (error) {
         toast.error(error.message || "No se ha podido crear la reseña.");
       }
@@ -200,7 +205,6 @@ const ProductoDetalle = () => {
       toast.warn("Tienes que escribir algo para enviar una reseña.");
     }
   };
-
 
   if (loading) {
     return <p>Cargando producto...</p>;
@@ -236,9 +240,7 @@ const ProductoDetalle = () => {
             </p>
             <p className="generoLibro">
               Género:{" "}
-              <span className="genero">
-                {producto.genero || "Sin género"}
-              </span>
+              <span className="genero">{producto.genero || "Sin género"}</span>
             </p>
             <p className="isbn texto-pequeño">ISBN: {producto.isbn || "N/A"}</p>
           </div>
@@ -344,7 +346,10 @@ const ProductoDetalle = () => {
             reseñas.map((reseña, index) => (
               <div key={index} className="reseña">
                 <p>Usuario: {reseña.autor}</p>
-                <p>Fecha: {new Date(reseña.fechaPublicacion).toLocaleDateString()}</p>
+                <p>
+                  Fecha:{" "}
+                  {new Date(reseña.fechaPublicacion).toLocaleDateString()}
+                </p>
                 <Rating value={reseña.estrellas} readOnly />
                 <p>{reseña.texto}</p>
               </div>

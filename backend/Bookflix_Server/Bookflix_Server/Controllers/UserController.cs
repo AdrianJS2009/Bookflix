@@ -121,7 +121,7 @@ namespace Bookflix_Server.Controllers
             };
 
 
-           // Console.WriteLine($"Hash generado para el usuario {usuario.Email}: {usuario.Password}");
+            // Console.WriteLine($"Hash generado para el usuario {usuario.Email}: {usuario.Password}");
 
 
             await _userRepository.AgregarUsuarioAsync(usuario);
@@ -200,6 +200,7 @@ namespace Bookflix_Server.Controllers
         }
 
         [HttpPost("publicar")]
+        [Authorize]
         public async Task<IActionResult> PublicarReseña([FromBody] ReseñaDTO reseñaDto)
         {
             if (reseñaDto == null)
@@ -218,13 +219,19 @@ namespace Bookflix_Server.Controllers
             if (libro == null)
                 return NotFound(new { error = "Libro no encontrado." });
 
+
+            if (await _reseñaRepository.UsuarioHaReseñadoProductoAsync(idUsuario, idLibro))
+            {
+                return Conflict(new { error = "Ya has reseñado este producto." });
+            }
+
             var reseña = new Reseña
             {
                 UsuarioId = usuario.IdUser,
                 ProductoId = idLibro,
                 Autor = !string.IsNullOrEmpty(reseñaDto.Autor)
-                ? reseñaDto.Autor
-                : $"{usuario.Nombre} {usuario.Apellidos}",
+                    ? reseñaDto.Autor
+                    : $"{usuario.Nombre} {usuario.Apellidos}",
                 Estrellas = reseñaDto.Estrellas,
                 Texto = reseñaDto.Texto,
                 FechaPublicacion = reseñaDto.FechaPublicacion != default ? reseñaDto.FechaPublicacion : DateTime.UtcNow,
