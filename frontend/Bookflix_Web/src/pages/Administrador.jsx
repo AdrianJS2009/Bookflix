@@ -189,7 +189,6 @@ export default function Administrador() {
         {!isShowingUsers && (
           <Button
             onClick={() => {
-              setSelectedUser(null);
               setSelectedProduct(null);
               setIsModalOpen(true);
             }}

@@ -1,80 +1,169 @@
 .perfil-pedidos-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
-  
-  .perfil-container, .pedidos-container {
-    background-color: var(--blanco);
-    border-radius: 15px;
-    box-shadow: 4px 4px 10px var(--difuminado);
-    padding: 20px;
-    margin: 20px 0;
-    width: 80%;
-    max-width: 800px;
-    box-sizing: border-box;
-  }
-  
-  .perfil-container h1, .pedidos-container h1 {
-    text-align: center;
-    color: #333;
-  }
-  
-  .perfil-container form {
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-  }
-  
-  .perfil-container label {
-    margin-bottom: 10px;
-    font-size: 1rem;
-    color: #333;
-  }
-  
-  .perfil-container input {
-    padding: 10px;
-    border: 1px solid var(--difuminado);
-    border-radius: 5px;
-    margin-top: 5px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  
-  .perfil-container button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    color: white;
-    background-color: var(--azul-normal);
-    margin-top: 20px;
-  }
-  
-  .perfil-container button:hover {
-    background-color: var(--azul-claro);
-    border: 1px solid var(--azul-oscuro);
-    color: var(--azul-oscuro);
-  }
-  
-  .pedidos-container ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .pedidos-container li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.perfil-container,
+.pedidos-container {
+  background-color: var(--blanco);
+  border-radius: 15px;
+  box-shadow: 4px 4px 10px var(--difuminado);
+  padding: 20px;
+  margin: 20px 0;
+  width: 100%;
+  max-width: 900px;
+  box-sizing: border-box;
+}
+
+.perfil-container h1,
+.pedidos-container h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.perfil-container form {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.perfil-container label {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: #333;
+}
+
+.perfil-container input {
+  padding: 10px;
+  border: 1px solid var(--difuminado);
+  border-radius: 5px;
+  margin-top: 5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.perfil-container button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  color: white;
+  background-color: var(--azul-normal);
+  margin-top: 20px;
+}
+
+.perfil-container button:hover {
+  background-color: var(--azul-claro);
+  border: 1px solid var(--azul-oscuro);
+  color: var(--azul-oscuro);
+}
+
+.pedidos-container ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pedidos-container li {
+  padding: 15px;
+  background-color: var(--verde-claro);
+  border-radius: 15px;
+  margin: 10px 0;
+  box-shadow: 4px 4px 10px var(--difuminado);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pedidos-container p {
+  margin: 5px 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.pedidos-container li img {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+.pedidos-container li .libro-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.pedidos-container li .libro-info p {
+  margin: 5px 0;
+}
+
+.perfil-container .modal-buttons,
+.pedidos-container .modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btnComprar {
+  padding: 10px 20px;
+  background-color: var(--azul-normal);
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btnComprar:hover {
+  background-color: var(--azul-claro);
+}
+
+@media (max-width: 768px) {
+  .perfil-pedidos-container {
     padding: 15px;
-    background-color: var(--verde-claro);
-    border-radius: 15px;
+  }
+
+  .perfil-container,
+  .pedidos-container {
+    width: 100%;
     margin: 10px 0;
-    box-shadow: 4px 4px 10px var(--difuminado);
   }
-  
-  .pedidos-container p {
-    margin: 5px 0;
-    font-size: 1rem;
-    color: #333;
+
+  .pedidos-container li {
+    flex-direction: column;
+    gap: 8px;
   }
+}
+
+/* .modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+} */
