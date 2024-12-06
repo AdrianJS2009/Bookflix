@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth, rol } from "../contexts/AuthContext";
 import { useCarrito } from "../contexts/CarritoContext";
 import classes from "./styles/Header.module.css";
 
@@ -8,7 +8,7 @@ const Header = () => {
   const [userName, setUserName] = useState("Usuario");
   const [menuOpen, setMenuOpen] = useState(false);
   const { items, vaciarCarritoLocal } = useCarrito();
-  const { auth, cerrarSesion } = useAuth();
+  const { auth, cerrarSesion, rol } = useAuth();
 
   const cartCount = Array.isArray(items)
     ? items.reduce((total, item) => total + item.cantidad, 0)
@@ -18,14 +18,14 @@ const Header = () => {
     if (auth.token) {
       try {
         // console.log(auth.token)
-        const decoded = JSON.parse(atob(auth.token.split(".")[1])); 
+        const decoded = JSON.parse(atob(auth.token.split(".")[1]));
         // console.log(decoded)
         setUserName(
           `Hola, ${decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]}`
         );
       } catch (error) {
         console.error("Error decodificando el token:", error);
-        
+
       }
     } else {
       setUserName("Usuario");
@@ -54,7 +54,7 @@ const Header = () => {
   const handleAbrirPerfil = () => {
     setMenuOpen(false);
   }
-  
+
 
   return (
     <>
@@ -123,14 +123,18 @@ const Header = () => {
         </nav>
       </header>
       {menuOpen && (
-        <div className={`${classes.modalOverlay} texto-pequeño`}  onClick={toggleModal}>
+        <div className={`${classes.modalOverlay} texto-pequeño`} onClick={toggleModal}>
           <div
             className={classes.modalContent}
-            onClick={(e) => e.stopPropagation()} 
+            onClick={(e) => e.stopPropagation()}
           >
             <h2 className="texto-mediano-bold">Opciones de usuario</h2>
             <div className={classes.modalActions}>
               <NavLink to="perfil" onClick={handleAbrirPerfil} activeClassName="active-link">Perfil & Pedidos</NavLink>
+              {rol === "admin" ?
+                <NavLink to="admin">Admin</NavLink>
+                : <></>
+              }
               <button onClick={handleLogout}>Cerrar sesión</button>
               <button onClick={toggleModal}>Cerrar</button>
             </div>
