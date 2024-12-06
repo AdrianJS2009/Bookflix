@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
       const payload = JSON.parse(atob(auth?.token?.split(".")[1]));
       return payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || "usuario";
     } catch (error) {
+      if(!auth.token) return;
       console.error("Error al decodificar el token:", error);
       return "usuario";
     }
@@ -36,7 +37,7 @@ export const AuthProvider = ({ children }) => {
         setAuth({ token });
         const decoded = JSON.parse(atob(token.split(".")[1]));
         const roleDecoded = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
-        console.log("roleDecoded", roleDecoded);
+        // console.log("roleDecoded", roleDecoded);
         setRol(roleDecoded);
 
         sessionStorage.setItem("token", token);
@@ -54,7 +55,7 @@ export const AuthProvider = ({ children }) => {
             throw new Error("Error al verificar o crear el carrito.");
           }
 
-          console.log("Carrito verificado o creado correctamente.");
+          // console.log("Carrito verificado o creado correctamente.");
         } catch (error) {
           console.error("Error al verificar o crear el carrito:", error);
         }

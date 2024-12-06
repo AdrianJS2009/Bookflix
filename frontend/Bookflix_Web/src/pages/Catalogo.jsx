@@ -57,7 +57,7 @@ const Catalogo = () => {
       }
 
       const data = await response.json();
-      console.log("Respuesta recibida:", data);
+      // console.log("Respuesta recibida:", data);
 
       setLibros(data.libros || []);
       setPageCount(data.totalPaginas || 0);

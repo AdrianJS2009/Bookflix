@@ -17,6 +17,8 @@ export const CarritoProvider = ({ children }) => {
   });
 
   const leerCarritoBackend = async () => {
+    if(!auth.token) return;
+    
     try {
       const response = await fetch(
         "https://localhost:7182/api/Carrito/ListarCarrito",
@@ -41,7 +43,7 @@ export const CarritoProvider = ({ children }) => {
         : [];
       setItems(carritoItems);
     } catch (error) {
-      console.error("Error al sincronizar el carrito:", error);
+      //console.error("Error al sincronizar el carrito:", error);
       toast.error("Error al sincronizar el carrito.");
     }
   };
