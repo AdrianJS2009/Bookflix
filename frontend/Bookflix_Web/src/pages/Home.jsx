@@ -14,14 +14,14 @@ export default function Home() {
           imageSrc="/assets/banner/BannerUnete.png"
           altText="Banner Unete"
         />
-        {/* <Generos /> */}
+        <Generos />
         <Banner
           imageSrc="/assets/banner/BannerEnvioGratuito.png"
           altText="Banner Envío Gratuito"
         />
 
-        {/* <Carrusel2 />
-        <TopVentas /> */}
+        <Carrusel2 />
+        <TopVentas />
         <Banner
           imageSrc="/assets/banner/BannerWebAmigas.png"
           altText="Banner Web Amigas"
