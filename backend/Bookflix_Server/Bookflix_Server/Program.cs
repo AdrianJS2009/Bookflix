@@ -149,7 +149,7 @@ public class Program
         });
 
         app.UseCors(policy =>
-            policy.WithOrigins("https://bookflix-server.runasp.net","http://localhost:5173")
+            policy.WithOrigins("https://bookflix-daw.vercel.app", "https://bookflix-server.runasp.net","http://localhost:5173")
                   .AllowAnyHeader()
                   .AllowAnyMethod());
 

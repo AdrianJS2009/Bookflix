@@ -238,7 +238,7 @@ const Catalogo = () => {
                       <span>
                         <span className="agotado">⬤</span> Agotado
                       </span>
-                    )} - ⭐{libro.promedioEstrellas}
+                    )} - ⭐ {Math.round(libro.promedioEstrellas)}
                   </p>
                 </div>
                 <Button
