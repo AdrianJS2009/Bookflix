@@ -205,8 +205,9 @@ namespace Bookflix_Server.Controllers
                 UsuarioId = usuario.IdUser,
                 ProductoId = idLibro,
                 Autor = !string.IsNullOrEmpty(reseñaDto.Autor)
-                        ? reseñaDto.Autor
-                        : $"{usuario.Nombre} {usuario.Apellidos}",
+                ? reseñaDto.Autor
+                : $"{usuario.Nombre} {usuario.Apellidos}",
+                Estrellas = reseñaDto.Estrellas,
                 Texto = reseñaDto.Texto,
                 FechaPublicacion = reseñaDto.FechaPublicacion != default ? reseñaDto.FechaPublicacion : DateTime.UtcNow,
                 Categoria = reseñaDto.Categoria,

@@ -42,7 +42,7 @@ const ProductoDetalle = () => {
         setReseñas(data.reseñas || []);
         if (auth.token) {
           const usuarioHaReseñado = data.reseñas.some(
-            (reseña) => reseña.usuario === auth.token.nombre
+            (reseña) => reseña.usuario === auth.token
           );
           setHaReseñado(usuarioHaReseñado);
         }
@@ -119,6 +119,7 @@ const ProductoDetalle = () => {
         const nuevaReseña = {
           texto: textoReseña,
           idLibro: productoId,
+          estrellas: parseInt(rating),
         };
 
         console.log("Payload being sent:", nuevaReseña);
@@ -150,7 +151,7 @@ const ProductoDetalle = () => {
             texto: textoReseña,
             usuario: data.nombreUsuario,
             fecha: data.fechaPublicacion,
-            estrellas: rating
+            estrellas: parseInt(rating),
           },
           ...prevReseñas,
         ]);
@@ -298,15 +299,16 @@ const ProductoDetalle = () => {
           {reseñas.length > 0 ? (
             reseñas.map((reseña, index) => (
               <div key={index} className="reseña">
-                <p>Usuario: {reseña.autor}</p>
+                <p>Usuario: {reseña.usuario}</p>
                 <p>Fecha: {new Date(reseña.fecha).toLocaleDateString()}</p>
-                <Rating value={reseña.rating} readOnly />
+                <Rating value={reseña.estrellas} readOnly />
                 <p>{reseña.texto}</p>
               </div>
             ))
           ) : (
             <p>No hay reseñas para este producto.</p>
           )}
+
         </div>
 
       </main>
