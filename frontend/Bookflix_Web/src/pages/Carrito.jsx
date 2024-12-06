@@ -9,6 +9,7 @@ const Carrito = () => {
   const {
     items = [],
     vaciarCarrito,
+    vaciarCarritoLocal,
     eliminarItem,
     actualizarCantidad,
   } = useCarrito();
@@ -158,7 +159,7 @@ const Carrito = () => {
       <Button
         label="Vaciar Carrito"
         className="botonVaciar"
-        onClick={vaciarCarrito}
+        onClick={auth.token ? vaciarCarrito : vaciarCarritoLocal}
       />
       <Button label="Comprar" className="botonComprar" onClick={handleCompra} />
     </main>

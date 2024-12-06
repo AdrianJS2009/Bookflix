@@ -86,7 +86,7 @@ const Carrusel2 = () => {
                   />
                 </div>
                 <div className="catalogoItemButtons">
-                  <NavLink to={`/libro/${libro.idLibro}`}>
+                  <NavLink to={`/producto/${libro.idLibro}`}>
                     <h2 className="titulo">
                       {Array.from(libro.nombre).length > 10
                         ? Array.from(libro.nombre).slice(0, 50).join("") + "..."
