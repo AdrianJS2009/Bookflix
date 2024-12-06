@@ -39,14 +39,22 @@ namespace Bookflix_Server.Controllers
             if (pagina <= 0 || tamanoPagina <= 0)
                 return BadRequest(new { error = "Parámetros de paginación inválidos." });
 
-            var query = _context.Users.AsQueryable();
+            
+            var usuariosQuery = _context.Users.AsQueryable();
 
-            var totalUsuarios = await query.CountAsync();
+            var totalUsuarios = await usuariosQuery.CountAsync();
             var totalPaginas = (int)Math.Ceiling(totalUsuarios / (double)tamanoPagina);
 
-            var usuarios = await query
+            var usuarios = await usuariosQuery
                 .Skip((pagina - 1) * tamanoPagina)
                 .Take(tamanoPagina)
+                .Select(u => new
+                {
+                    u.IdUser,
+                    u.Nombre,
+                    u.Email,
+                    u.Rol // Excluye contraseña automáticamente
+                })
                 .ToListAsync();
 
             return Ok(new
@@ -120,7 +128,14 @@ namespace Bookflix_Server.Controllers
             _context.Carritos.Add(carrito);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(ObtenerPerfilUsuario), new { correo = usuario.Email }, usuario);
+            return CreatedAtAction(nameof(ObtenerPerfilUsuario), new { correo = usuario.Email }, new
+            {
+                usuario.IdUser,
+                usuario.Nombre,
+                usuario.Email,
+                usuario.Direccion,
+                usuario.Rol
+            });
         }
 
 
