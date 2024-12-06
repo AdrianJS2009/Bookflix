@@ -64,11 +64,11 @@ hr {
   border-radius: 15px;
 }
 
-.stock .existencias {
+.existencias {
   color: var(--verde);
 }
 
-.stock .agotado {
+.agotado {
   color: var(--rojo);
 }
 

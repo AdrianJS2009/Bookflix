@@ -195,5 +195,39 @@ namespace Bookflix_Server.Controllers
 
             return Ok(stockInfo);
         }
+
+        [HttpGet("ItemsCarrusel")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ObtenerItemsCarrusel()
+        {
+            try
+            {
+                var libros = await _context.Libros
+                    .OrderByDescending(l => l.IdLibro)
+                    .Take(10)
+                    .ToListAsync();
+
+                var librosDto = libros.Select(l => new LibroDTO
+                {
+                    IdLibro = l.IdLibro,
+                    Nombre = l.Nombre,
+                    Precio = l.Precio,
+                    UrlImagen = l.UrlImagen,
+                    Genero = l.Genero,
+                    Descripcion = l.Descripcion,
+                    Autor = l.Autor,
+                    ISBN = l.ISBN,
+                    Stock = l.Stock,
+                    PromedioEstrellas = l.PromedioEstrellas
+                });
+
+                return Ok(librosDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "Error interno del servidor", details = ex.Message });
+            }
+        }
+
     }
 }
