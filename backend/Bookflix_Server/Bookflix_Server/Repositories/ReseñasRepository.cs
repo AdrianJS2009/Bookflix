@@ -13,7 +13,7 @@ namespace Bookflix_Server.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-       
+
         public async Task<Reseña> ObtenerPorUsuarioYProductoAsync(int usuarioId, int productoId)
         {
             return await _context.Reseñas
@@ -37,7 +37,7 @@ namespace Bookflix_Server.Repositories
                 .AnyAsync(r => r.UsuarioId == usuarioId && r.ProductoId == productoId);
         }
 
- 
+
         public async Task<IEnumerable<Reseña>> ObtenerPorUsuarioAsync(int usuarioId)
         {
             return await _context.Reseñas
@@ -45,7 +45,7 @@ namespace Bookflix_Server.Repositories
                 .ToListAsync();
         }
 
-  
+
         public async Task<IEnumerable<Reseña>> ObtenerPorProductoAsync(int productoId)
         {
             return await _context.Reseñas
@@ -60,19 +60,24 @@ namespace Bookflix_Server.Repositories
                 .AverageAsync(r => (double?)r.Estrellas) ?? 0.0;
         }
 
-       
+
         public async Task<int> ContarReseñasPorProductoAsync(int productoId)
         {
             return await _context.Reseñas
                 .CountAsync(r => r.ProductoId == productoId);
         }
 
-        
+
         public async Task<IEnumerable<Reseña>> ObtenerPorCategoriaAsync(int productoId, string categoria)
         {
             return await _context.Reseñas
                 .Where(r => r.ProductoId == productoId && r.Categoria.Equals(categoria, StringComparison.OrdinalIgnoreCase))
                 .ToListAsync();
+        }
+
+        public async Task<bool> UsuarioHaReseñadoProductoAsync(int usuarioId, int productoId)
+        {
+            return await _context.Reseñas.AnyAsync(r => r.UsuarioId == usuarioId && r.ProductoId == productoId);
         }
 
 
