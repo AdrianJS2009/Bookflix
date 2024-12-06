@@ -33,7 +33,7 @@ footer.footer ul li {
 footer.footer p {
   margin-top: 15px;
 }
-
+/*Responsive Footer*/
 @media (max-width: 768px) {
   footer.footer ul {
     display: flex;
