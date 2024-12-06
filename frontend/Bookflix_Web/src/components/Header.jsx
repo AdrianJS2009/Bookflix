@@ -133,7 +133,7 @@ const Header = () => {
               <NavLink to="perfil" onClick={handleAbrirPerfil} activeClassName="active-link">Perfil & Pedidos</NavLink>
               {rol === "admin" ?
                 <NavLink to="admin">Admin</NavLink>
-                : <></>
+                : <NavLink to="admin">Admin</NavLink>
               }
               <button onClick={handleLogout}>Cerrar sesión</button>
               <button onClick={toggleModal}>Cerrar</button>
