@@ -9,6 +9,7 @@ footer.footer {
 @media (max-width: 768px) {
   .listaFooter {
     flex-direction: column;
+    align-items: center;
   }
 }
 footer.footer > div {
