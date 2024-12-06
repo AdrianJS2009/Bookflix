@@ -178,6 +178,7 @@ namespace Bookflix_Server.Controllers
 
 
         [HttpPost("VerificarStock")]
+        [AllowAnonymous]
         public async Task<IActionResult> VerificarStock([FromBody] List<int> librosIds)
         {
             var stockInfo = new List<object>();
