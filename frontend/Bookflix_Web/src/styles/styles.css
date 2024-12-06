@@ -6,9 +6,10 @@ body {
 
 .home-bookflix {
   margin: 0 auto;
-  display: grid;
+  /* display: grid;
   grid-template-columns: 1fr;
-  gap: 100px;
+  gap: 100px; */
+  margin-bottom: 100px;
 }
 
 .box-banner {
