@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import styles from "./styles/Button.module.css";
+import styles from "./styles/button.module.css";
 
 const Button = ({
   label,
