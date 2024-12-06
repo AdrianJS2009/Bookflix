@@ -1,6 +1,4 @@
-﻿
-
-using Bookflix_Server.Data;
+﻿using Bookflix_Server.Data;
 using Bookflix_Server.Models.DTOs;
 using Bookflix_Server.Repositories;
 using Bookflix_Server.Services;
@@ -28,7 +26,7 @@ namespace Bookflix_Server.Controllers
             _smartSearchService = smartSearchService ?? throw new ArgumentNullException(nameof(smartSearchService));
             _icarritoRepository = carritoRepository ?? throw new ArgumentNullException(nameof(carritoRepository));
 
-           
+
             _smartSearchService.InicializarLibrosAsync().Wait();
         }
 
@@ -36,7 +34,7 @@ namespace Bookflix_Server.Controllers
 
         private string ObtenerCorreoUsuario()
         {
-            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value; 
+            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         }
 
         [HttpGet("Detalle/{idLibro}")]
@@ -51,6 +49,11 @@ namespace Bookflix_Server.Controllers
                 return NotFound("El libro especificado no fue encontrado.");
             }
 
+
+            var promedioEstrellas = await _context.Reseñas
+                .Where(r => r.ProductoId == idLibro)
+                .AverageAsync(r => (double?)r.Estrellas) ?? 0.0;
+
             var libroDto = new
             {
                 IdLibro = libro.IdLibro,
@@ -62,6 +65,7 @@ namespace Bookflix_Server.Controllers
                 Autor = libro.Autor,
                 ISBN = libro.ISBN,
                 Stock = libro.Stock,
+                PromedioEstrellas = promedioEstrellas,
                 Reseñas = libro.Reseñas.Select(r => new
                 {
                     r.IdReseña,
@@ -79,14 +83,14 @@ namespace Bookflix_Server.Controllers
         [HttpGet("ListarLibros")]
         [AllowAnonymous]
         public async Task<IActionResult> ListarLibros(
-            string textoBusqueda = null,
-            double? precioMin = null,
-            double? precioMax = null,
-            string genero = null,
-            string ordenarPor = null,
-            bool ascendente = true,
-            int pagina = 1,
-            int tamanoPagina = TamanoPagina)
+     string textoBusqueda = null,
+     double? precioMin = null,
+     double? precioMax = null,
+     string genero = null,
+     string ordenarPor = null,
+     bool ascendente = true,
+     int pagina = 1,
+     int tamanoPagina = TamanoPagina)
         {
             try
             {
@@ -122,7 +126,6 @@ namespace Bookflix_Server.Controllers
                     librosQuery = _context.Libros;
                 }
 
-
                 if (precioMin.HasValue)
                     librosQuery = librosQuery.Where(l => l.Precio >= precioMin.Value);
 
@@ -136,7 +139,7 @@ namespace Bookflix_Server.Controllers
                 {
                     "precio" => ascendente ? librosQuery.OrderBy(l => l.Precio) : librosQuery.OrderByDescending(l => l.Precio),
                     "nombre" => ascendente ? librosQuery.OrderBy(l => l.Nombre) : librosQuery.OrderByDescending(l => l.Nombre),
-                    _ => librosQuery 
+                    _ => librosQuery
                 };
 
                 var totalLibros = await librosQuery.CountAsync();
@@ -147,7 +150,7 @@ namespace Bookflix_Server.Controllers
                     .Take(tamanoPagina)
                     .ToListAsync();
 
-                var librosDto = libros.Select(l => new LibroDTO
+                var librosDto = await Task.WhenAll(libros.Select(async l => new LibroDTO
                 {
                     IdLibro = l.IdLibro,
                     Nombre = l.Nombre,
@@ -158,9 +161,10 @@ namespace Bookflix_Server.Controllers
                     Autor = l.Autor,
                     ISBN = l.ISBN,
                     Stock = l.Stock,
-                    PromedioEstrellas = l.PromedioEstrellas
-                }).ToList();
-
+                    PromedioEstrellas = await _context.Reseñas
+                        .Where(r => r.ProductoId == l.IdLibro)
+                        .AverageAsync(r => (double?)r.Estrellas) ?? 0.0
+                }).ToList());
 
                 return Ok(new
                 {
@@ -178,6 +182,7 @@ namespace Bookflix_Server.Controllers
 
 
         [HttpPost("VerificarStock")]
+        [AllowAnonymous]
         public async Task<IActionResult> VerificarStock([FromBody] List<int> librosIds)
         {
             var stockInfo = new List<object>();
@@ -195,5 +200,39 @@ namespace Bookflix_Server.Controllers
 
             return Ok(stockInfo);
         }
+
+        [HttpGet("ItemsCarrusel")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ObtenerItemsCarrusel()
+        {
+            try
+            {
+                var libros = await _context.Libros
+                    .OrderByDescending(l => l.IdLibro)
+                    .Take(10)
+                    .ToListAsync();
+
+                var librosDto = libros.Select(l => new LibroDTO
+                {
+                    IdLibro = l.IdLibro,
+                    Nombre = l.Nombre,
+                    Precio = l.Precio,
+                    UrlImagen = l.UrlImagen,
+                    Genero = l.Genero,
+                    Descripcion = l.Descripcion,
+                    Autor = l.Autor,
+                    ISBN = l.ISBN,
+                    Stock = l.Stock,
+                    PromedioEstrellas = l.PromedioEstrellas
+                });
+
+                return Ok(librosDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "Error interno del servidor", details = ex.Message });
+            }
+        }
+
     }
 }

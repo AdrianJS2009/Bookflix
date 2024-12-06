@@ -47,7 +47,7 @@ const Registro = () => {
       }
 
       toast.success("Usuario registrado correctamente.");
-      navigate(from, { replace: true });
+      navigate("/login");
       setError(null);
     } catch (err) {
       setError(err.message);

@@ -7,7 +7,7 @@ import classes from "./styles/Header.module.css";
 const Header = () => {
   const [userName, setUserName] = useState("Usuario");
   const [menuOpen, setMenuOpen] = useState(false);
-  const { items, vaciarCarrito } = useCarrito();
+  const { items, vaciarCarritoLocal } = useCarrito();
   const { auth, cerrarSesion } = useAuth();
 
   const cartCount = Array.isArray(items)
@@ -17,9 +17,9 @@ const Header = () => {
   useEffect(() => {
     if (auth.token) {
       try {
-        console.log(auth.token)
+        // console.log(auth.token)
         const decoded = JSON.parse(atob(auth.token.split(".")[1])); 
-        console.log(decoded)
+        // console.log(decoded)
         setUserName(
           `Hola, ${decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]}`
         );
@@ -48,7 +48,7 @@ const Header = () => {
   const handleLogout = () => {
     cerrarSesion();
     setMenuOpen(false);
-    vaciarCarrito();
+    vaciarCarritoLocal();
   };
 
   const handleAbrirPerfil = () => {

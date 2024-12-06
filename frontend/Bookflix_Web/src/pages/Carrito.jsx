@@ -4,11 +4,13 @@ import { useAuth } from "../contexts/AuthContext";
 import { useCarrito } from "../contexts/CarritoContext";
 import "../styles/carrito.css";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 const Carrito = () => {
   const {
     items = [],
     vaciarCarrito,
+    vaciarCarritoLocal,
     eliminarItem,
     actualizarCantidad,
   } = useCarrito();
@@ -34,7 +36,7 @@ const Carrito = () => {
     }
 
     try {
-      console.log("Obteniendo datos más recientes del carrito...");
+      // console.log("Obteniendo datos más recientes del carrito...");
       const response = await fetch(
         "https://localhost:7182/api/Carrito/ListarCarrito",
         {
@@ -56,7 +58,7 @@ const Carrito = () => {
         return;
       }
 
-      console.log("Realizando la compra...");
+      // console.log("Realizando la compra...");
       const compraResponse = await fetch(
         "https://localhost:7182/api/Carrito/comprar",
         {
@@ -94,7 +96,7 @@ const Carrito = () => {
         <>
           <ul className="carrito-lista">
             {items.map((item, index) => {
-              console.log("Item en carrito:", item);
+              // console.log("Item en carrito:", item);
               return (
                 <li key={index} className="carrito-item">
                   <img
@@ -102,7 +104,9 @@ const Carrito = () => {
                     alt={`Imagen de ${item.nombre || "Producto"}`}
                     className="imagen-carrito"
                   />
-                  <p>{item.nombre || "Sin nombre"}</p>
+                  <Link to={`/producto/${item.idLibro}`}>
+                    <p>{item.nombre || "Sin nombre"}</p>
+                  </Link>
                   <div className="cantidad">
                     <button
                       className="masCantidad"
@@ -158,7 +162,7 @@ const Carrito = () => {
       <Button
         label="Vaciar Carrito"
         className="botonVaciar"
-        onClick={vaciarCarrito}
+        onClick={auth.token ? vaciarCarrito : vaciarCarritoLocal}
       />
       <Button label="Comprar" className="botonComprar" onClick={handleCompra} />
     </main>

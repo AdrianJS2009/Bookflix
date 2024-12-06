@@ -3,6 +3,7 @@ using Bookflix_Server.Models;
 using Bookflix_Server.Models.DTOs;
 using Bookflix_Server.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -18,14 +19,17 @@ namespace Bookflix_Server.Controllers
         private readonly IProductoRepository _productoRepository;
         private readonly IUserRepository _userRepository;
         private readonly ICompraRepository _compraRepository;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public UserController(MyDbContext context, IReseñasRepository reseñaRepository, IProductoRepository productoRepository, IUserRepository userRepository, ICompraRepository compraRepository)
+
+        public UserController(MyDbContext context, IReseñasRepository reseñaRepository, IProductoRepository productoRepository, IUserRepository userRepository, ICompraRepository compraRepository, IPasswordHasher passwordHasher)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _reseñaRepository = reseñaRepository ?? throw new ArgumentNullException(nameof(reseñaRepository));
             _productoRepository = productoRepository ?? throw new ArgumentNullException(nameof(productoRepository));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _compraRepository = compraRepository ?? throw new ArgumentException(nameof(compraRepository));
+            _passwordHasher = passwordHasher;
         }
 
         private string ObtenerIdUsuario()
@@ -39,14 +43,22 @@ namespace Bookflix_Server.Controllers
             if (pagina <= 0 || tamanoPagina <= 0)
                 return BadRequest(new { error = "Parámetros de paginación inválidos." });
 
-            var query = _context.Users.AsQueryable();
 
-            var totalUsuarios = await query.CountAsync();
+            var usuariosQuery = _context.Users.AsQueryable();
+
+            var totalUsuarios = await usuariosQuery.CountAsync();
             var totalPaginas = (int)Math.Ceiling(totalUsuarios / (double)tamanoPagina);
 
-            var usuarios = await query
+            var usuarios = await usuariosQuery
                 .Skip((pagina - 1) * tamanoPagina)
                 .Take(tamanoPagina)
+                .Select(u => new
+                {
+                    u.IdUser,
+                    u.Nombre,
+                    u.Email,
+                    u.Rol
+                })
                 .ToListAsync();
 
             return Ok(new
@@ -69,7 +81,6 @@ namespace Bookflix_Server.Controllers
                 return NotFound(new { error = "Usuario no encontrado." });
             }
 
-            // Verificar si el usuario tiene un carrito asociado
             var carrito = await _context.Carritos.FirstOrDefaultAsync(c => c.UserId == usuario.IdUser);
             if (carrito == null)
             {
@@ -93,7 +104,7 @@ namespace Bookflix_Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(new { error = "Los datos proporcionados para el usuario no son válidos." });
 
-            var usuarioExistente = await _context.Users.FirstOrDefaultAsync(u => u.Email == datosUsuario.Email);
+            var usuarioExistente = await _userRepository.ObtenerPorCorreoAsync(datosUsuario.Email);
             if (usuarioExistente != null)
             {
                 return Conflict(new { error = "El correo electrónico ya está en uso." });
@@ -106,23 +117,23 @@ namespace Bookflix_Server.Controllers
                 Email = datosUsuario.Email,
                 Direccion = datosUsuario.Direccion,
                 Rol = datosUsuario.Rol,
-                Password = datosUsuario.Password
+                Password = _passwordHasher.HashPassword(datosUsuario.Password)
             };
 
-            _context.Users.Add(usuario);
-            await _context.SaveChangesAsync();
 
-            // Crear carrito asociado al usuario
-            var carrito = new Carrito
+            // Console.WriteLine($"Hash generado para el usuario {usuario.Email}: {usuario.Password}");
+
+
+            await _userRepository.AgregarUsuarioAsync(usuario);
+
+            return CreatedAtAction(nameof(ObtenerPerfilUsuario), new { correo = usuario.Email }, new
             {
-                UserId = usuario.IdUser,
-                Items = new List<CarritoItem>()
-            };
-
-            _context.Carritos.Add(carrito);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(ObtenerPerfilUsuario), new { correo = usuario.Email }, usuario);
+                usuario.IdUser,
+                usuario.Nombre,
+                usuario.Email,
+                usuario.Direccion,
+                usuario.Rol
+            });
         }
 
 
@@ -144,10 +155,16 @@ namespace Bookflix_Server.Controllers
                 return BadRequest(new { error = "Los datos proporcionados para el usuario no son válidos." });
             }
 
+
             usuario.Nombre = datosUsuario.Nombre;
             usuario.Apellidos = datosUsuario.Apellidos;
             usuario.Direccion = datosUsuario.Direccion;
-            usuario.Password = datosUsuario.Password;
+
+
+            if (!string.IsNullOrEmpty(datosUsuario.Password))
+            {
+                usuario.Password = _passwordHasher.HashPassword(datosUsuario.Password);
+            }
 
             _context.Entry(usuario).State = EntityState.Modified;
 
@@ -162,6 +179,7 @@ namespace Bookflix_Server.Controllers
 
             return NoContent();
         }
+
 
         [HttpDelete("eliminar")]
         [Authorize]
@@ -182,6 +200,7 @@ namespace Bookflix_Server.Controllers
         }
 
         [HttpPost("publicar")]
+        [Authorize]
         public async Task<IActionResult> PublicarReseña([FromBody] ReseñaDTO reseñaDto)
         {
             if (reseñaDto == null)
@@ -200,13 +219,20 @@ namespace Bookflix_Server.Controllers
             if (libro == null)
                 return NotFound(new { error = "Libro no encontrado." });
 
+
+            if (await _reseñaRepository.UsuarioHaReseñadoProductoAsync(idUsuario, idLibro))
+            {
+                return Conflict(new { error = "Ya has reseñado este producto." });
+            }
+
             var reseña = new Reseña
             {
                 UsuarioId = usuario.IdUser,
                 ProductoId = idLibro,
                 Autor = !string.IsNullOrEmpty(reseñaDto.Autor)
-                        ? reseñaDto.Autor
-                        : $"{usuario.Nombre} {usuario.Apellidos}",
+                    ? reseñaDto.Autor
+                    : $"{usuario.Nombre} {usuario.Apellidos}",
+                Estrellas = reseñaDto.Estrellas,
                 Texto = reseñaDto.Texto,
                 FechaPublicacion = reseñaDto.FechaPublicacion != default ? reseñaDto.FechaPublicacion : DateTime.UtcNow,
                 Categoria = reseñaDto.Categoria,
@@ -247,11 +273,23 @@ namespace Bookflix_Server.Controllers
                 {
                     IdLibro = detalle.IdLibro,
                     Cantidad = detalle.Cantidad,
-                    PrecioUnitario = detalle.PrecioUnitario 
+                    PrecioUnitario = detalle.PrecioUnitario
                 }).ToList()
             }).ToList();
 
             return Ok(historialComprasDto);
+        }
+        [HttpGet("verificar-compra")]
+        public async Task<IActionResult> VerificarCompra(int idUsuario, int idLibro)
+        {
+            var compraDetalle = await _compraRepository.ObtenerCompraPorUsuarioYProductoAsync(idUsuario, idLibro);
+
+            if (compraDetalle == null)
+            {
+                return BadRequest(new { error = "No has comprado este producto. No puedes dejar una reseña." });
+            }
+
+            return Ok(new { success = true });
         }
 
     }

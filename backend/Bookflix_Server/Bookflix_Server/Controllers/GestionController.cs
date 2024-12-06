@@ -16,7 +16,6 @@ public class GestionController : ControllerBase
         _context = context;
     }
 
-    // Crear un nuevo libro
     [HttpPost("libros")]
     public IActionResult CrearLibro([FromBody] Libro libro)
     {
@@ -29,7 +28,6 @@ public class GestionController : ControllerBase
         return BadRequest(ModelState);
     }
 
-    // Editar un libro existente
     [HttpPut("libros/{id}")]
     public IActionResult EditarLibro(int id, [FromBody] Libro libroActualizado)
     {
@@ -49,31 +47,37 @@ public class GestionController : ControllerBase
         return Ok(libro);
     }
 
-    // Editar un usuario existente
     [HttpPut("usuarios/{id}")]
     public IActionResult CambiarRol(int id)
     {
         var usuario = _context.Users.Find(id);
         if (usuario == null) return NotFound();
-        
+
         if (usuario.Rol.Equals("admin"))
         {
             usuario.Rol = "usuario";
 
-        } else if (usuario.Rol.Equals("usuario"))
+        }
+        else if (usuario.Rol.Equals("usuario"))
         {
             usuario.Rol = "admin";
 
-        } else
+        }
+        else
         {
             usuario.Rol = "usuario";
         }
 
-            _context.SaveChanges();
-        return Ok(usuario);
+        _context.SaveChanges();
+        return Ok(new
+        {
+            usuario.IdUser,
+            usuario.Nombre,
+            usuario.Rol,
+            usuario.Email
+        });
     }
 
-    // Eliminar un usuario
     [HttpDelete("usuarios/{id}")]
     public IActionResult EliminarUsuario(int id)
     {

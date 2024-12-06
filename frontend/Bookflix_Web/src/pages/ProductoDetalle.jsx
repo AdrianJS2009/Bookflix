@@ -1,5 +1,5 @@
+import { Rating } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { Rating } from '@mui/material';
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -22,27 +22,23 @@ const ProductoDetalle = () => {
   const [reseñas, setReseñas] = useState([]);
   const [textoReseña, setTextoReseña] = useState("");
   const [haReseñado, setHaReseñado] = useState(false);
-  // const [haComprado, setHaComprado] = useState(false);
+  const [haComprado, setHaComprado] = useState(false);
   const location = useLocation();
   const [rating, setRating] = useState(0);
 
   useEffect(() => {
     const cargarProducto = async () => {
-      console.log("Recargando datos del producto tras compra.");
       try {
         const response = await fetch(
           `https://localhost:7182/api/Libro/Detalle/${productoId}`
         );
-        if (!response.ok) {
-          throw new Error("Error al cargar el producto.");
-        }
         const data = await response.json();
-        console.log("Producto cargado:", data);
         setProducto(data);
         setReseñas(data.reseñas || []);
+
         if (auth.token) {
           const usuarioHaReseñado = data.reseñas.some(
-            (reseña) => reseña.usuario === auth.token.nombre
+            (reseña) => reseña.autor === auth.nombre
           );
           setHaReseñado(usuarioHaReseñado);
         }
@@ -54,6 +50,37 @@ const ProductoDetalle = () => {
     };
 
     cargarProducto();
+  }, [productoId, auth.token]);
+
+  useEffect(() => {
+    const verificarCompra = async () => {
+      if (auth.token) {
+        try {
+          const decoded = JSON.parse(atob(auth.token.split(".")[1]));
+          const currentUser = parseInt(
+            decoded[
+              "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+            ]
+          );
+          const response = await fetch(
+            `https://localhost:7182/api/User/verificar-compra?idUsuario=${currentUser}&idLibro=${productoId}`
+          );
+          if (response.ok) {
+            setHaComprado(true);
+          } else {
+            setHaComprado(false);
+          }
+        } catch (err) {
+          console.error("Error al verificar compra", err);
+          setHaComprado(false);
+        }
+      }
+    };
+
+    if(auth.token) {
+      verificarCompra();
+    }
+
   }, [productoId, auth.token]);
 
   const manejarCambio = (e) => {
@@ -81,8 +108,8 @@ const ProductoDetalle = () => {
 
   const handleAgregar = () => {
     if (producto && cantidad > 0 && cantidad <= producto.stock) {
-      console.log("Producto antes de agregar:", producto);
-      console.log("Cantidad seleccionada:", cantidad);
+      // console.log("Producto antes de agregar:", producto);
+      // console.log("Cantidad seleccionada:", cantidad);
 
       agregarAlCarrito(
         {
@@ -113,15 +140,42 @@ const ProductoDetalle = () => {
     return <p>Producto no encontrado.</p>;
   }
 
+  const cargarProducto = async () => {
+    // console.log("Recargando datos del producto tras compra.");
+    try {
+      const response = await fetch(
+        `https://localhost:7182/api/Libro/Detalle/${productoId}`
+      );
+      if (!response.ok) {
+        throw new Error("Error al cargar el producto.");
+      }
+      const data = await response.json();
+      // console.log("Producto cargado:", data);
+      setProducto(data);
+      setReseñas(data.reseñas || []);
+      if (auth.token) {
+        const usuarioHaReseñado = data.reseñas.some(
+          (reseña) => reseña.usuario === auth.token
+        );
+        setHaReseñado(usuarioHaReseñado);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleCrearReseña = async () => {
     if (textoReseña.trim()) {
       try {
         const nuevaReseña = {
           texto: textoReseña,
           idLibro: productoId,
+          estrellas: parseInt(rating),
         };
 
-        console.log("Payload being sent:", nuevaReseña);
+        // console.log("Payload being sent:", nuevaReseña);
 
         const response = await fetch(
           `https://localhost:7182/api/User/publicar`,
@@ -135,9 +189,6 @@ const ProductoDetalle = () => {
           }
         );
 
-        console.log("Response status:", response.status);
-        console.log("Response headers:", response.headers);
-
         if (!response.ok) {
           const errorText = await response.text();
           console.error("Error response from server:", errorText);
@@ -145,18 +196,11 @@ const ProductoDetalle = () => {
         }
 
         const data = await response.json();
-        setReseñas((prevReseñas) => [
-          {
-            texto: textoReseña,
-            usuario: data.nombreUsuario,
-            fecha: data.fechaPublicacion,
-            estrellas: rating
-          },
-          ...prevReseñas,
-        ]);
+        toast.success("¡Gracias por tu opinión!");
+
+        cargarProducto();
         setTextoReseña("");
         setHaReseñado(true);
-        toast.success("¡Gracias por tu opinión!.");
       } catch (error) {
         toast.error(error.message || "No se ha podido crear la reseña.");
       }
@@ -199,9 +243,7 @@ const ProductoDetalle = () => {
             </p>
             <p className="generoLibro">
               Género:{" "}
-              <span className="genero">
-                {producto.genero || "Sin género"}
-              </span>
+              <span className="genero">{producto.genero || "Sin género"}</span>
             </p>
             <p className="isbn texto-pequeño">ISBN: {producto.isbn || "N/A"}</p>
           </div>
@@ -252,32 +294,40 @@ const ProductoDetalle = () => {
         <div className="reseñas texto-pequeño">
           <h2 className="texto-grande">Reseñas</h2>
           {auth.token ? (
-            <div className="crearReseña">
-              <input
-                className="textoReseñaNueva"
-                value={textoReseña}
-                onChange={(e) => setTextoReseña(e.target.value)}
-                placeholder="Escribe tu reseña aquí..."
-                disabled={haReseñado}
-              />
+            haComprado ? (
+              <div className="crearReseña">
+                <input
+                  className="textoReseñaNueva"
+                  value={textoReseña}
+                  onChange={(e) => setTextoReseña(e.target.value)}
+                  placeholder="Escribe tu reseña aquí..."
+                  disabled={haReseñado}
+                />
 
-              <Rating
-                className="reviewEstrellas"
-                name="reseña-rating"
-                value={rating}
-                onChange={(e, newValue) => setRating(newValue)}
-                disabled={haReseñado}
-                precision={1}
-              />
+                <Rating
+                  className="reviewEstrellas"
+                  name="reseña-rating"
+                  value={rating}
+                  onChange={(e, newValue) => setRating(newValue)}
+                  disabled={haReseñado}
+                  precision={1}
+                />
 
-              <button
-                className="btnCrearReseña"
-                onClick={handleCrearReseña}
-                disabled={haReseñado}
-              >
-                Crear
-              </button>
-            </div>
+                <button
+                  className="btnCrearReseña"
+                  onClick={handleCrearReseña}
+                  disabled={haReseñado}
+                >
+                  Crear
+                </button>
+              </div>
+            ) : (
+              <div className="crearReseña sinCompra">
+                <p className="texto-mediano">
+                  Debes comprar el producto para poder reseñar.
+                </p>
+              </div>
+            )
           ) : (
             <div className="crearReseña sinSesion">
               <p className="texto-mediano">
@@ -299,8 +349,11 @@ const ProductoDetalle = () => {
             reseñas.map((reseña, index) => (
               <div key={index} className="reseña">
                 <p>Usuario: {reseña.autor}</p>
-                <p>Fecha: {new Date(reseña.fecha).toLocaleDateString()}</p>
-                <Rating value={reseña.rating} readOnly />
+                <p>
+                  Fecha:{" "}
+                  {new Date(reseña.fechaPublicacion).toLocaleDateString()}
+                </p>
+                <Rating value={reseña.estrellas} readOnly />
                 <p>{reseña.texto}</p>
               </div>
             ))
@@ -308,7 +361,6 @@ const ProductoDetalle = () => {
             <p>No hay reseñas para este producto.</p>
           )}
         </div>
-
       </main>
     </>
   );

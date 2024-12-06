@@ -39,11 +39,25 @@ namespace Bookflix_Server.Controllers
         }
 
         [HttpGet("ListarCarrito")]
+        [AllowAnonymous]
         public async Task<IActionResult> ObtenerCarrito(string correo = null)
         {
-            int idUsuario = int.Parse(ObtenerIdUsuario());
-            var usuario = await _userRepository.ObtenerPorIdAsync(idUsuario);
+            int idUsuario;
 
+            if (!string.IsNullOrEmpty(correo))
+            {
+                var usuarioPorCorreo = await _userRepository.ObtenerPorCorreoAsync(correo);
+                if (usuarioPorCorreo == null)
+                    return NotFound(new { error = "Usuario no encontrado con ese correo." });
+
+                idUsuario = usuarioPorCorreo.IdUser;
+            }
+            else
+            {
+                idUsuario = int.Parse(ObtenerIdUsuario());
+            }
+
+            var usuario = await _userRepository.ObtenerPorIdAsync(idUsuario);
             if (usuario == null)
                 return NotFound(new { error = "Usuario no encontrado." });
 
@@ -71,6 +85,7 @@ namespace Bookflix_Server.Controllers
 
             return Ok(carritoDto);
         }
+
 
         [HttpPost("agregar")]
         public async Task<IActionResult> AgregarProductoAlCarrito([FromBody] CarritoItemAgregarDto itemDto)
@@ -304,7 +319,6 @@ namespace Bookflix_Server.Controllers
                 return NotFound(new { error = "Usuario no encontrado." });
             }
 
-            // Verificar o crear carrito
             var carrito = await _carritoRepository.ObtenerOCrearCarritoPorUsuarioIdAsync(usuario.IdUser);
 
             if (carrito == null)

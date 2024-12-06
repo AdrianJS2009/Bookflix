@@ -30,6 +30,8 @@ public class Program
         await app.RunAsync();
     }
 
+
+
     private static void ConfigureServices(WebApplicationBuilder builder)
     {
         builder.Services.AddControllers();
@@ -74,6 +76,8 @@ public class Program
         builder.Services.AddScoped<ServicioBusquedaInteligente>();
         builder.Services.AddScoped<ICarritoRepository, CarritoRepository>();
         builder.Services.AddScoped<ICompraRepository, CompraRepository>();
+        builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+
 
         if (builder.Environment.IsDevelopment())
         {
@@ -115,6 +119,8 @@ public class Program
                 };
             });
     }
+
+
 
     private static async Task InitializeDatabaseAsync(WebApplication app)
     {
