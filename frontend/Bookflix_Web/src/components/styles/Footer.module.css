@@ -7,7 +7,7 @@ footer.footer {
   padding: 20px 0;
 }
 @media (max-width: 768px) {
-  footer.footer {
+  footer.listaFooter {
     display: block;
     justify-items: center;
   }
