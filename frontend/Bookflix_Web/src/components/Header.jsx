@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { useAuth, rol } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 import { useCarrito } from "../contexts/CarritoContext";
 import classes from "./styles/Header.module.css";
 
@@ -8,7 +8,7 @@ const Header = () => {
   const [userName, setUserName] = useState("Usuario");
   const [menuOpen, setMenuOpen] = useState(false);
   const { items, vaciarCarritoLocal } = useCarrito();
-  const { auth, cerrarSesion, rol } = useAuth();
+  const { rol, auth, cerrarSesion } = useAuth();
 
   const cartCount = Array.isArray(items)
     ? items.reduce((total, item) => total + item.cantidad, 0)
