@@ -77,7 +77,10 @@ const ProductoDetalle = () => {
       }
     };
 
-    verificarCompra();
+    if(auth.token) {
+      verificarCompra();
+    }
+
   }, [productoId, auth.token]);
 
   const manejarCambio = (e) => {
@@ -105,8 +108,8 @@ const ProductoDetalle = () => {
 
   const handleAgregar = () => {
     if (producto && cantidad > 0 && cantidad <= producto.stock) {
-      console.log("Producto antes de agregar:", producto);
-      console.log("Cantidad seleccionada:", cantidad);
+      // console.log("Producto antes de agregar:", producto);
+      // console.log("Cantidad seleccionada:", cantidad);
 
       agregarAlCarrito(
         {
@@ -138,7 +141,7 @@ const ProductoDetalle = () => {
   }
 
   const cargarProducto = async () => {
-    console.log("Recargando datos del producto tras compra.");
+    // console.log("Recargando datos del producto tras compra.");
     try {
       const response = await fetch(
         `https://localhost:7182/api/Libro/Detalle/${productoId}`
@@ -147,7 +150,7 @@ const ProductoDetalle = () => {
         throw new Error("Error al cargar el producto.");
       }
       const data = await response.json();
-      console.log("Producto cargado:", data);
+      // console.log("Producto cargado:", data);
       setProducto(data);
       setReseñas(data.reseñas || []);
       if (auth.token) {
@@ -172,7 +175,7 @@ const ProductoDetalle = () => {
           estrellas: parseInt(rating),
         };
 
-        console.log("Payload being sent:", nuevaReseña);
+        // console.log("Payload being sent:", nuevaReseña);
 
         const response = await fetch(
           `https://localhost:7182/api/User/publicar`,

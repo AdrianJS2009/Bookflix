@@ -94,8 +94,8 @@ const Catalogo = () => {
 
   const handleAgregar = (libro) => {
     if (libro && cantidad > 0 && cantidad <= libro.stock) {
-      console.log("libro antes de agregar:", libro);
-      console.log("Cantidad seleccionada:", cantidad);
+      // console.log("libro antes de agregar:", libro);
+      // console.log("Cantidad seleccionada:", cantidad);
 
       agregarAlCarrito(
         {
