@@ -15,7 +15,6 @@ export const AuthProvider = ({ children }) => {
     }
   });
 
-  console.log("rol", rol);
 
   const iniciarSesion = async (email, password) => {
     try {
