@@ -8,8 +8,7 @@ footer.footer {
 }
 @media (max-width: 768px) {
   footer.listaFooter {
-    display: block;
-    justify-items: center;
+    flex-direction: column;
   }
 }
 footer.footer > div {
