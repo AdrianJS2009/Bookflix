@@ -3,7 +3,7 @@ import { createContext, useContext, useState } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [auth, setAuth] = useState({ token: sessionStorage.getItem("token") || null, });
+  const [auth, setAuth] = useState({ token: sessionStorage.getItem("token") || null });
   const [isAuthenticated, setAuthenticated] = useState(false);
   const [rol, setRol] = useState(() => {
     try {
@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }) => {
 
   const iniciarSesion = async (email, password) => {
     try {
-
       const response = await fetch("https://localhost:7182/api/Auth/login", {
         method: "POST",
         headers: {
@@ -42,6 +41,24 @@ export const AuthProvider = ({ children }) => {
         setRol(roleDecoded);
 
         sessionStorage.setItem("token", token);
+
+        try {
+          const responseCarrito = await fetch("https://localhost:7182/api/Carrito/verificar-o-crear", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!responseCarrito.ok) {
+            throw new Error("Error al verificar o crear el carrito.");
+          }
+
+          console.log("Carrito verificado o creado correctamente.");
+        } catch (error) {
+          console.error("Error al verificar o crear el carrito:", error);
+        }
       } else {
         throw new Error("Token no recibido del servidor");
       }
@@ -52,7 +69,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const cerrarSesion = () => {
-    setAuth({token:null});
+    setAuth({ token: null });
     sessionStorage.removeItem("token");
   };
 
