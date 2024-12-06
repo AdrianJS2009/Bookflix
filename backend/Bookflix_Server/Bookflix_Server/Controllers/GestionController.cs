@@ -16,7 +16,6 @@ public class GestionController : ControllerBase
         _context = context;
     }
 
-    // Crear un nuevo libro
     [HttpPost("libros")]
     public IActionResult CrearLibro([FromBody] Libro libro)
     {
@@ -29,7 +28,6 @@ public class GestionController : ControllerBase
         return BadRequest(ModelState);
     }
 
-    // Editar un libro existente
     [HttpPut("libros/{id}")]
     public IActionResult EditarLibro(int id, [FromBody] Libro libroActualizado)
     {
@@ -49,7 +47,6 @@ public class GestionController : ControllerBase
         return Ok(libro);
     }
 
-    // Editar un usuario existente
     [HttpPut("usuarios/{id}")]
     public IActionResult CambiarRol(int id)
     {
@@ -73,7 +70,6 @@ public class GestionController : ControllerBase
         return Ok(usuario);
     }
 
-    // Eliminar un usuario
     [HttpDelete("usuarios/{id}")]
     public IActionResult EliminarUsuario(int id)
     {

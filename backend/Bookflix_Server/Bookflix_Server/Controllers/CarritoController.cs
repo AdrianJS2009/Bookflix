@@ -304,7 +304,6 @@ namespace Bookflix_Server.Controllers
                 return NotFound(new { error = "Usuario no encontrado." });
             }
 
-            // Verificar o crear carrito
             var carrito = await _carritoRepository.ObtenerOCrearCarritoPorUsuarioIdAsync(usuario.IdUser);
 
             if (carrito == null)

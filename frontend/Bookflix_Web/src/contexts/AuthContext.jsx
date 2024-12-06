@@ -7,12 +7,11 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setAuthenticated] = useState(false);
   const [rol, setRol] = useState(() => {
     try {
-      // Decodificar el token y convertir el payload a un objeto
       const payload = JSON.parse(atob(auth?.token?.split(".")[1]));
       return payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || "usuario";
     } catch (error) {
       console.error("Error al decodificar el token:", error);
-      return "usuario";  // Valor por defecto en caso de error
+      return "usuario";
     }
   });
 

@@ -209,7 +209,6 @@ const Catalogo = () => {
               <div
                 key={libro.idLibro}
                 className="catalogoItem"
-              // onClick={() => handleProductoClick(libro.idLibro)}
               >
                 <div className="catalogoItemContent">
                   <img

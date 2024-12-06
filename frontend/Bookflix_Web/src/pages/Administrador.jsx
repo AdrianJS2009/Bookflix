@@ -84,7 +84,6 @@ export default function Administrador() {
       const decoded = JSON.parse(atob(auth.token.split(".")[1]));
       const currentUser = parseInt(decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]);
   
-      // Verificar que no se modifique el propio usuario
       if (currentUser === idUser) {
         toast.info("No puedes cambiar tu propio rol.");
         return;

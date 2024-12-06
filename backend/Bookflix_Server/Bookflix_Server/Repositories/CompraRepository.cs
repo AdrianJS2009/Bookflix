@@ -24,6 +24,14 @@ namespace Bookflix_Server.Repositories
             await GuardarCambiosAsync();
         }
 
+        public async Task<CompraDetalle> ObtenerCompraPorUsuarioYProductoAsync(int usuarioId, int libroId)
+        {
+            return await _context.CompraDetalles
+                .Where(cd => cd.Compra.UsuarioId == usuarioId && cd.IdLibro == libroId)
+                .FirstOrDefaultAsync();
+        }
+
+
         public async Task<IEnumerable<Compras>> ObtenerComprasPorUsuarioIdAsync(int usuarioId)
         {
             return await _context.Compras

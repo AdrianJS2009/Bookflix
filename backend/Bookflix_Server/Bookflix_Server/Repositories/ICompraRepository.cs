@@ -8,6 +8,7 @@ namespace Bookflix_Server.Repositories
     {
         Task RegistrarCompraAsync(Compras compra);
         Task<IEnumerable<Compras>> ObtenerComprasPorUsuarioIdAsync(int usuarioId);
+        Task<CompraDetalle> ObtenerCompraPorUsuarioYProductoAsync(int usuarioId, int libroId);
         Task GuardarCambiosAsync();
     }
 }

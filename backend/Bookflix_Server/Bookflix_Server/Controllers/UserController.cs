@@ -69,7 +69,6 @@ namespace Bookflix_Server.Controllers
                 return NotFound(new { error = "Usuario no encontrado." });
             }
 
-            // Verificar si el usuario tiene un carrito asociado
             var carrito = await _context.Carritos.FirstOrDefaultAsync(c => c.UserId == usuario.IdUser);
             if (carrito == null)
             {
@@ -112,7 +111,6 @@ namespace Bookflix_Server.Controllers
             _context.Users.Add(usuario);
             await _context.SaveChangesAsync();
 
-            // Crear carrito asociado al usuario
             var carrito = new Carrito
             {
                 UserId = usuario.IdUser,
@@ -253,6 +251,18 @@ namespace Bookflix_Server.Controllers
             }).ToList();
 
             return Ok(historialComprasDto);
+        }
+        [HttpGet("verificar-compra")]
+        public async Task<IActionResult> VerificarCompra(int idUsuario, int idLibro)
+        {
+            var compraDetalle = await _compraRepository.ObtenerCompraPorUsuarioYProductoAsync(idUsuario, idLibro);
+
+            if (compraDetalle == null)
+            {
+                return BadRequest(new { error = "No has comprado este producto. No puedes dejar una reseña." });
+            }
+
+            return Ok(new { success = true });
         }
 
     }

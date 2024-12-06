@@ -20,8 +20,6 @@ const leerCarritoBackend = async () => {
     
 
   try {
-
-    // Obtener el carrito actualizado desde el servidor
     const response = await fetch(
       "https://localhost:7182/api/Carrito/ListarCarrito",
       {
@@ -49,8 +47,6 @@ const leerCarritoBackend = async () => {
     toast.error("Error al sincronizar el carrito.");
   }
 };
-
-  // Efecto para sincronizar el carrito local con el servidor cuando hay un token
   useEffect(() => {
     if (isAuthenticated) {
       sincronizarCarrito();
@@ -64,7 +60,6 @@ const leerCarritoBackend = async () => {
 
 
 
-  // Función para sincronizar el carrito con el servidor
   const sincronizarCarrito = async () => {
   
 
@@ -74,7 +69,7 @@ const leerCarritoBackend = async () => {
 
       if (localItems.length > 0) {
         const payload = localItems
-          .filter((item) => item.idLibro && item.cantidad) // Validamos los datos
+          .filter((item) => item.idLibro && item.cantidad)
           .map((item) => ({
             IdLibro: item.idLibro,
             Cantidad: item.cantidad,
@@ -105,7 +100,6 @@ const leerCarritoBackend = async () => {
         localStorage.removeItem("carrito");
       }
 
-      // Obtener el carrito actualizado desde el servidor
       const response = await fetch(
         "https://localhost:7182/api/Carrito/ListarCarrito",
         {
@@ -134,11 +128,7 @@ const leerCarritoBackend = async () => {
     }
   };
 
- 
-
-  // Agregar producto al carrito
   const agregarAlCarrito = async (producto, cantidad) => {
-    /* setSincronizado(false); */
 
     if (!producto || !cantidad) {
       console.error("Producto o cantidad no definidos en agregarAlCarrito.", {
@@ -202,9 +192,7 @@ const leerCarritoBackend = async () => {
     }
   };
 
-  // Eliminar item del carrito
   const eliminarItem = async (productoId) => {
-    /* setSincronizado(false); */
 
     if (!productoId) {
       console.error("ID de producto no definido al intentar eliminar.");
@@ -253,7 +241,6 @@ const leerCarritoBackend = async () => {
       return;
   };
 
-  // Vaciar carrito en el servidor
   const vaciarCarrito = async () => {
     try {
       const response = await fetch(
@@ -278,10 +265,7 @@ const leerCarritoBackend = async () => {
     }
   };
 
-  // Verificar stock del carrito
   const validarStockCarrito = async () => {
-   /*  setSincronizado(false); */
-
     try {
       const idsProductos = items.map((item) => item.idLibro);
       const response = await fetch(
@@ -326,9 +310,7 @@ const leerCarritoBackend = async () => {
     }
   };
 
-  // Actualizar la cantidad de un producto en el carrito
   const actualizarCantidad = async (idLibro, nuevaCantidad) => {
-    /* setSincronizado(false); */
 
     if (nuevaCantidad < 1) return;
 

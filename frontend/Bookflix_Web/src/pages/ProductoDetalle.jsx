@@ -22,7 +22,7 @@ const ProductoDetalle = () => {
   const [reseñas, setReseñas] = useState([]);
   const [textoReseña, setTextoReseña] = useState("");
   const [haReseñado, setHaReseñado] = useState(false);
-  // const [haComprado, setHaComprado] = useState(false);
+  const [haComprado, setHaComprado] = useState(false);
   const location = useLocation();
   const [rating, setRating] = useState(0);
 
@@ -55,6 +55,29 @@ const ProductoDetalle = () => {
 
     cargarProducto();
   }, [productoId, auth.token]);
+
+  useEffect(() => {
+    const verificarCompra = async () => {
+      if (auth.token) {
+        try {
+          const decoded = JSON.parse(atob(auth.token.split(".")[1]));
+          const currentUser = parseInt(decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]);
+          const response = await fetch(`https://localhost:7182/api/User/verificar-compra?idUsuario=${currentUser}&idLibro=${productoId}`);
+          if (response.ok) {
+            setHaComprado(true);
+          } else {
+            setHaComprado(false);
+          }
+        } catch (err) {
+          console.error("Error al verificar compra", err);
+          setHaComprado(false);
+        }
+      }
+    };
+
+    verificarCompra();
+  }, [productoId, auth.token]);
+
 
   const manejarCambio = (e) => {
     const nuevoValor = e.target.value;
@@ -136,50 +159,47 @@ const ProductoDetalle = () => {
       setLoading(false);
     }
   };
-  
+
   const handleCrearReseña = async () => {
-  if (textoReseña.trim()) {
-    try {
-      const nuevaReseña = {
-        texto: textoReseña,
-        idLibro: productoId,
-        estrellas: parseInt(rating),
-      };
+    if (textoReseña.trim()) {
+      try {
+        const nuevaReseña = {
+          texto: textoReseña,
+          idLibro: productoId,
+          estrellas: parseInt(rating),
+        };
 
-      console.log("Payload being sent:", nuevaReseña);
+        console.log("Payload being sent:", nuevaReseña);
 
-      // Enviar la nueva reseña al servidor
-      const response = await fetch(`https://localhost:7182/api/User/publicar`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${auth.token}`,
-        },
-        body: JSON.stringify(nuevaReseña),
-      });
+        const response = await fetch(`https://localhost:7182/api/User/publicar`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth.token}`,
+          },
+          body: JSON.stringify(nuevaReseña),
+        });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Error response from server:", errorText);
-        throw new Error("No se pudo sincronizar con el servidor.");
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("Error response from server:", errorText);
+          throw new Error("No se pudo sincronizar con el servidor.");
+        }
+
+        const data = await response.json();
+        toast.success("¡Gracias por tu opinión!");
+
+        cargarProducto();
+        setTextoReseña("");
+        setHaReseñado(true);
+
+      } catch (error) {
+        toast.error(error.message || "No se ha podido crear la reseña.");
       }
-
-      // Si la reseña se publica correctamente, recarga las reseñas del producto
-      const data = await response.json();
-      toast.success("¡Gracias por tu opinión!");
-
-      // Recargar las reseñas desde el servidor
-      cargarProducto();
-      setTextoReseña("");
-      setHaReseñado(true);
-
-    } catch (error) {
-      toast.error(error.message || "No se ha podido crear la reseña.");
+    } else {
+      toast.warn("Tienes que escribir algo para enviar una reseña.");
     }
-  } else {
-    toast.warn("Tienes que escribir algo para enviar una reseña.");
-  }
-};
+  };
 
 
   if (loading) {
@@ -269,32 +289,40 @@ const ProductoDetalle = () => {
         <div className="reseñas texto-pequeño">
           <h2 className="texto-grande">Reseñas</h2>
           {auth.token ? (
-            <div className="crearReseña">
-              <input
-                className="textoReseñaNueva"
-                value={textoReseña}
-                onChange={(e) => setTextoReseña(e.target.value)}
-                placeholder="Escribe tu reseña aquí..."
-                disabled={haReseñado}
-              />
+            haComprado ? (
+              <div className="crearReseña">
+                <input
+                  className="textoReseñaNueva"
+                  value={textoReseña}
+                  onChange={(e) => setTextoReseña(e.target.value)}
+                  placeholder="Escribe tu reseña aquí..."
+                  disabled={haReseñado}
+                />
 
-              <Rating
-                className="reviewEstrellas"
-                name="reseña-rating"
-                value={rating}
-                onChange={(e, newValue) => setRating(newValue)}
-                disabled={haReseñado}
-                precision={1}
-              />
+                <Rating
+                  className="reviewEstrellas"
+                  name="reseña-rating"
+                  value={rating}
+                  onChange={(e, newValue) => setRating(newValue)}
+                  disabled={haReseñado}
+                  precision={1}
+                />
 
-              <button
-                className="btnCrearReseña"
-                onClick={handleCrearReseña}
-                disabled={haReseñado}
-              >
-                Crear
-              </button>
-            </div>
+                <button
+                  className="btnCrearReseña"
+                  onClick={handleCrearReseña}
+                  disabled={haReseñado}
+                >
+                  Crear
+                </button>
+              </div>
+            ) : (
+              <div className="crearReseña sinCompra">
+                <p className="texto-mediano">
+                  Debes comprar el producto para poder reseñar.
+                </p>
+              </div>
+            )
           ) : (
             <div className="crearReseña sinSesion">
               <p className="texto-mediano">
@@ -324,9 +352,7 @@ const ProductoDetalle = () => {
           ) : (
             <p>No hay reseñas para este producto.</p>
           )}
-
         </div>
-
       </main>
     </>
   );
