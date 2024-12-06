@@ -10,6 +10,7 @@ import { useCarrito } from "../contexts/CarritoContext";
 import "../styles/ProductoDetalle.css";
 
 const ProductoDetalle = () => {
+  const baseURL = import.meta.env.VITE_SERVER_API_BASE_URL;
   const { productoId } = useParams();
   const navigate = useNavigate();
   const { agregarAlCarrito } = useCarrito();
@@ -30,7 +31,7 @@ const ProductoDetalle = () => {
     const cargarProducto = async () => {
       try {
         const response = await fetch(
-          `https://localhost:7182/api/Libro/Detalle/${productoId}`
+          `${baseURL}/api/Libro/Detalle/${productoId}`
         );
         const data = await response.json();
         setProducto(data);
@@ -63,7 +64,7 @@ const ProductoDetalle = () => {
             ]
           );
           const response = await fetch(
-            `https://localhost:7182/api/User/verificar-compra?idUsuario=${currentUser}&idLibro=${productoId}`
+            `${baseURL}/api/User/verificar-compra?idUsuario=${currentUser}&idLibro=${productoId}`
           );
           if (response.ok) {
             setHaComprado(true);
@@ -144,7 +145,7 @@ const ProductoDetalle = () => {
     // console.log("Recargando datos del producto tras compra.");
     try {
       const response = await fetch(
-        `https://localhost:7182/api/Libro/Detalle/${productoId}`
+        `${baseURL}/api/Libro/Detalle/${productoId}`
       );
       if (!response.ok) {
         throw new Error("Error al cargar el producto.");
@@ -178,7 +179,7 @@ const ProductoDetalle = () => {
         // console.log("Payload being sent:", nuevaReseña);
 
         const response = await fetch(
-          `https://localhost:7182/api/User/publicar`,
+          `${baseURL}/api/User/publicar`,
           {
             method: "POST",
             headers: {

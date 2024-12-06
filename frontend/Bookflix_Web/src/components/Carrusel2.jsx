@@ -8,6 +8,7 @@ import "../styles/catalogoQuerys.css";
 import classes from "./styles/Carrusel2.module.css";
 
 const Carrusel2 = () => {
+  const baseURL = import.meta.env.VITE_SERVER_API_BASE_URL;
   const [libros, setLibros] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -17,7 +18,7 @@ const Carrusel2 = () => {
   const fetchLibrosCarrusel = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("https://localhost:7182/api/Libro/ItemsCarrusel");
+      const response = await fetch(`${baseURL}/api/Libro/ItemsCarrusel`);
       if (!response.ok) {
         throw new Error("Error al obtener los libros del carrusel");
       }

@@ -10,6 +10,7 @@ export const useCarrito = () => {
 };
 
 export const CarritoProvider = ({ children }) => {
+  const baseURL = import.meta.env.VITE_SERVER_API_BASE_URL;
   const { auth, isAuthenticated, setAuthenticated } = useAuth();
   const [items, setItems] = useState(() => {
     const savedItems = localStorage.getItem("carrito");
@@ -21,7 +22,7 @@ export const CarritoProvider = ({ children }) => {
     
     try {
       const response = await fetch(
-        "https://localhost:7182/api/Carrito/ListarCarrito",
+        `${baseURL}/api/Carrito/ListarCarrito`,
         {
           headers: { Authorization: `Bearer ${auth.token}` },
         }
@@ -79,7 +80,7 @@ export const CarritoProvider = ({ children }) => {
         }
 
         const response = await fetch(
-          "https://localhost:7182/api/Carrito/Sincronizar",
+          `${baseURL}/api/Carrito/Sincronizar`,
           {
             method: "POST",
             headers: {
@@ -99,7 +100,7 @@ export const CarritoProvider = ({ children }) => {
       }
 
       const response = await fetch(
-        "https://localhost:7182/api/Carrito/ListarCarrito",
+        `${baseURL}/api/Carrito/ListarCarrito`,
         {
           headers: { Authorization: `Bearer ${auth.token}` },
         }
@@ -140,7 +141,7 @@ export const CarritoProvider = ({ children }) => {
 
       try {
         const responseStock = await fetch(
-          "https://localhost:7182/api/Libro/VerificarStock",
+          `${baseURL}/api/Libro/VerificarStock`,
           {
             method: "POST",
             headers: {
@@ -197,7 +198,7 @@ export const CarritoProvider = ({ children }) => {
     }
 
     try {
-      const responseCarrito = await fetch("https://localhost:7182/api/Carrito/ListarCarrito", {
+      const responseCarrito = await fetch(`${baseURL}/api/Carrito/ListarCarrito`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -212,7 +213,7 @@ export const CarritoProvider = ({ children }) => {
       const carritoActual = await responseCarrito.json();
 
       const responseStock = await fetch(
-        "https://localhost:7182/api/Libro/VerificarStock",
+        `${baseURL}/api/Libro/VerificarStock`,
         {
           method: "POST",
           headers: {
@@ -253,7 +254,7 @@ export const CarritoProvider = ({ children }) => {
         cantidad: cantidadAAgregar,
       };
 
-      const responseAgregar = await fetch("https://localhost:7182/api/Carrito/agregar", {
+      const responseAgregar = await fetch(`${baseURL}/api/Carrito/agregar`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -292,7 +293,7 @@ export const CarritoProvider = ({ children }) => {
 
     try {
       const response = await fetch(
-        `https://localhost:7182/api/Carrito/eliminar/${productoId}`,
+        `${baseURL}/api/Carrito/eliminar/${productoId}`,
         {
           method: "DELETE",
           headers: {
@@ -327,7 +328,7 @@ export const CarritoProvider = ({ children }) => {
   const vaciarCarrito = async () => {
     try {
       const response = await fetch(
-        "https://localhost:7182/api/Carrito/vaciar",
+        `${baseURL}/api/Carrito/vaciar`,
         {
           method: "DELETE",
           headers: {
@@ -352,7 +353,7 @@ export const CarritoProvider = ({ children }) => {
     try {
       const idsProductos = items.map((item) => item.idLibro);
       const response = await fetch(
-        "https://localhost:7182/api/Libro/VerificarStock",
+        `${baseURL}/api/Libro/VerificarStock`,
         {
           method: "POST",
           headers: {
@@ -401,7 +402,7 @@ export const CarritoProvider = ({ children }) => {
 
     try {
       const responseStock = await fetch(
-        "https://localhost:7182/api/Libro/VerificarStock",
+        `${baseURL}/api/Libro/VerificarStock`,
         {
           method: "POST",
           headers: {
@@ -457,7 +458,7 @@ export const CarritoProvider = ({ children }) => {
       }
 
       const responseActualizar = await fetch(
-        "https://localhost:7182/api/Carrito/ActualizarCantidad",
+        `${baseURL}/api/Carrito/ActualizarCantidad`,
         {
           method: "PUT",
           headers: {

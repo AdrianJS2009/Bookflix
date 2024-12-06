@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import '../styles/default.css';
 
 const ModalEditarPerfil = ({ isOpen, onClose, userData, onUpdate }) => {
+  const baseURL = import.meta.env.VITE_SERVER_API_BASE_URL;
   const { auth } = useAuth();
   const [formData, setFormData] = useState({
     nombre: userData.nombre || '',
@@ -24,7 +25,7 @@ const ModalEditarPerfil = ({ isOpen, onClose, userData, onUpdate }) => {
 
     const { nombre, apellidos, email, direccion, password } = formData;
     try {
-      const response = await fetch("https://localhost:7182/api/User/actualizar", {
+      const response = await fetch(`${baseURL}/api/User/actualizar`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -125,6 +126,7 @@ const ModalEditarPerfil = ({ isOpen, onClose, userData, onUpdate }) => {
 };
 
 const Perfil = () => {
+  const baseURL = import.meta.env.VITE_SERVER_API_BASE_URL;
   const { auth } = useAuth();
   const [userData, setUserData] = useState(null);
   const [orders, setOrders] = useState([]);
@@ -135,7 +137,7 @@ const Perfil = () => {
   const fetchData = async () => {
     if (auth.token) {
       try {
-        const response = await fetch("https://localhost:7182/api/User/perfil", {
+        const response = await fetch(`${baseURL}/api/User/perfil`, {
           headers: {
             "Authorization": `Bearer ${auth.token}`,
           },
@@ -148,7 +150,7 @@ const Perfil = () => {
         const data = await response.json();
         setUserData(data);
 
-        const ordersResponse = await fetch("https://localhost:7182/api/User/historial", {
+        const ordersResponse = await fetch(`${baseURL}/api/User/historial`, {
           headers: {
             "Authorization": `Bearer ${auth.token}`,
           },
@@ -167,7 +169,7 @@ const Perfil = () => {
         if (bookIds.length > 0) {
           const uniqueBookIds = [...new Set(bookIds)];
           const bookDetailsPromises = uniqueBookIds.map(idLibro =>
-            fetch(`https://localhost:7182/api/Libro/Detalle/${idLibro}`).then(res => res.json())
+            fetch(`${baseURL}/api/Libro/Detalle/${idLibro}`).then(res => res.json())
           );
           const bookDetailsData = await Promise.all(bookDetailsPromises);
           const bookDetailsMap = bookDetailsData.reduce((acc, book) => {

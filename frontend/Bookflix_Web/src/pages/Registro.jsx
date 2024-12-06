@@ -7,6 +7,7 @@ import "../styles/default.css";
 import "../styles/form.css";
 
 const Registro = () => {
+  const baseURL = import.meta.env.VITE_SERVER_API_BASE_URL;
   const [nombre, setNombre] = useState("");
   const [apellidos, setApellidos] = useState("");
   const [email, setEmail] = useState("");
@@ -27,7 +28,7 @@ const Registro = () => {
     }
 
     try {
-      const response = await fetch("https://localhost:7182/api/User/crear", {
+      const response = await fetch(`${baseURL}/api/User/crear`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

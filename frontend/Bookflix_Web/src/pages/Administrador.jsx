@@ -8,11 +8,11 @@ import { useAuth } from "../contexts/AuthContext";
 import { toast } from "react-toastify";
 
 export default function Administrador() {
+  const baseURL = import.meta.env.VITE_SERVER_API_BASE_URL;
   const { auth } = useAuth();
   const [usuarios, setUsuarios] = useState([]);
   const [productos, setProductos] = useState([]);
   const [isShowingUsers, setIsShowingUsers] = useState(true);
-  const [selectedUser, setSelectedUser] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
@@ -38,9 +38,9 @@ export default function Administrador() {
       };
 
       const endpoint = isShowingUsers
-        ? `https://localhost:7182/api/user/listar?pagina=${page + 1
+        ? `${baseURL}/api/user/listar?pagina=${page + 1
         }&tamanoPagina=${itemsPerPage}`
-        : `https://localhost:7182/api/libro/ListarLibros?ascendente=true&pagina=${page + 1
+        : `${baseURL}/api/libro/ListarLibros?ascendente=true&pagina=${page + 1
         }&tamanoPagina=${itemsPerPage}`;
 
       const response = await fetch(endpoint, { headers });
@@ -89,7 +89,7 @@ export default function Administrador() {
         return;
       }
   
-      const response = await fetch(`https://localhost:7182/api/Gestion/usuarios/${idUser}`, {
+      const response = await fetch(`${baseURL}/api/Gestion/usuarios/${idUser}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -114,7 +114,7 @@ export default function Administrador() {
     const confirmMessage = `¿Estás seguro de que deseas eliminar este usuario?`;
     if (window.confirm(confirmMessage)) {
       try {
-        const response = await fetch(`https://localhost:7182/api/gestion/usuarios/${id}`, {
+        const response = await fetch(`${baseURL}/api/gestion/usuarios/${id}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
@@ -135,8 +135,8 @@ export default function Administrador() {
   const handleCreateOrEdit = async (item) => {
     const isEdit = !!item.idLibro;
     const endpoint = isEdit
-      ? `https://localhost:7182/api/gestion/libros/${item.idLibro}`
-      : `https://localhost:7182/api/gestion/libros`;
+      ? `${baseURL}/api/gestion/libros/${item.idLibro}`
+      : `${baseURL}/api/gestion/libros`;
     const method = isEdit ? "PUT" : "POST";
 
     try {

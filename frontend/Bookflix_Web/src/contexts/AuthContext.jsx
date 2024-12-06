@@ -3,6 +3,7 @@ import { createContext, useContext, useState } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const baseURL = import.meta.env.VITE_SERVER_API_BASE_URL;
   const [auth, setAuth] = useState({ token: sessionStorage.getItem("token") || null });
   const [isAuthenticated, setAuthenticated] = useState(false);
   const [rol, setRol] = useState(() => {
@@ -19,7 +20,7 @@ export const AuthProvider = ({ children }) => {
 
   const iniciarSesion = async (email, password) => {
     try {
-      const response = await fetch("https://localhost:7182/api/Auth/login", {
+      const response = await fetch(`${baseURL}/api/Auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -43,7 +44,7 @@ export const AuthProvider = ({ children }) => {
         sessionStorage.setItem("token", token);
 
         try {
-          const responseCarrito = await fetch("https://localhost:7182/api/Carrito/verificar-o-crear", {
+          const responseCarrito = await fetch(`${baseURL}/api/Carrito/verificar-o-crear`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

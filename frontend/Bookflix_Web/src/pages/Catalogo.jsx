@@ -9,6 +9,7 @@ import "../styles/catalogoQuerys.css";
 import "../styles/default.css";
 
 const Catalogo = () => {
+  const baseURL = import.meta.env.VITE_SERVER_API_BASE_URL;
   const navigate = useNavigate();
   const { agregarAlCarrito } = useCarrito();
   const [libros, setLibros] = useState([]);
@@ -39,7 +40,7 @@ const Catalogo = () => {
     }
 
     try {
-      let url = `https://localhost:7182/api/Libro/ListarLibros?pagina=${page + 1
+      let url = `${baseURL}/api/Libro/ListarLibros?pagina=${page + 1
         }&tamanoPagina=${itemsPerPage}`;
       if (nombre) url += `&textoBusqueda=${encodeURIComponent(nombre)}`;
       if (genero) url += `&genero=${encodeURIComponent(genero)}`;

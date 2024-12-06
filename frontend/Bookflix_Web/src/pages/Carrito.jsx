@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 
 const Carrito = () => {
+  const baseURL = import.meta.env.VITE_SERVER_API_BASE_URL;
   const {
     items = [],
     vaciarCarrito,
@@ -38,7 +39,7 @@ const Carrito = () => {
     try {
       // console.log("Obteniendo datos más recientes del carrito...");
       const response = await fetch(
-        "https://localhost:7182/api/Carrito/ListarCarrito",
+        `${baseURL}/api/Carrito/ListarCarrito`,
         {
           headers: { Authorization: `Bearer ${auth.token}` },
         }
@@ -60,7 +61,7 @@ const Carrito = () => {
 
       // console.log("Realizando la compra...");
       const compraResponse = await fetch(
-        "https://localhost:7182/api/Carrito/comprar",
+        `${baseURL}/api/Carrito/comprar`,
         {
           method: "POST",
           headers: { Authorization: `Bearer ${auth.token}` },

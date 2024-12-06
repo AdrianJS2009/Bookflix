@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using Microsoft.Extensions.ML;
 using Bookflix_Server.Services;
 
 namespace Bookflix_Server;
@@ -142,14 +141,15 @@ public class Program
 
     private static void ConfigureMiddleware(WebApplication app)
     {
-        if (app.Environment.IsDevelopment())
+        
+        app.UseSwagger();
+        app.UseSwaggerUI( C =>
         {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
+            C.SwaggerEndpoint("/swagger/v1/swagger.json", "Bookflix API v1");
+        });
 
         app.UseCors(policy =>
-            policy.WithOrigins("http://localhost:5173")
+            policy.WithOrigins("https://bookflix-server.runasp.net","http://localhost:5173")
                   .AllowAnyHeader()
                   .AllowAnyMethod());
 
