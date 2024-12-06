@@ -121,7 +121,7 @@ namespace Bookflix_Server.Controllers
             };
 
 
-            Console.WriteLine($"Hash generado para el usuario {usuario.Email}: {usuario.Password}");
+           // Console.WriteLine($"Hash generado para el usuario {usuario.Email}: {usuario.Password}");
 
 
             await _userRepository.AgregarUsuarioAsync(usuario);
