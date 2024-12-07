@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useCarrito } from "../contexts/CarritoContext";
 import classes from "./styles/Header.module.css";
@@ -9,6 +9,7 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { items, vaciarCarritoLocal } = useCarrito();
   const { rol, auth, cerrarSesion } = useAuth();
+  const navigate = useNavigate();
 
   const cartCount = Array.isArray(items)
     ? items.reduce((total, item) => total + item.cantidad, 0)
@@ -17,15 +18,12 @@ const Header = () => {
   useEffect(() => {
     if (auth.token) {
       try {
-        // console.log(auth.token)
         const decoded = JSON.parse(atob(auth.token.split(".")[1]));
-        // console.log(decoded)
         setUserName(
           `Hola, ${decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]}`
         );
       } catch (error) {
         console.error("Error decodificando el token:", error);
-
       }
     } else {
       setUserName("Usuario");
@@ -53,8 +51,17 @@ const Header = () => {
 
   const handleAbrirPerfil = () => {
     setMenuOpen(false);
-  }
+  };
 
+  const handleNavigation = (sectionId) => {
+    navigate('/');
+    setTimeout(() => {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  };
 
   return (
     <>
@@ -101,13 +108,13 @@ const Header = () => {
         <nav className={`${classes.navPrincipal} fondo-verde`}>
           <ul className="texto-pequeño-bold texto-negro">
             <li>
-              <a href="#novedades">Novedades</a>
+              <NavLink to="/" onClick={() => handleNavigation('novedades')}>Novedades</NavLink>
             </li>
             <li>
-              <a href="#generos">Géneros</a>
+              <NavLink to="/" onClick={() => handleNavigation('generos')}>Géneros</NavLink>
             </li>
             <li>
-              <a href="#top-ventas">Top ventas</a>
+              <NavLink to="/" onClick={() => handleNavigation('top-ventas')}>Top ventas</NavLink>
             </li>
             <li>
               <NavLink to="/bundles" activeClassName="active-link">
