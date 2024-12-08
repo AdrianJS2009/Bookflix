@@ -1,0 +1,195 @@
+:root {
+  --fondo-claro: #f9f9f9;
+  --difuminado: rgba(0, 0, 0, 0.1);
+  --azul-principal: #007bff;
+  --azul-hover: #0056b3;
+  --verde-suave: #e6f9e6;
+  --texto: #333;
+  --texto-claro: #666;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f3f4f6;
+  color: var(--texto);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1, h2 {
+  text-align: center;
+  color: var(--azul-principal);
+}
+
+.profile-info, .orders-list {
+  background-color: var(--fondo-claro);
+  border-radius: 15px;
+  box-shadow: 0px 4px 10px var(--difuminado);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.profile-info p, .orders-list p {
+  margin: 10px 0;
+  font-size: 1rem;
+}
+
+.profile-info p strong, .orders-list p strong {
+  color: var(--texto-claro);
+}
+
+.profile-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: var(--fondo-claro);
+  border-radius: 15px;
+  padding: 30px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0px 6px 15px var(--difuminado);
+}
+
+.modal-content h2 {
+  text-align: center;
+  color: var(--azul-principal);
+  margin-bottom: 20px;
+}
+
+.modal-content form div {
+  margin-bottom: 15px;
+}
+
+.modal-content label {
+  font-weight: bold;
+  color: var(--texto-claro);
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--difuminado);
+  border-radius: 5px;
+  margin-top: 5px;
+}
+
+.modal-content input:focus {
+  border-color: var(--azul-principal);
+  box-shadow: 0 0 5px var(--azul-principal);
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.orders-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.orders-list li {
+  background-color: var(--verde-suave);
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 10px;
+  box-shadow: 0px 4px 10px var(--difuminado);
+}
+
+.orders-list img {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.orders-list .order-details {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.orders-list .order-details p {
+  margin: 0;
+}
+
+.orders-list .order-total {
+  text-align: right;
+  font-weight: bold;
+  color: var(--azul-principal);
+}
+
+.btnComprar {
+  padding: 10px 20px;
+  background-color: var(--azul-principal);
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btnComprar:hover {
+  background-color: var(--azul-hover);
+}
+
+@media (max-width: 768px) {
+  .orders-list .order-details {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .orders-list img {
+    margin-bottom: 10px;
+  }
+}
+
+
+/* .modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+} */

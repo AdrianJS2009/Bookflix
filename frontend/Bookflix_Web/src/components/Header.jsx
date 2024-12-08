@@ -117,11 +117,6 @@ const Header = () => {
               <NavLink to="/" onClick={() => handleNavigation('top-ventas')}>Top ventas</NavLink>
             </li>
             <li>
-              <NavLink to="/bundles" activeClassName="active-link">
-                Bundles
-              </NavLink>
-            </li>
-            <li>
               <NavLink to="/catalogo" activeClassName="active-link">
                 Catálogo
               </NavLink>

@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import Button from '../components/Button.jsx';
 import { toast } from 'react-toastify';
 import '../styles/default.css';
+import '../styles/Perfil.css';
 
 const ModalEditarPerfil = ({ isOpen, onClose, userData, onUpdate }) => {
   const baseURL = import.meta.env.VITE_SERVER_API_BASE_URL;
@@ -200,24 +201,25 @@ const Perfil = () => {
   if (!auth.token) return <p>No estás autenticado.</p>;
 
   return (
-    <div>
-      <h1>Perfil de Usuario</h1>
-      {userData ? (
-        <div>
-          <h2>Datos del Usuario</h2>
-          <p><strong>Nombre:</strong> {userData.nombre} {userData.apellidos}</p>
-          <p><strong>Email:</strong> {userData.email}</p>
-          <p><strong>Dirección:</strong> {userData.direccion}</p>
-
+    <div className="container">
+    <h1>Perfil de Usuario</h1>
+    {userData ? (
+      <div className="profile-info">
+        <h2>Datos del Usuario</h2>
+        <p><strong>Nombre:</strong> {userData.nombre} {userData.apellidos}</p>
+        <p><strong>Email:</strong> {userData.email}</p>
+        <p><strong>Dirección:</strong> {userData.direccion}</p>
+        <div className="profile-buttons">
           <Button
             onClick={() => setIsModalOpen(true)}
             className="btnComprar"
             label="Editar Perfil"
           />
         </div>
-      ) : (
-        <p>Cargando datos del usuario...</p>
-      )}
+      </div>
+    ) : (
+      <p>Cargando datos del usuario...</p>
+    )}
 
       <ModalEditarPerfil
         isOpen={isModalOpen}
@@ -227,7 +229,8 @@ const Perfil = () => {
       />
       
       <h2>Historial de Compras</h2>
-      {orders.length > 0 ? (
+    {orders.length > 0 ? (
+      <div className="orders-list">
         <ul>
           {orders.map((order) => (
             <li key={order.idCompra}>
@@ -240,11 +243,13 @@ const Perfil = () => {
                     {order.detalles.map((item, index) => {
                       const book = bookDetails[item.idLibro];
                       return (
-                        <li key={index}>
-                          <img src={book ? book.urlImagen : ''} alt={book ? book.nombre : ''} width={50} />
-                          <p><strong>Nombre:</strong> {book ? book.nombre : 'Cargando...'}</p>
-                          <p><strong>Autor:</strong> {book ? book.autor : 'Cargando...'}</p>
-                          <p><strong>Precio:</strong> {(book ? book.precio / 100 : 0).toFixed(2)} €</p>
+                        <li key={index} className="order-details">
+                          <img src={book ? book.urlImagen : ''} alt={book ? book.nombre : ''} />
+                          <div>
+                            <p><strong>Nombre:</strong> {book ? book.nombre : 'Cargando...'}</p>
+                            <p><strong>Autor:</strong> {book ? book.autor : 'Cargando...'}</p>
+                            <p><strong>Precio:</strong> {(book ? book.precio / 100 : 0).toFixed(2)} €</p>
+                          </div>
                         </li>
                       );
                     })}
@@ -253,14 +258,15 @@ const Perfil = () => {
                   <p>No hay libros en este pedido.</p>
                 )}
               </div>
-              <p><strong>Total:</strong> {(order.detalles.reduce((total, item) => total + item.cantidad * (bookDetails[item.idLibro]?.precio / 100 || 0), 0)).toFixed(2)} €</p>
+              <p className="order-total"><strong>Total:</strong> {(order.detalles.reduce((total, item) => total + item.cantidad * (bookDetails[item.idLibro]?.precio / 100 || 0), 0)).toFixed(2)} €</p>
             </li>
           ))}
         </ul>
-      ) : (
-        <p>No tienes pedidos realizados.</p>
-      )}
-    </div>
+      </div>
+    ) : (
+      <p>No tienes pedidos realizados.</p>
+    )}
+  </div>
   );
 };
 
