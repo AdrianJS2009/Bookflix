@@ -16,14 +16,16 @@ const ConfirmacionCompra = () => {
 
   const handleVolverAlCatalogo = () => {
     navigate("/catalogo");
+    console.log(items)
   };
-
+  
   const totalPrecio = items.reduce(
     (sum, item) => sum + item.precio * item.cantidad,
     0
+    
   );
   const totalItems = items.reduce((sum, item) => sum + item.cantidad, 0);
-
+  
   return (
     <main className="confirmacion-compra-container">
       <h1 className="texto-grande">Confirmación de Compra</h1>
@@ -34,12 +36,12 @@ const ConfirmacionCompra = () => {
           <li key={index} className="producto texto-pequeño">
             <img
               src={item.urlImagen || "placeholder.jpg"}
-              alt={item.nombre}
+              alt={item.nombreLibro}
               className="imagen-producto"
             />
             <div className="detalles-producto">
               <p>
-                <strong>Producto:</strong> {item.nombre}
+                <strong>Producto:</strong> {item.nombreLibro}
               </p>
               <p>
                 <strong>Cantidad:</strong> {item.cantidad}

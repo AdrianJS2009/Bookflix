@@ -38,6 +38,29 @@
   }
 }
 
+@media (max-width: 768px) {
+  .pagination {
+    gap: 0px;
+  }
+
+  div.catalogoBuscadorFiltros {
+    width: 60%;
+  }
+
+  div.catalogoBuscador input {
+    
+    margin: 2px;
+  }
+
+  div.catalogoFiltros select {
+    width: 70%; 
+
+  }
+
+  div.catalogoFiltros {
+      text-align: center;
+  }
+}
 /****************************************/
 /* <=544px  PHONES */
 /****************************************/
@@ -45,5 +68,6 @@
 @media (max-width: 34rem) {
   .catalogoItems {
     grid-template-columns: repeat(1, 1fr);
+
   }
 }
