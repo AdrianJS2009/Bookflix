@@ -74,6 +74,7 @@ const Header = () => {
               alt="Bookflix logo"
             />
           </NavLink>
+
           <div className={`${classes.userCart} texto-pequeño-bold`}>
             {auth.token ? (
               <button onClick={toggleModal} className={classes.userButton}>
@@ -103,8 +104,21 @@ const Header = () => {
               <span className={classes.cartCount}>{cartCount}</span>
               Cesta
             </NavLink>
+
+            <label htmlFor="menuToggle" className={classes.hamburger}>
+              <span></span>
+              <span></span>
+              <span></span>
+            </label>
+
+            <input
+              type="checkbox"
+              id="menuToggle"
+              className={classes.menuToggle}
+            />
           </div>
         </div>
+
         <nav className={`${classes.navPrincipal} fondo-verde`}>
           <ul className="texto-pequeño-bold texto-negro">
             <li>
@@ -117,13 +131,13 @@ const Header = () => {
               <NavLink to="/" onClick={() => handleNavigation('top-ventas')}>Top ventas</NavLink>
             </li>
             <li>
-              <NavLink to="/catalogo" activeClassName="active-link">
-                Catálogo
-              </NavLink>
+              <NavLink to="/catalogo">Catálogo</NavLink>
             </li>
           </ul>
         </nav>
       </header>
+
+
       {menuOpen && (
         <div className={`${classes.modalOverlay} texto-pequeño`} onClick={toggleModal}>
           <div
@@ -133,10 +147,11 @@ const Header = () => {
             <h2 className="texto-mediano-bold">Opciones de usuario</h2>
             <div className={classes.modalActions}>
               <NavLink to="perfil" onClick={handleAbrirPerfil} activeClassName="active-link">Perfil & Pedidos</NavLink>
-              {rol === "admin" ?
+              {rol === "admin" ? (
                 <NavLink to="admin">Admin</NavLink>
-                : <></>
-              }
+              ) : (
+                <></>
+              )}
               <button onClick={handleLogout}>Cerrar sesión</button>
               <button onClick={toggleModal}>Cerrar</button>
             </div>

@@ -6,7 +6,11 @@
   max-width: 70%;
   margin: 0 auto;
 }
-
+@media (max-width: 768px) {
+  .topVentasSection {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
 .libro {
   position: relative;
   width: 100%;

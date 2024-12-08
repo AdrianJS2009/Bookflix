@@ -10,6 +10,7 @@ import "../styles/form.css";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [mantenerSesion, setMantenerSesion] = useState(false);
   const navigate = useNavigate();
   const { iniciarSesion, setAuthenticated } = useAuth();
 
@@ -19,7 +20,7 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await iniciarSesion(email, password);
+      await iniciarSesion(email, password, mantenerSesion);
       toast.success("¡Bienvenido a Bookflix!");
       setAuthenticated(true);
       navigate(from, { replace: true });
@@ -59,6 +60,18 @@ export default function Login() {
               required
             />
           </div>
+          <div className="campo-formulario">
+            <label htmlFor="mantenerSesion" className="text-form">
+              Mantener sesión iniciada
+            </label>
+            <input
+              type="checkbox"
+              id="mantenerSesion"
+              checked={mantenerSesion}
+              onChange={(e) => setMantenerSesion(e.target.checked)}
+            />
+          </div>
+
           <Button label="Entrar" type="submit" styleType="btnDefault" />
         </form>
         <NavLink to="/registro" className="texto-pequeño">

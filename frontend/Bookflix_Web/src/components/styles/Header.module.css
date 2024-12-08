@@ -1,30 +1,34 @@
-header.header {
+.header {
   display: flex;
   flex-direction: column;
   width: 100%;
   z-index: 1000;
 }
 
-div.navLogo {
+.navLogo {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 30px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
 }
 
 .userCart {
   display: flex;
   align-items: center;
   margin-left: auto;
+  gap: 10px;
 }
 
 .userCart a {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-decoration: none;
   color: var(--blanco);
-  margin-left: 15px;
 }
 
 .userButton {
@@ -77,8 +81,8 @@ img.iconos {
 
 .cartCount {
   position: absolute;
-  top: 20px;
-  right: 25px;
+  top: -5px;
+  right: -5px;
   background-color: tomato;
   border-radius: 50%;
   width: 18px;
@@ -140,8 +144,79 @@ img.iconos {
   background-color: #0056b3;
 }
 
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.hamburger span {
+  display: block;
+  width: 25px;
+  height: 3px;
+  background: var(--blanco);
+  transition: 0.3s ease-in-out;
+}
+
+.menuToggle:checked + .navPrincipal {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  background-color: var(--verde-normal);
+}
+
+.navPrincipal {
+  display: flex;
+  justify-content: center;
+  background-color: var(--verde-normal);
+  padding: 5px 0;
+  position: relative;
+  align-items: center;
+}
+
 @media (max-width: 768px) {
-  .navPrincipal ul {
+  .hamburger {
+    display: flex;
+  }
+
+  nav.navPrincipal {
+    display: none;
     flex-direction: column;
+  }
+
+  input.menuToggle:checked+nav.navPrincipal {
+    display: flex !important;
+    flex-direction: column;
+  }
+
+  .navPrincipal {
+    width: 100%;
+    background-color: var(--verde-normal);
+  }
+
+  .navPrincipal li {
+    list-style: none;
+    margin: 0;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .navPrincipal a {
+    padding: 10px;
+    display: block;
+    text-decoration: none;
+    color: var(--negro);
+  }
+
+  .navLogo {
+    flex-direction: column;
+    align-content: center;
+  }
+
+  input.menuToggle {
+    display: none;
   }
 }

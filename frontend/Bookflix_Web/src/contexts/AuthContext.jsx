@@ -4,7 +4,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const baseURL = import.meta.env.VITE_SERVER_API_BASE_URL;
-  const [auth, setAuth] = useState({ token: sessionStorage.getItem("token") || null });
+  const [auth, setAuth] = useState({ token: sessionStorage.getItem("token") || localStorage.getItem("token") || null });
   const [isAuthenticated, setAuthenticated] = useState(false);
   const [rol, setRol] = useState(() => {
     try {
@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
   });
 
 
-  const iniciarSesion = async (email, password) => {
+  const iniciarSesion = async (email, password, mantenerSesion) => {
     try {
       const response = await fetch(`${baseURL}/api/Auth/login`, {
         method: "POST",
@@ -41,8 +41,12 @@ export const AuthProvider = ({ children }) => {
         // console.log("roleDecoded", roleDecoded);
         setRol(roleDecoded);
 
-        sessionStorage.setItem("token", token);
-
+        if (mantenerSesion){
+          localStorage.setItem("token", token);
+        } else {
+          sessionStorage.setItem("token", token);
+        }
+        
         try {
           const responseCarrito = await fetch(`${baseURL}/api/Carrito/verificar-o-crear`, {
             method: "POST",
@@ -72,6 +76,7 @@ export const AuthProvider = ({ children }) => {
   const cerrarSesion = () => {
     setAuth({ token: null });
     sessionStorage.removeItem("token");
+    localStorage.removeItem("token");
   };
 
   return (

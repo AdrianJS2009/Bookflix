@@ -7,6 +7,7 @@
   display: flex;
   overflow: hidden;
   margin: 0 auto;
+  --gap-flex-carrusel: 20px;
 }
 
 .carruselWrapper {
@@ -17,7 +18,9 @@
 
 .listaElementos {
   display: flex;
+  flex-direction: row;
   transition: transform 0.5s ease;
+  gap: var(--gap-flex-carrusel);
 }
 
 .carruselElemento {
@@ -85,4 +88,16 @@
   gap: 10px;
   margin-top: 10px;
   justify-content: center;
+}
+
+.catalogoItem {
+  min-width: 250px;
+}
+
+.catalogoItem p.precio {
+  text-align: center;
+}
+
+.catalogoItemButtons a{
+  text-decoration: none;
 }
