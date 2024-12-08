@@ -4,7 +4,6 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Button from "../components/Button";
-
 import { useAuth } from "../contexts/AuthContext";
 import { useCarrito } from "../contexts/CarritoContext";
 import "../styles/ProductoDetalle.css";
@@ -109,9 +108,6 @@ const ProductoDetalle = () => {
 
   const handleAgregar = () => {
     if (producto && cantidad > 0 && cantidad <= producto.stock) {
-      // console.log("Producto antes de agregar:", producto);
-      // console.log("Cantidad seleccionada:", cantidad);
-
       agregarAlCarrito(
         {
           idLibro: producto.idLibro,
@@ -142,7 +138,6 @@ const ProductoDetalle = () => {
   }
 
   const cargarProducto = async () => {
-    // console.log("Recargando datos del producto tras compra.");
     try {
       const response = await fetch(
         `${baseURL}/api/Libro/Detalle/${productoId}`
@@ -151,7 +146,6 @@ const ProductoDetalle = () => {
         throw new Error("Error al cargar el producto.");
       }
       const data = await response.json();
-      // console.log("Producto cargado:", data);
       setProducto(data);
       setReseñas(data.reseñas || []);
       if (auth.token) {
@@ -175,8 +169,6 @@ const ProductoDetalle = () => {
           idLibro: productoId,
           estrellas: parseInt(rating),
         };
-
-        // console.log("Payload being sent:", nuevaReseña);
 
         const response = await fetch(
           `${baseURL}/api/User/publicar`,
@@ -210,18 +202,6 @@ const ProductoDetalle = () => {
     }
   };
 
-  if (loading) {
-    return <p>Cargando producto...</p>;
-  }
-
-  if (error) {
-    return <p>{error}</p>;
-  }
-
-  if (!producto) {
-    return <p>Producto no encontrado.</p>;
-  }
-
   return (
     <>
       <main className="detalle-contenido">
@@ -249,6 +229,7 @@ const ProductoDetalle = () => {
               </a>
             </p>
             <p className="isbn texto-pequeño">ISBN: {producto.isbn || "N/A"}</p>
+            <p className="estrellas">⭐ {Math.round(producto.promedioEstrellas)}</p>
           </div>
           <div className="detalles texto-mediano">
             <p className="precio">
@@ -295,7 +276,7 @@ const ProductoDetalle = () => {
         </div>
         <hr />
         <div className="reseñas texto-pequeño">
-          <h2 className="texto-grande">Reseñas</h2>
+          <h2 className="texto-grande">Reseñas ({reseñas.length})</h2>
           {auth.token ? (
             haComprado ? (
               <div className="crearReseña">

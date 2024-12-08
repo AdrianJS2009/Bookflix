@@ -69,7 +69,15 @@ const Catalogo = () => {
 
       const data = await response.json();
 
-      setLibros(data.libros || []);
+      const librosConReseñas = await Promise.all(
+        data.libros.map(async (libro) => {
+          const detalleResponse = await fetch(`${baseURL}/api/Libro/Detalle/${libro.idLibro}`);
+          const detalleData = await detalleResponse.json();
+          return { ...libro, reseñas: detalleData.reseñas };
+        })
+      );
+
+      setLibros(librosConReseñas || []);
       setPageCount(data.totalPaginas || 0);
     } catch (error) {
       setError(error.message);
@@ -102,7 +110,6 @@ const Catalogo = () => {
     const nuevoGenero = e.target.value;
     setGenero(nuevoGenero);
 
-
     navigate({
       pathname: location.pathname,
       search: nuevoGenero ? `?genero=${encodeURIComponent(nuevoGenero)}` : "",
@@ -111,9 +118,6 @@ const Catalogo = () => {
 
   const handleAgregar = (libro) => {
     if (libro && cantidad > 0 && cantidad <= libro.stock) {
-      // console.log("libro antes de agregar:", libro);
-      // console.log("Cantidad seleccionada:", cantidad);
-
       agregarAlCarrito(
         {
           idLibro: libro.idLibro,
@@ -129,10 +133,6 @@ const Catalogo = () => {
         cantidad,
       });
     }
-  };
-
-  const calcularTotalReseñas = (libros) => {
-    return libros.reduce((total, libro) => total + (libro.reseñas?.length || 0), 0);
   };
 
   return (
@@ -257,7 +257,7 @@ const Catalogo = () => {
                     <span>
                       <span className="agotado">⬤</span> Agotado
                     </span>
-                  )} - ⭐ {Math.round(libro.promedioEstrellas)} ({calcularTotalReseñas(libros)})
+                  )} - ⭐ {Math.round(libro.promedioEstrellas)} ({libro.reseñas ? libro.reseñas.length : 0})
                 </p>
               </div>
               <Button
