@@ -115,6 +115,10 @@ const Catalogo = () => {
     }
   };
 
+  const calcularTotalReseñas = (libros) => {
+    return libros.reduce((total, libro) => total + (libro.reseñas?.length || 0), 0);
+  };
+
   return (
     <>
       <main className="catalogo-container texto-pequeño">
@@ -238,7 +242,7 @@ const Catalogo = () => {
                       <span>
                         <span className="agotado">⬤</span> Agotado
                       </span>
-                    )} - ⭐ {Math.round(libro.promedioEstrellas)}
+                    )} - ⭐ {Math.round(libro.promedioEstrellas)} ({calcularTotalReseñas(libros)})
                   </p>
                 </div>
                 <Button
