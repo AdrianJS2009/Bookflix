@@ -244,7 +244,9 @@ const ProductoDetalle = () => {
             </p>
             <p className="generoLibro">
               Género:{" "}
-              <span className="genero">{producto.genero || "Sin género"}</span>
+              <a href={`/catalogo?genero=${producto.genero}`}>
+                <span className="genero">{producto.genero || "Sin género"}</span>
+              </a>
             </p>
             <p className="isbn texto-pequeño">ISBN: {producto.isbn || "N/A"}</p>
           </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from '../contexts/AuthContext';
 import Button from '../components/Button.jsx';
 import { toast } from 'react-toastify';
+import { Link } from "react-router-dom";
 import '../styles/default.css';
 import '../styles/Perfil.css';
 
@@ -13,7 +14,7 @@ const ModalEditarPerfil = ({ isOpen, onClose, userData, onUpdate }) => {
     apellidos: userData.apellidos || '',
     email: userData.email || '',
     direccion: userData.direccion || '',
-    password: '', 
+    password: '',
   });
 
   const handleChange = (e) => {
@@ -202,24 +203,25 @@ const Perfil = () => {
 
   return (
     <div className="container">
-    <h1>Perfil de Usuario</h1>
-    {userData ? (
-      <div className="profile-info">
-        <h2>Datos del Usuario</h2>
-        <p><strong>Nombre:</strong> {userData.nombre} {userData.apellidos}</p>
-        <p><strong>Email:</strong> {userData.email}</p>
-        <p><strong>Dirección:</strong> {userData.direccion}</p>
-        <div className="profile-buttons">
-          <Button
-            onClick={() => setIsModalOpen(true)}
-            className="btnComprar"
-            label="Editar Perfil"
-          />
+      <h1>Perfil de Usuario</h1>
+      {userData ? (
+        <div className="profile-info">
+          <h2>Datos del Usuario</h2>
+          <p><strong>Nombre:</strong> {userData.nombre} {userData.apellidos}</p>
+          <p><strong>Email:</strong> {userData.email}</p>
+          <p><strong>Dirección:</strong> {userData.direccion}</p>
+          <p><strong>Rol:</strong> {userData.rol}</p>
+          <div className="profile-buttons">
+            <Button
+              onClick={() => setIsModalOpen(true)}
+              className="btnComprar"
+              label="Editar Perfil"
+            />
+          </div>
         </div>
-      </div>
-    ) : (
-      <p>Cargando datos del usuario...</p>
-    )}
+      ) : (
+        <p>Cargando datos del usuario...</p>
+      )}
 
       <ModalEditarPerfil
         isOpen={isModalOpen}
@@ -227,46 +229,55 @@ const Perfil = () => {
         userData={userData}
         onUpdate={handleUpdate}
       />
-      
+
       <h2>Historial de Compras</h2>
-    {orders.length > 0 ? (
-      <div className="orders-list">
-        <ul>
-          {orders.map((order) => (
-            <li key={order.idCompra}>
-              <p><strong>Pedido ID:</strong> {order.idCompra}</p>
-              <p><strong>Fecha:</strong> {new Date(order.fechaCompra).toLocaleDateString()}</p>
-              <div>
-                <strong>Libros:</strong>
-                {order.detalles.length > 0 ? (
-                  <ul>
-                    {order.detalles.map((item, index) => {
-                      const book = bookDetails[item.idLibro];
-                      return (
-                        <li key={index} className="order-details">
-                          <img src={book ? book.urlImagen : ''} alt={book ? book.nombre : ''} />
-                          <div>
-                            <p><strong>Nombre:</strong> {book ? book.nombre : 'Cargando...'}</p>
-                            <p><strong>Autor:</strong> {book ? book.autor : 'Cargando...'}</p>
-                            <p><strong>Precio:</strong> {(book ? book.precio / 100 : 0).toFixed(2)} €</p>
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                ) : (
-                  <p>No hay libros en este pedido.</p>
-                )}
-              </div>
-              <p className="order-total"><strong>Total:</strong> {(order.detalles.reduce((total, item) => total + item.cantidad * (bookDetails[item.idLibro]?.precio / 100 || 0), 0)).toFixed(2)} €</p>
-            </li>
-          ))}
-        </ul>
-      </div>
-    ) : (
-      <p>No tienes pedidos realizados.</p>
-    )}
-  </div>
+      {orders.length > 0 ? (
+        <div className="orders-list">
+          <ul>
+            {orders.map((order) => (
+              <li key={order.idCompra}>
+                <p><strong>Pedido ID:</strong> {order.idCompra}</p>
+                <p><strong>Fecha:</strong> {new Date(order.fechaCompra).toLocaleDateString()}</p>
+                <div>
+                  <strong>Libros:</strong>
+                  {order.detalles.length > 0 ? (
+                    <ul>
+                      {order.detalles.map((item, index) => {
+                        const book = bookDetails[item.idLibro];
+                        return (
+                          <Link to={`/producto/${item.idLibro}`}>
+                            <li key={index} className="order-details">
+                              <img src={book ? book.urlImagen : ''} alt={book ? book.nombre : ''} />
+                              <div>
+                                <p><strong>Nombre:</strong> {book ? book.nombre : 'Cargando...'}</p>
+                                <p><strong>Autor:</strong> {book ? book.autor : 'Cargando...'}</p>
+                                <p><strong>Precio:</strong> {(item.precioUnitario / 100).toFixed(2)} €</p>
+                              </div>
+                            </li>
+                          </Link>
+                        );
+                      })}
+                    </ul>
+                  ) : (
+                    <p>No hay libros en este pedido.</p>
+                  )}
+                </div>
+                <p className="order-total">
+                  <strong>Total:</strong>
+                  {
+                    (order.detalles.reduce((total, item) => {
+                      return total + item.cantidad * (item.precioUnitario / 100);
+                    }, 0)).toFixed(2)
+                  } €
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <p>No tienes pedidos realizados.</p>
+      )}
+    </div>
   );
 };
 
