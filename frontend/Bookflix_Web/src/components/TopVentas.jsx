@@ -5,7 +5,7 @@ export default function TopVentas() {
   return (
     <section id="top-ventas" className={classes.topVentasSection}>
       <div className="libro">
-        <NavLink to="/libro/1">
+        <NavLink to="/producto/1">
           <img
             src="/assets/libros/1.png"
             className={classes.libroImagen}
@@ -19,7 +19,7 @@ export default function TopVentas() {
         />
       </div>
       <div className="libro">
-        <NavLink to="/libro/2">
+        <NavLink to="/producto/2">
           <img
             src="/assets/libros/2.png"
             className={classes.libroImagen}
@@ -33,7 +33,7 @@ export default function TopVentas() {
         />
       </div>
       <div className="libro">
-        <NavLink to="/libro/3">
+        <NavLink to="/producto/3">
           <img
             src="/assets/libros/3.png"
             className={classes.libroImagen}
