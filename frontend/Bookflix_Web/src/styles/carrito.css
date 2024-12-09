@@ -114,3 +114,10 @@ div.cantidad input.cantidadBox {
     margin: auto;
     padding: 10px;
 }
+
+@media (max-width: 768px) {
+    .carrito-item {
+        flex-direction: column;
+        gap: 5px;
+    }
+}

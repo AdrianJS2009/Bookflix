@@ -201,3 +201,12 @@ div.reseñas {
 div.reseñas p {
   margin: 10px 0;
 }
+
+@media (max-width: 768px) {
+  .principal {
+    grid-template-columns: 1fr;
+  }
+  .imagenContainer {
+    justify-self: center;
+  }
+}
