@@ -67,7 +67,7 @@
 .nextBtn {
   position: absolute;
   top: 50%;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: var(--blanco);
   border: none;
   padding: 10px;
   cursor: pointer;

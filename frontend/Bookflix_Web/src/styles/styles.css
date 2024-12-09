@@ -6,9 +6,6 @@ body {
 
 .home-bookflix {
   margin: 0 auto;
-  /* display: grid;
-  grid-template-columns: 1fr;
-  gap: 100px; */
   margin-bottom: 100px;
 }
 
@@ -31,7 +28,7 @@ body {
   position: relative;
   width: 100%;
   overflow: hidden;
-  border: 1px solid #ccc;
+  border: 1px solid var(--blanco);
   border-radius: 8px;
 }
 

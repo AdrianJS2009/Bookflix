@@ -1,13 +1,5 @@
-/* Estilos generales */
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f4f4f4;
-  margin: 0;
-  padding: 0;
-}
-
 h1, h2 {
-  color: #0056b3; /* Azul */
+  color: var(--azul-oscuro); 
 }
 
 h1 {
@@ -19,11 +11,10 @@ h1 {
 h2 {
   font-size: 1.8em;
   margin-bottom: 20px;
-  border-bottom: 2px solid #28a745; /* Verde */
+  border-bottom: 2px solid var(--verde-normal);
   padding-bottom: 10px;
 }
 
-/* Sección de la página de administrador */
 .admin-page {
   min-height: calc(100vh - 80px);
   max-width: 1200px;
@@ -48,9 +39,9 @@ button {
 }
 
 .btnAñadir {
-  background-color: #28a745; /* Verde */
-  color: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: var(--verde-normal);
+  color: var(--blanco-puro);
+  box-shadow: 0 4px 6px var(--difuminado);
 }
 
 .añadirProducto {
@@ -58,27 +49,26 @@ button {
 }
 
 .btnComprar {
-  background-color: #0056b3; /* Azul */
-  color: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: var(--azul-oscuro);
+  color: var(--blanco-puro);
+  box-shadow: 0 4px 6px var(--difuminado);
 }
 
 .btnAñadir:hover, .btnComprar:hover {
-  background-color: #4caf50; /* Verde claro */
+  background-color: var(--difuminado);
 }
 
 .botonEliminar {
-  background-color: #dc3545; /* Rojo */
-  color: white;
+  background-color: var(--rojo-normal);
+  color: var(--blanco-puro);
   padding: 10px 20px;
   border-radius: 5px;
 }
 
 .botonEliminar:hover {
-  background-color: #c82333; /* Rojo oscuro */
+  background-color: var(--rojo-oscuro);
 }
 
-/* Lista de usuarios y productos */
 .listaAdmin {
   list-style-type: none;
   padding: 0;
@@ -86,11 +76,11 @@ button {
 }
 
 .itemListaAdmin {
-  background-color: #fff;
+  background-color: var(--blanco-puro);
   padding: 20px;
   margin-bottom: 20px;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px var(--difuminado);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -109,7 +99,7 @@ button {
 }
 
 .itemListaAdmin a {
-  color: #0056b3; /* Azul */
+  color: var(--azul-oscuro); 
   text-decoration: none;
   font-weight: bold;
 }
@@ -118,7 +108,7 @@ button {
   text-decoration: underline;
 }
 
-/* Modal */
+
 .modalOverlay {
   position: fixed;
   top: 0;
@@ -129,7 +119,6 @@ button {
   z-index: 1000;
 }
 
-/* Modal */
 .modalAdmin {
   position: fixed;
   top: 50%;
@@ -152,7 +141,7 @@ button {
 
 .modalAdmin h2 {
   font-size: 1.8em;
-  color: #0056b3; /* Azul */
+  color: var(--azul-oscuro);
   margin-bottom: 20px;
 }
 
@@ -167,15 +156,15 @@ button {
   padding: 15px;
   font-size: 1em;
   border-radius: 8px;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--blanco);
+  box-shadow: 0 2px 5px var(--difuminado);
 }
 
 .modalAdmin input:focus,
 .modalAdmin textarea:focus {
-  border-color: #0056b3; /* Azul */
+  border-color: var(--azul-oscuro); 
   outline: none;
-  box-shadow: 0 0 8px rgba(0, 86, 179, 0.3);
+  box-shadow: 0 0 8px var(--difuminado);
 }
 
 .modalAdmin button {
@@ -187,24 +176,23 @@ button {
 }
 
 .modalAdmin button[type="submit"] {
-  background-color: #28a745; /* Verde */
-  color: white;
+  background-color: var(--verde-normal);
+  color: var(--blanco-puro);
 }
 
 .modalAdmin button[type="submit"]:hover {
-  background-color: #4caf50; /* Verde claro */
+  background-color: var(--verde-oscuro);
 }
 
 .modalAdmin button[type="button"] {
-  background-color: #dc3545; /* Rojo */
-  color: white;
+  background-color: var(--rojo-normal);
+  color: var(--blanco-puro);
 }
 
 .modalAdmin button[type="button"]:hover {
-  background-color: #c82333; /* Rojo oscuro */
+  background-color: var(--rojo-oscuro);
 }
 
-/* Paginación */
 .pagination {
   display: flex;
   justify-content: center;
@@ -215,23 +203,22 @@ button {
 .pagination a {
   padding: 12px 20px;
   border-radius: 8px;
-  background-color: #f1f1f1;
+  background-color: var(--blanco);
   text-decoration: none;
-  color: #0056b3; /* Azul */
-  border: 1px solid #ccc;
+  color: var(--azul-oscuro);
+  border: 1px solid var(--blanco);
   transition: background-color 0.3s ease;
 }
 
 .pagination .active a {
-  background-color: #0056b3; /* Azul */
-  color: white;
+  background-color: var(--azul-oscuro);
+  color: var(--blanco-puro);
 }
 
 .pagination a:hover {
-  background-color: #e9ecef;
+  background-color: var(--blanco);
 }
 
-/* Responsividad */
 @media (max-width: 768px) {
   .toggle-buttons {
     flex-direction: column;

@@ -5,13 +5,13 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 40px;
-  color: #333;
+  color: var(--negro);;
 }
 
 h2, h3 {
   text-align: center;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--azul-oscuro);
 }
 
 .team-section {
@@ -34,17 +34,17 @@ h2, h3 {
   align-items: center;
   text-align: center;
   width: 220px;
-  background-color: #e8f5e9;
+  background-color: var(--blanco);
   padding: 15px;
   border-radius: 10px;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 12px var(--difuminado);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .team-member:hover {
   transform: translateY(-10px);
-  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-  background-color: #e0f7fa;
+  box-shadow: 0px 8px 16px var(--difuminado);
+  background-color: var(--blanco);
 }
 
 .team-member img {
@@ -69,7 +69,7 @@ h2, h3 {
   padding: 0;
   margin-top: 10px;
   font-size: 14px;
-  color: #4f4f4f;
+  color: var(--negro);
 }
 
 .team-member ul li {
@@ -80,7 +80,7 @@ h2, h3 {
   width: 100%;
   max-width: 800px;
   margin: 20px auto;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 8px var(--difuminado);
 }
 
 .map-container iframe {
@@ -93,36 +93,36 @@ h2, h3 {
 .valores-section p:last-child {
   margin-top: 15px;
   font-weight: bold;
-  color: #333;
+  color: var(--gris);
 }
 
 .mision-section, .vision-section, .valores-section {
-  background-color: #e0f2f1;
+  background-color: var(--blanco);
   border-radius: 10px;
   padding: 30px 60px;
   max-width: 1200px; 
   margin: 20px auto;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 12px var(--difuminado);
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .mision-section:hover, .vision-section:hover, .valores-section:hover {
   transform: translateY(-5px);
-  box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 6px 16px var(--difuminado);
 }
 
 .mision-section h3, .vision-section h3, .valores-section h3 {
   font-size: 24px;
   font-weight: bold;
-  color: #00796b;
+  color: var(--gris);
   margin-bottom: 15px;
   text-transform: uppercase;
 }
 
 .mision-section p, .vision-section p, .valores-section p {
   font-size: 16px;
-  color: #4f4f4f;
+  color: var(--negro);
   line-height: 1.6;
   margin: 0 auto;
   max-width: 1100px; 
@@ -130,13 +130,13 @@ h2, h3 {
 }
 
 .mision-section p:hover, .vision-section p:hover, .valores-section p:hover {
-  color: #004d40;
+  color: var(--gris);
 }
 
 .valores-section p:last-child {
   margin-top: 15px;
   font-weight: bold;
-  color: #2c3e50;
+  color: var(--azul-oscuro);
 }
 
 iframe {
@@ -145,5 +145,5 @@ iframe {
   border: none;
   border-radius: 8px;
   margin-top: 20px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 8px var(--difuminado);
 }

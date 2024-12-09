@@ -14,6 +14,8 @@
   /*Colores básicos*/
   --negro: #0f0f0f;
   --blanco: #f0f0f0;
+  --blanco-puro: var(--blanco-puro);
+  --gris: grey;
   --difuminado: #0f0f0f5b;
   --rojo-normal: red;
   --rojo-oscuro: rgb(192, 0, 0);

@@ -1,10 +1,10 @@
 :root {
   --fondo-claro: #f9f9f9;
-  --difuminado: rgba(0, 0, 0, 0.1);
-  --azul-principal: #007bff;
-  --azul-hover: #0056b3;
+  --difuminado: var(--difuminado);
+  --azul-principal: var(--azul-normal);
+  --azul-hover: var(--azul-oscuro);
   --verde-suave: #e6f9e6;
-  --texto: #333;
+  --texto: var(--gris);
   --texto-claro: #666;
 }
 
@@ -12,7 +12,7 @@ body {
   font-family: 'Arial', sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f3f4f6;
+  background-color: var(--blanco);
   color: var(--texto);
 }
 
@@ -56,7 +56,7 @@ h1, h2 {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--difuminado);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -151,7 +151,7 @@ h1, h2 {
 .btnComprar {
   padding: 10px 20px;
   background-color: var(--azul-principal);
-  color: white;
+  color: var(--blanco-puro);
   border-radius: 5px;
   cursor: pointer;
   font-size: 1rem;
@@ -173,28 +173,3 @@ h1, h2 {
     margin-bottom: 10px;
   }
 }
-
-
-/* .modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 400px;
-}
-
-.modal-buttons {
-  display: flex;
-  justify-content: space-between;
-} */

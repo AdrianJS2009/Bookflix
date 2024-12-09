@@ -31,13 +31,13 @@
   display: flex;
   align-items: center;
   gap: 15px; 
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0 4px 8px var(--difuminado); 
   transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
 }
 
 .producto:hover {
   transform: translateY(-5px); 
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); 
+  box-shadow: 0 6px 12px var(--difuminado); 
 }
 
 .imagen-producto {
@@ -58,7 +58,7 @@
 .detalles-producto p {
   margin: 0;
   font-size: 1rem; 
-  color: #333; 
+  color: var(--gris); 
 }
 
 @media (max-width: 768px) {

@@ -90,7 +90,7 @@ img.iconos {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
+  color: var(--blanco-puro);
   font-size: 10px;
   font-weight: bold;
 }
@@ -101,7 +101,7 @@ img.iconos {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--difuminado);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -109,10 +109,10 @@ img.iconos {
 }
 
 .modalContent {
-  background: white;
+  background: var(--blanco-puro);
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px var(--difuminado);
   text-align: center;
   display: grid;
   gap: 1.5rem;
@@ -130,8 +130,8 @@ img.iconos {
 .modalActions button,
 .modalActions a {
   padding: 0.8rem;
-  background-color: #007bff;
-  color: white;
+  background-color: var(--azul-normal);
+  color: var(--blanco-puro);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -141,7 +141,7 @@ img.iconos {
 
 .modalActions button:hover,
 .modalActions a:hover {
-  background-color: #0056b3;
+  background-color: var(--azul-oscuro);
 }
 
 .hamburger {

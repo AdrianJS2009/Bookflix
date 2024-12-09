@@ -15,7 +15,7 @@
 
 .btnComprar:hover {
   background-color: var(--azul-oscuro);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px var(--difuminado);
 }
 
 .btnAñadir {
@@ -29,21 +29,21 @@
 }
 
 .btnDescargar {
-  background-color: #28a745;
-  color: white;
+  background-color: var(--verde-normal);
+  color: var(--blanco-puro);
 }
 
 .btnDescargar:hover {
-  background-color: #218838;
+  background-color: var(--verde-oscuro);
 }
 
 .btnVolver {
-  background-color: #007bff;
-  color: white;
+  background-color: var(--azul-normal);
+  color: var(--blanco-puro);
 }
 
 .btnVolver:hover {
-  background-color: #0056b3;
+  background-color: var(--azul-oscuro);
 }
 
 .btnDefault {
