@@ -169,7 +169,7 @@ div.catalogoBuscadorFiltros select,
 input,
 button {
   font-family: var(--texto);
-  padding: 8px;
+  padding: 10px;
   border-radius: 10px;
   cursor: pointer;
   border: 1px solid var(--negro);
@@ -192,6 +192,7 @@ div.catalogoBuscador button {
   padding: 8px 15px;
   border-radius: 20px;
   position: absolute;
+  top: 2.5px;
   right: 2px;
   color: var(--blanco);
 }

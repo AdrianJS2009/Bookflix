@@ -41,6 +41,7 @@
 @media (max-width: 768px) {
   .pagination {
     gap: 0px;
+    scale: 0.8;
   }
 
   div.catalogoBuscadorFiltros {
@@ -48,7 +49,6 @@
   }
 
   div.catalogoBuscador input {
-    
     margin: 2px;
   }
 
@@ -68,6 +68,5 @@
 @media (max-width: 34rem) {
   .catalogoItems {
     grid-template-columns: repeat(1, 1fr);
-
   }
 }
