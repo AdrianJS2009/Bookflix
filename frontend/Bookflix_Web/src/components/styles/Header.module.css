@@ -152,6 +152,7 @@ img.iconos {
 }
 
 .hamburger span {
+  border-radius: 15px;
   display: block;
   width: 25px;
   height: 3px;

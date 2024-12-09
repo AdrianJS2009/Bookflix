@@ -92,6 +92,17 @@
   margin: 0;
   padding: 0;
 }
+
+
+/* IDEA DE ROCIO
+
+ main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+} */
+
 /* * {
   outline: 1px solid red;
 } */

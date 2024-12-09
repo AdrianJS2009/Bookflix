@@ -57,6 +57,18 @@
   box-sizing: border-box;
 }
 
+.form input#mantenerSesion {
+  width: 13px;
+  margin-right: 3px;
+}
+
+.mantenerSesion {
+  display: flex;
+  & span {
+    cursor: pointer;
+  }
+}
+
 .form button {
   width: 100%;
   padding: 10px;

@@ -60,16 +60,14 @@ export default function Login() {
               required
             />
           </div>
-          <div className="campo-formulario">
-            <label htmlFor="mantenerSesion" className="text-form">
-              Mantener sesión iniciada
-            </label>
-            <input
+          <div className="mantenerSesion texto-pequeño">
+          <input
               type="checkbox"
               id="mantenerSesion"
               checked={mantenerSesion}
               onChange={(e) => setMantenerSesion(e.target.checked)}
             />
+              <span onClick={(e) => setMantenerSesion(prev => !prev)}>Mantener sesión iniciada</span>
           </div>
 
           <Button label="Entrar" type="submit" styleType="btnDefault" />
