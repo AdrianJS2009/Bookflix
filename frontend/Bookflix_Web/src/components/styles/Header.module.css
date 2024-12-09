@@ -214,6 +214,10 @@ img.iconos {
     justify-items: center;
   }
 
+  .logoNavbar {
+    justify-self: center;
+  }
+  
   .userCart {
     justify-content: center;
   }

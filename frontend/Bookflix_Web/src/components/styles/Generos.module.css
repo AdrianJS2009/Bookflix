@@ -25,6 +25,7 @@
 
 .genero p {
   margin: 0;
+  text-wrap:balance;
 }
 
 .generosContainer a {

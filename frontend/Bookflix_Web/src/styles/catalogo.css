@@ -47,6 +47,7 @@ flex-grow: 1;
   align-items: center;
   & .titulo {
     text-align: center;
+    text-wrap:balance;
   }
   & .prueba {
    margin-top: auto; 
