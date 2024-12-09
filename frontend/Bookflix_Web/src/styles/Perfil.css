@@ -1,6 +1,6 @@
 :root {
   --fondo-claro: #f9f9f9;
-  --difuminado: var(--difuminado);
+  /* --difuminado: var(--difuminado); */
   --azul-principal: var(--azul-normal);
   --azul-hover: var(--azul-oscuro);
   --verde-suave: #e6f9e6;

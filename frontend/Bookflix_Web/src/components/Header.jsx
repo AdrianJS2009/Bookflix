@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useCarrito } from "../contexts/CarritoContext";
+import "../styles/default.css"
 import classes from "./styles/Header.module.css";
 
 const Header = () => {

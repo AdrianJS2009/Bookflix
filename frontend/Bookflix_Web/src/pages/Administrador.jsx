@@ -297,6 +297,7 @@ export default function Administrador() {
                   <textarea
                     value={selectedProduct?.descripcion || ""}
                     placeholder="Descripción"
+                    class="texto-pequeño"
                     onChange={(e) =>
                       setSelectedProduct({
                         ...selectedProduct,
