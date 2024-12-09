@@ -68,10 +68,10 @@ const Header = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      if(!itemsNav && window.innerWidth > 768){
-        setItemsNav(true);
-      } else if (itemsNav && window.innerWidth <= 768) {
+      if(itemsNav && window.innerWidth <= 768){
         setItemsNav(false);
+      } else {
+        setItemsNav(true);
       }
     };
  
