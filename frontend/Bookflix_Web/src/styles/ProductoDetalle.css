@@ -69,7 +69,7 @@ hr {
 }
 
 .agotado {
-  color: var(--rojo);
+  color: var(--rojo-normal);
 }
 
 div.cantidad {
