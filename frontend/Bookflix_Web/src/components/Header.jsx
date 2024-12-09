@@ -10,6 +10,7 @@ const Header = () => {
   const { items, vaciarCarritoLocal } = useCarrito();
   const { rol, auth, cerrarSesion } = useAuth();
   const navigate = useNavigate();
+  const [itemsNav, setItemsNav] = useState(true);
 
   const cartCount = Array.isArray(items)
     ? items.reduce((total, item) => total + item.cantidad, 0)
@@ -63,6 +64,26 @@ const Header = () => {
     }, 100);
   };
 
+  const handleItemsNav = () => setItemsNav(prev => !prev);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if(!itemsNav && window.innerWidth > 768){
+        setItemsNav(true);
+      } else if (itemsNav && window.innerWidth <= 768) {
+        setItemsNav(false);
+      }
+    };
+ 
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <>
       <header className={`${classes.header} fondo-negro`}>
@@ -105,36 +126,32 @@ const Header = () => {
               Cesta
             </NavLink>
 
-            <label htmlFor="menuToggle" className={classes.hamburger}>
+            <label htmlFor="menuToggle" className={classes.hamburger} onClick={handleItemsNav}>
               <span></span>
               <span></span>
               <span></span>
             </label>
-
-            <input
-              type="checkbox"
-              id="menuToggle"
-              className={classes.menuToggle}
-            />
           </div>
         </div>
 
-        <nav className={`${classes.navPrincipal} fondo-verde`}>
-          <ul className="texto-pequeño-bold texto-negro">
-            <li>
-              <NavLink to="/" onClick={() => handleNavigation('novedades')}>Novedades</NavLink>
-            </li>
-            <li>
-              <NavLink to="/" onClick={() => handleNavigation('generos')}>Géneros</NavLink>
-            </li>
-            <li>
-              <NavLink to="/" onClick={() => handleNavigation('top-ventas')}>Top ventas</NavLink>
-            </li>
-            <li>
-              <NavLink to="/catalogo">Catálogo</NavLink>
-            </li>
-          </ul>
-        </nav>
+        {itemsNav && (
+          <nav className={`${classes.navPrincipal} fondo-verde`}>
+            <ul className="texto-pequeño-bold texto-negro">
+              <li>
+                <NavLink to="/" onClick={() => handleNavigation('novedades')}>Novedades</NavLink>
+              </li>
+              <li>
+                <NavLink to="/" onClick={() => handleNavigation('generos')}>Géneros</NavLink>
+              </li>
+              <li>
+                <NavLink to="/" onClick={() => handleNavigation('top-ventas')}>Top ventas</NavLink>
+              </li>
+              <li>
+                <NavLink to="/catalogo">Catálogo</NavLink>
+              </li>
+            </ul>
+          </nav>
+        )}
       </header>
 
 
