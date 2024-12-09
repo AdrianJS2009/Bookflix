@@ -3,13 +3,6 @@
   flex-direction: column;
   width: 100%;
   z-index: 1000;
-  align-items: center;
-  align-self: center;
-  align-content: center;
-  justify-self: center;
-  justify-items: center;
-  /* justify-content: center; */
-  text-align: center;
 }
 
 .navLogo {
@@ -185,6 +178,7 @@ img.iconos {
 }
 
 @media (max-width: 768px) {
+  
   .hamburger {
     display: flex;
   }
@@ -228,5 +222,14 @@ img.iconos {
   
   .userCart {
     justify-content: center;
+  }
+  .header {
+    align-items: center;
+    align-self: center;
+    align-content: center;
+    justify-self: center;
+    justify-items: center;
+    justify-content: center;
+    text-align: center;
   }
 }
