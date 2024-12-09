@@ -16,7 +16,7 @@
   --blanco: #f0f0f0;
   --blanco-puro: white;
   --gris: #333;
-  --difuminado: rgba(8, 8, 8, 0.5);
+  --difuminado: rgba(0, 0, 0, 0.25);
   --rojo-normal: red;
   --rojo-oscuro: rgb(192, 0, 0);
   --rojo-claro: rgb(240, 74, 74);
