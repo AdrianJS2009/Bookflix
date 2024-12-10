@@ -96,14 +96,13 @@
 }
 
 
-/* IDEA DE ROCIO
+/* IDEA DE ROCIO */
 
  main {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-} */
+}
 
 /* * {
   outline: 1px solid red;

@@ -68,7 +68,7 @@
   position: absolute;
   top: 50%;
   background-color: var(--blanco);
-  border: none;
+  border: 1px solid var(--difuminado);
   padding: 10px;
   cursor: pointer;
   font-size: 18px;
@@ -96,6 +96,7 @@
 
 .catalogoItem p.precio {
   text-align: center;
+  color: var(--negro);
 }
 
 .catalogoItemButtons a{

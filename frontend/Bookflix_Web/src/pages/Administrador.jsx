@@ -330,7 +330,7 @@ export default function Administrador() {
                       })
                     }
                   />
-                  Precio
+                  {"Precio (en céntimos)"}
                   <input
                     type="number"
                     value={selectedProduct?.precio || ""}

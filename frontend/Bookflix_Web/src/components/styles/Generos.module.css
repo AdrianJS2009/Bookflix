@@ -1,5 +1,5 @@
 .generosContainer {
-  max-width: 80%;
+  /* max-width: 80%; */
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -12,6 +12,7 @@
 }
 .genero {
   width: 100%;
+  min-width: 200px;
   height: 150px;
   background-size: cover;
   border-radius: 20px;
