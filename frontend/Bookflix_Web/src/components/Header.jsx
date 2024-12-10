@@ -91,7 +91,7 @@ const Header = () => {
         <div className={classes.navLogo}>
           <NavLink to="/">
             <img
-              src="/assets/logos/Logo-degradado-con bisel.png"
+              src="/assets/logos/Logo-degradado-con bisel.webp"
               className={classes.logoNavbar}
               alt="Bookflix logo"
             />
@@ -101,7 +101,7 @@ const Header = () => {
             {auth.token ? (
               <button onClick={toggleModal} className={classes.userButton}>
                 <img
-                  src="/assets/iconos/Logo Usuario.png"
+                  src="/assets/iconos/Logo Usuario.webp"
                   className={classes.iconos}
                   alt="Icono Usuario"
                 />
@@ -110,7 +110,7 @@ const Header = () => {
             ) : (
               <NavLink to="/login">
                 <img
-                  src="/assets/iconos/Logo Usuario.png"
+                  src="/assets/iconos/Logo Usuario.webp"
                   className={classes.iconos}
                   alt="Icono Usuario"
                 />
@@ -119,7 +119,7 @@ const Header = () => {
             )}
             <NavLink to="/carrito">
               <img
-                src="/assets/iconos/Logo Cesta.png"
+                src="/assets/iconos/Logo Cesta.webp"
                 className={classes.iconos}
                 alt="Icono Cesta"
               />

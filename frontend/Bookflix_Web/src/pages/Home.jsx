@@ -11,19 +11,19 @@ export default function Home() {
     <>
       <main className="home-bookflix fondo-blanco">
         <Banner
-          imageSrc="/assets/banner/BannerUnete.png"
+          imageSrc="/assets/banner/BannerUnete.webp"
           altText="Banner Unete"
         />
         <Generos />
         <Banner
-          imageSrc="/assets/banner/BannerEnvioGratuito.png"
+          imageSrc="/assets/banner/BannerEnvioGratuito.webp"
           altText="Banner Envío Gratuito"
         />
 
         <Carrusel2 />
         <TopVentas />
         <Banner
-          imageSrc="/assets/banner/BannerWebAmigas.png"
+          imageSrc="/assets/banner/BannerWebAmigas.webp"
           altText="Banner Web Amigas"
         />
       </main>

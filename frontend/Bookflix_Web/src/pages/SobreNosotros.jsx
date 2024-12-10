@@ -8,7 +8,7 @@ function SobreNosotros() {
           <h2>Sobre Nosotros</h2>
           <div className="team-members">
             <div className="team-member">
-              <img src="/assets/nosotros/elias.png" alt="Elias Robles" />
+              <img src="/assets/nosotros/elias.webp" alt="Elias Robles" />
               <h3>Elias Robles</h3>
               <p>
                 Estudiante de Desarrollo de Aplicaciones Web, técnico en
@@ -26,7 +26,7 @@ function SobreNosotros() {
             </div>
 
             <div className="team-member">
-              <img src="/assets/nosotros/adri.png" alt="Adrián Jiménez" />
+              <img src="/assets/nosotros/adri.webp" alt="Adrián Jiménez" />
               <h3>Adrián Jiménez</h3>
               <p>
                 Encargado del marketing con amplia experiencia en E-Commerce.
@@ -45,7 +45,7 @@ function SobreNosotros() {
             </div>
 
             <div className="team-member">
-              <img src="/assets/nosotros/gio.png" alt="Giovanni Giove" />
+              <img src="/assets/nosotros/gio.webp" alt="Giovanni Giove" />
               <h3>Giovanni Giove</h3>
               <p>
                 Con más de 3 años de experiencia, se destaca en la gestión de
@@ -63,7 +63,7 @@ function SobreNosotros() {
             </div>
 
             <div className="team-member">
-              <img src="/assets/nosotros/david.png" alt="David Márquez" />
+              <img src="/assets/nosotros/david.webp" alt="David Márquez" />
               <h3>David Márquez</h3>
               <p>
                 Técnico audiovisual con más de 12 años como fotógrafo,

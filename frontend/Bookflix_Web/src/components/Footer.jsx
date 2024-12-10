@@ -6,7 +6,7 @@ const Footer = () => {
     <footer className={`fondo-negro ${classes.footer}`}>
       <div className={classes.containerImg}>
         <img
-          src="/assets/logos/Logo - Blanco.png"
+          src="/assets/logos/Logo - Blanco.webp"
           className={classes.logoFooter}
           alt="Bookflix logo"
         />

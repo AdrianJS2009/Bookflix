@@ -7,13 +7,13 @@ export default function TopVentas() {
       <div className="libro">
         <NavLink to="/producto/1">
           <img
-            src="/assets/libros/1.png"
+            src="/assets/libros/1 - copia.webp"
             className={classes.libroImagen}
             alt="Libro 1"
           />
         </NavLink>
         <img
-          src="/assets/numeros/1.png"
+          src="/assets/numeros/1.webp"
           className={classes.puestoImagen}
           alt="Puesto 1"
         />
@@ -21,13 +21,13 @@ export default function TopVentas() {
       <div className="libro">
         <NavLink to="/producto/2">
           <img
-            src="/assets/libros/2.png"
+            src="/assets/libros/2 - copia.webp"
             className={classes.libroImagen}
             alt="Libro 2"
           />
         </NavLink>
         <img
-          src="/assets/numeros/2.png"
+          src="/assets/numeros/2.webp"
           className={classes.puestoImagen}
           alt="Puesto 2"
         />
@@ -35,13 +35,13 @@ export default function TopVentas() {
       <div className="libro">
         <NavLink to="/producto/3">
           <img
-            src="/assets/libros/3.png"
+            src="/assets/libros/3 - copia.webp"
             className={classes.libroImagen}
             alt="Libro 3"
           />
         </NavLink>
         <img
-          src="/assets/numeros/3.png"
+          src="/assets/numeros/3.webp"
           className={classes.puestoImagen}
           alt="Puesto 3"
         />
