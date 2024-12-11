@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useDebouncedCallback } from "use-debounce";
 import Button from "../components/Button";
 import { useCarrito } from "../contexts/CarritoContext";
 import "../styles/ProductoDetalle.css";
@@ -24,6 +25,23 @@ const Catalogo = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [cantidad, setCantidad] = useState(1);
+  const [isFetching, setIsFetching] = useState(false);
+
+  const debouncedFetchLibros = useDebouncedCallback(() => {
+    fetchLibros(currentPage);
+  }, 500);
+
+  useEffect(() => {
+    debouncedFetchLibros();
+  }, [
+    currentPage,
+    nombre,
+    genero,
+    precioOrden,
+    alfabeticoOrden,
+    itemsPerPage,
+    location.search,
+  ]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -34,9 +52,11 @@ const Catalogo = () => {
     if (nombreEnUrl) setNombre(nombreEnUrl);
 
     fetchLibros(currentPage);
-  }, [currentPage, nombre, genero, precioOrden, alfabeticoOrden, itemsPerPage, location.search]);
+  }, []);
 
   const fetchLibros = async (page) => {
+    if (isFetching) return;
+    setIsFetching(true);
     setIsLoading(true);
     setError(null);
 
@@ -52,10 +72,13 @@ const Catalogo = () => {
     }
 
     try {
-      let url = `${baseURL}/api/Libro/ListarLibros?pagina=${page + 1}&tamanoPagina=${itemsPerPage}`;
+      let url = `${baseURL}/api/Libro/ListarLibros?pagina=${
+        page + 1
+      }&tamanoPagina=${itemsPerPage}`;
       if (nombre) url += `&textoBusqueda=${encodeURIComponent(nombre)}`;
       if (genero) url += `&genero=${encodeURIComponent(genero)}`;
-      if (ordenarPor) url += `&ordenarPor=${ordenarPor}&ascendente=${ascendente}`;
+      if (ordenarPor)
+        url += `&ordenarPor=${ordenarPor}&ascendente=${ascendente}`;
 
       const response = await fetch(url, {
         headers: {
@@ -71,7 +94,9 @@ const Catalogo = () => {
 
       const librosConReseñas = await Promise.all(
         data.libros.map(async (libro) => {
-          const detalleResponse = await fetch(`${baseURL}/api/Libro/Detalle/${libro.idLibro}`);
+          const detalleResponse = await fetch(
+            `${baseURL}/api/Libro/Detalle/${libro.idLibro}`
+          );
           const detalleData = await detalleResponse.json();
           return { ...libro, reseñas: detalleData.reseñas };
         })
@@ -226,10 +251,7 @@ const Catalogo = () => {
       ) : (
         <div className="catalogoItems">
           {libros.map((libro) => (
-            <div
-              key={libro.idLibro}
-              className="catalogoItem"
-            >
+            <div key={libro.idLibro} className="catalogoItem">
               <div className="catalogoItemContent">
                 <img
                   src={libro.urlImagen}
@@ -257,7 +279,9 @@ const Catalogo = () => {
                     <span>
                       <span className="agotado">⬤</span> Agotado
                     </span>
-                  )} - ⭐ {Math.round(libro.promedioEstrellas)} ({libro.reseñas ? libro.reseñas.length : 0})
+                  )}{" "}
+                  - ⭐ {Math.round(libro.promedioEstrellas)} (
+                  {libro.reseñas ? libro.reseñas.length : 0})
                 </p>
               </div>
               <Button
