@@ -162,8 +162,18 @@ namespace Bookflix_Server.Controllers
                     ISBN = l.ISBN,
                     Stock = l.Stock,
                     PromedioEstrellas = await _context.Reseñas
-                        .Where(r => r.ProductoId == l.IdLibro)
-                        .AverageAsync(r => (double?)r.Estrellas) ?? 0.0
+                    .Where(r => r.ProductoId == l.IdLibro)
+                    .AverageAsync(r => (double?)r.Estrellas) ?? 0.0,
+                    Reseñas = _context.Reseñas
+                    .Where(r => r.ProductoId == l.IdLibro)
+                    .Select(r => new ReseñaDTO
+                    {
+                        Autor = r.Autor,
+                        Texto = r.Texto,
+                        Estrellas = r.Estrellas,
+                        Categoria = r.Categoria,
+                        FechaPublicacion = r.FechaPublicacion,
+                    }).ToList()
                 }).ToList());
 
                 return Ok(new

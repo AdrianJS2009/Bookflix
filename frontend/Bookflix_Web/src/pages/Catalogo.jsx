@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useDebouncedCallback } from "use-debounce";
 import Button from "../components/Button";
 import { useCarrito } from "../contexts/CarritoContext";
 import "../styles/ProductoDetalle.css";
@@ -25,23 +24,6 @@ const Catalogo = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [cantidad, setCantidad] = useState(1);
-  const [isFetching, setIsFetching] = useState(false);
-
-  const debouncedFetchLibros = useDebouncedCallback(() => {
-    fetchLibros(currentPage);
-  }, 500);
-
-  useEffect(() => {
-    debouncedFetchLibros();
-  }, [
-    currentPage,
-    nombre,
-    genero,
-    precioOrden,
-    alfabeticoOrden,
-    itemsPerPage,
-    location.search,
-  ]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -52,11 +34,17 @@ const Catalogo = () => {
     if (nombreEnUrl) setNombre(nombreEnUrl);
 
     fetchLibros(currentPage);
-  }, []);
+  }, [
+    currentPage,
+    nombre,
+    genero,
+    precioOrden,
+    alfabeticoOrden,
+    itemsPerPage,
+    location.search,
+  ]);
 
   const fetchLibros = async (page) => {
-    if (isFetching) return;
-    setIsFetching(true);
     setIsLoading(true);
     setError(null);
 

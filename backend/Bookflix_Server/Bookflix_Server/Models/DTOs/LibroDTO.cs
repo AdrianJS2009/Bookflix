@@ -20,5 +20,7 @@
         public int Stock { get; set; }
 
         public double PromedioEstrellas { get; set; }
+
+        public ICollection<ReseñaDTO> Reseñas { get; set; }
     }
 }
