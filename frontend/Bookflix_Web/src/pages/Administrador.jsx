@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import Button from "../components/Button";
+import { useAuth } from "../contexts/AuthContext";
 import "../styles/admin.css";
 import "../styles/default.css";
-import { useAuth } from "../contexts/AuthContext";
-import { toast } from "react-toastify";
 
 export default function Administrador() {
   const baseURL = import.meta.env.VITE_SERVER_API_BASE_URL;
@@ -38,16 +38,19 @@ export default function Administrador() {
       };
 
       const endpoint = isShowingUsers
-        ? `${baseURL}/api/user/listar?pagina=${page + 1
-        }&tamanoPagina=${itemsPerPage}`
-        : `${baseURL}/api/libro/ListarLibros?ascendente=true&pagina=${page + 1
-        }&tamanoPagina=${itemsPerPage}`;
+        ? `${baseURL}/api/user/listar?pagina=${
+            page + 1
+          }&tamanoPagina=${itemsPerPage}`
+        : `${baseURL}/api/libro/ListarLibros?ascendente=true&pagina=${
+            page + 1
+          }&tamanoPagina=${itemsPerPage}`;
 
       const response = await fetch(endpoint, { headers });
 
       if (!response.ok) {
         throw new Error(
-          `Error ${response.status}: ${isShowingUsers ? "Usuarios" : "Productos"
+          `Error ${response.status}: ${
+            isShowingUsers ? "Usuarios" : "Productos"
           }`
         );
       }
@@ -79,28 +82,34 @@ export default function Administrador() {
       toast.error("No se encontró un token.");
       return;
     }
-  
+
     try {
       const decoded = JSON.parse(atob(auth.token.split(".")[1]));
-      const currentUser = parseInt(decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]);
-  
+      const currentUser = parseInt(
+        decoded[
+          "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+        ]
+      );
+
       if (currentUser === idUser) {
         toast.info("No puedes cambiar tu propio rol.");
         return;
       }
-  
-      const response = await fetch(`${baseURL}/api/Gestion/usuarios/${idUser}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${auth.token}`,
-        },
-      });
-  
+
+      const response = await fetch(
+        `${baseURL}/api/Gestion/usuarios/${idUser}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth.token}`,
+          },
+        }
+      );
+
       if (response.ok) {
         toast.success("Rol actualizado exitosamente.");
         fetchData(currentPage);
-    
       } else {
         toast.error("Error al actualizar el rol.");
       }
@@ -108,13 +117,12 @@ export default function Administrador() {
       console.error("Error al decodificar el token:", error);
     }
   };
-  
 
-  // const handleDelete = async (id) => {
-  //   if (currentUser === idUser) {
-  //     toast.info("No puedes eliminarte.");
-  //     return;
-  //   }
+  const handleDelete = async (id) => {
+    //   if (currentUser === idUser) {
+    //     toast.info("No puedes eliminarte.");
+    //     return;
+    //   }
     const confirmMessage = `¿Estás seguro de que deseas eliminar este usuario?`;
     if (window.confirm(confirmMessage)) {
       try {
@@ -205,53 +213,53 @@ export default function Administrador() {
         <ul className="listaAdmin">
           {isShowingUsers
             ? usuarios.map((usuario) => (
-              <li key={usuario.idUser} className="itemListaAdmin">
-                <strong>Nombre:</strong> {usuario.nombre}{" "}
-                <strong>Correo:</strong> {usuario.email}
-                <strong>Rol:</strong> {usuario.rol}
-                <div>
-                  <Button
-                    onClick={() => handlerEditarRol(usuario.idUser)}
-                    label="Toggle Rol"
-                    styleType="btnComprar"
-                  />
-                </div>
-                <div>
-                  <Button
-                    onClick={() => handleDelete(usuario.idUser)}
-                    label="Eliminar"
-                    className="botonEliminar"
-                  />
-                </div>
-              </li>
-            ))
+                <li key={usuario.idUser} className="itemListaAdmin">
+                  <strong>Nombre:</strong> {usuario.nombre}{" "}
+                  <strong>Correo:</strong> {usuario.email}
+                  <strong>Rol:</strong> {usuario.rol}
+                  <div>
+                    <Button
+                      onClick={() => handlerEditarRol(usuario.idUser)}
+                      label="Toggle Rol"
+                      styleType="btnComprar"
+                    />
+                  </div>
+                  <div>
+                    <Button
+                      onClick={() => handleDelete(usuario.idUser)}
+                      label="Eliminar"
+                      className="botonEliminar"
+                    />
+                  </div>
+                </li>
+              ))
             : productos.map((producto) => (
-              <li key={producto.idLibro} className="itemListaAdmin">
-                <img
-                  src={producto.urlImagen}
-                  alt={producto.nombre}
-                  width="50"
-                />
-                <Link to={`/producto/${producto.idLibro}`}>
-                  {Array.from(producto.nombre).length > 10
-                    ? Array.from(producto.nombre).slice(0, 50).join("") +
-                    "..."
-                    : producto.nombre}{" "}
-                </Link>
-                ({(producto.precio / 100).toFixed(2)}€) - Stock:{" "}
-                {producto.stock}
-                <div>
-                  <Button
-                    onClick={() => {
-                      setSelectedProduct(producto);
-                      setIsModalOpen(true);
-                    }}
-                    label="Editar"
-                    styleType="btnComprar"
+                <li key={producto.idLibro} className="itemListaAdmin">
+                  <img
+                    src={producto.urlImagen}
+                    alt={producto.nombre}
+                    width="50"
                   />
-                </div>
-              </li>
-            ))}
+                  <Link to={`/producto/${producto.idLibro}`}>
+                    {Array.from(producto.nombre).length > 10
+                      ? Array.from(producto.nombre).slice(0, 50).join("") +
+                        "..."
+                      : producto.nombre}{" "}
+                  </Link>
+                  ({(producto.precio / 100).toFixed(2)}€) - Stock:{" "}
+                  {producto.stock}
+                  <div>
+                    <Button
+                      onClick={() => {
+                        setSelectedProduct(producto);
+                        setIsModalOpen(true);
+                      }}
+                      label="Editar"
+                      styleType="btnComprar"
+                    />
+                  </div>
+                </li>
+              ))}
         </ul>
         <ReactPaginate
           previousLabel={"Anterior"}
@@ -269,17 +277,11 @@ export default function Administrador() {
       {isModalOpen && (
         <div className="modalOverlay">
           <div className="modalAdmin">
-            <h2>
-              {selectedProduct
-                  ? "Editar Producto"
-                  : "Crear Producto"}
-            </h2>
+            <h2>{selectedProduct ? "Editar Producto" : "Crear Producto"}</h2>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                handleCreateOrEdit(
-                  selectedProduct
-                );
+                handleCreateOrEdit(selectedProduct);
               }}
             >
               {!isShowingUsers && (
