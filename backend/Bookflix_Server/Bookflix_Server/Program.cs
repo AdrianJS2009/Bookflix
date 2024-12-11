@@ -66,7 +66,10 @@ public class Program
 
 
         builder.Services.AddDbContext<MyDbContext>(options =>
-            options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+        {
+            string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 27)));
+        });
 
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -141,15 +144,15 @@ public class Program
 
     private static void ConfigureMiddleware(WebApplication app)
     {
-        
+
         app.UseSwagger();
-        app.UseSwaggerUI( C =>
+        app.UseSwaggerUI(C =>
         {
             C.SwaggerEndpoint("/swagger/v1/swagger.json", "Bookflix API v1");
         });
 
         app.UseCors(policy =>
-            policy.WithOrigins("https://bookflix-daw.vercel.app", "https://bookflix-server.runasp.net","http://localhost:5173")
+            policy.WithOrigins("https://bookflix-daw.vercel.app", "https://bookflix-server.runasp.net", "http://localhost:5173")
                   .AllowAnyHeader()
                   .AllowAnyMethod());
 

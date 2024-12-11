@@ -150,31 +150,42 @@ namespace Bookflix_Server.Controllers
                     .Take(tamanoPagina)
                     .ToListAsync();
 
-                var librosDto = await Task.WhenAll(libros.Select(async l => new LibroDTO
+                var librosDto = new List<LibroDTO>();
+
+                foreach (var libro in libros)
                 {
-                    IdLibro = l.IdLibro,
-                    Nombre = l.Nombre,
-                    Precio = l.Precio,
-                    UrlImagen = l.UrlImagen,
-                    Genero = l.Genero,
-                    Descripcion = l.Descripcion,
-                    Autor = l.Autor,
-                    ISBN = l.ISBN,
-                    Stock = l.Stock,
-                    PromedioEstrellas = await _context.Reseñas
-                    .Where(r => r.ProductoId == l.IdLibro)
-                    .AverageAsync(r => (double?)r.Estrellas) ?? 0.0,
-                    Reseñas = _context.Reseñas
-                    .Where(r => r.ProductoId == l.IdLibro)
-                    .Select(r => new ReseñaDTO
+                    var promedioEstrellas = await _context.Reseñas
+                        .Where(r => r.ProductoId == libro.IdLibro)
+                        .AverageAsync(r => (double?)r.Estrellas) ?? 0.0;
+
+                    var reseñas = await _context.Reseñas
+                        .Where(r => r.ProductoId == libro.IdLibro)
+                        .Select(r => new ReseñaDTO
+                        {
+                            Autor = r.Autor,
+                            Texto = r.Texto,
+                            Estrellas = r.Estrellas,
+                            Categoria = r.Categoria,
+                            FechaPublicacion = r.FechaPublicacion,
+                            IdLibro = r.ProductoId.ToString()
+                        }).ToListAsync();
+
+                    librosDto.Add(new LibroDTO
                     {
-                        Autor = r.Autor,
-                        Texto = r.Texto,
-                        Estrellas = r.Estrellas,
-                        Categoria = r.Categoria,
-                        FechaPublicacion = r.FechaPublicacion,
-                    }).ToList()
-                }).ToList());
+                        IdLibro = libro.IdLibro,
+                        Nombre = libro.Nombre,
+                        Precio = libro.Precio,
+                        UrlImagen = libro.UrlImagen,
+                        Genero = libro.Genero,
+                        Descripcion = libro.Descripcion,
+                        Autor = libro.Autor,
+                        ISBN = libro.ISBN,
+                        Stock = libro.Stock,
+                        PromedioEstrellas = promedioEstrellas,
+                        Reseñas = reseñas
+                    });
+                }
+
 
                 return Ok(new
                 {
