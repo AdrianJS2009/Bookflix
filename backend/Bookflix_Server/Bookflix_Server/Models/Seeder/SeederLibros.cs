@@ -21,7 +21,7 @@ public class SeederLibros
                 IdLibro = 1,
                 Nombre = "Invisible",
                 Precio = 1000,
-                UrlImagen = "https://bookflix-daw.vercel.app/assets/libros/1.webp",
+                UrlImagen = "/assets/libros/1.webp",
                 Genero = "Literatura",
                 Descripcion = "Descripción del libro Invisible",
                 Stock = 50,
