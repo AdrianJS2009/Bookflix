@@ -111,6 +111,10 @@ export default function Administrador() {
   
 
   const handleDelete = async (id) => {
+    if (currentUser === idUser) {
+      toast.info("No puedes eliminarte.");
+      return;
+    }
     const confirmMessage = `¿Estás seguro de que deseas eliminar este usuario?`;
     if (window.confirm(confirmMessage)) {
       try {
